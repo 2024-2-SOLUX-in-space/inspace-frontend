@@ -1,18 +1,15 @@
-import { useState } from 'react'
-import GlobalStyle from './styles/GlobalStyle'
-import { ThemeProvider } from 'styled-components'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
 
 function App() {
   return (
-    <ThemeProvider theme={{}}>
-      <GlobalStyle />
-      <div>
-        <p>안녕하세요 세종병원체입니다.</p>
-        <p>The quick brown fox jumps over the lazy dog.</p>
-        <p>1234567890</p>
-      </div>
-    </ThemeProvider>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </Router>
   );
 }
 
-export default App
+export default App;
