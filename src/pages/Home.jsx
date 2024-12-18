@@ -1,12 +1,24 @@
 import React from 'react';
-import { HomeContainer, BookImage, ArrowImage } from '../styles/HomeStyle';
+import styled from 'styled-components';
+import HomeDiary from '../components/HomeDiary';
+
+const HomeContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url('/home_background.png') no-repeat center center;
+  background-size: cover;
+`;
 
 const Home = () => {
   return (
     <HomeContainer>
-      <ArrowImage src="/home_arrow_left.png" alt="왼쪽 화살표" />
-      <BookImage src="/home_book.png" alt="책" />
-      <ArrowImage src="/home_arrow_right.png" alt="오른쪽 화살표" />
+      <HomeDiary />
     </HomeContainer>
   );
 };
