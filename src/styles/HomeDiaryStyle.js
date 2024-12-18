@@ -2,11 +2,11 @@ import styled from 'styled-components';
 
 export const DiaryWrapper = styled.div`
   position: relative;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 100%;
 `;
 
 export const BookWrapper = styled.div`
@@ -14,6 +14,8 @@ export const BookWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100%;
+  max-height: calc(100vh - 200px);
 
   .page {
     padding: 0px;
@@ -102,5 +104,22 @@ export const BookWrapper = styled.div`
       color: hsl(35, 20%, 50%);
       text-align: right;
     }
+  }
+`;
+
+export const EditButton = styled.button`
+  position: absolute;
+  bottom: 2rem;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  background-color: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #000000;
+    color: #ffffff;
   }
 `;

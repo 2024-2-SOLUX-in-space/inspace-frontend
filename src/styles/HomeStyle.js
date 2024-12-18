@@ -1,43 +1,39 @@
 import styled from 'styled-components';
 
 export const HomeContainer = styled.div`
-  width: 100vw;
-  height: 100vh;
-  background-image: url('/home_background.png');
-  background-size: 100% 100%;
-  background-position: right center;
-  background-repeat: no-repeat;
-  margin: 0;
-  padding: 0;
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
-  overflow: hidden;
+  width: 100%;
+  height: 100vh;
   display: flex;
-  align-items: center;
   justify-content: center;
-  gap: 20px;
+  align-items: center;
+  background: url('/home_background.png') no-repeat center center;
+  background-size: cover;
 `;
 
-export const BookImage = styled.img`
-  width: 48%;
-  height: auto;
-  object-fit: contain;
+export const ContentWrapper = styled.div`
   position: relative;
+  width: 950px;
+  height: 858px;
 `;
 
-export const ArrowImage = styled.img`
+export const EditButton = styled.button`
   position: absolute;
-  height: 50px;
-  top: 0;
-  bottom: 0;
-  margin: auto 0;
+  right: 0;
+  bottom: 5px;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 150px;
+  cursor: pointer;
+  outline: none;
 
-  &:first-of-type {
-    left: 425px;
-  }
-
-  &:last-of-type {
-    right: 425px;
+  &:focus {
+    outline: none;
   }
 `;

@@ -1,24 +1,18 @@
 import React from 'react';
-import styled from 'styled-components';
 import HomeDiary from '../components/HomeDiary';
-
-const HomeContainer = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: url('/home_background.png') no-repeat center center;
-  background-size: cover;
-`;
+import { HomeContainer, ContentWrapper, EditButton } from '../styles/HomeStyle';
 
 const Home = () => {
+  const handleEdit = () => {
+    // 편집 기능 구현
+  };
+
   return (
     <HomeContainer>
-      <HomeDiary />
+      <ContentWrapper>
+        <HomeDiary />
+        <EditButton onClick={handleEdit}>공간 편집</EditButton>
+      </ContentWrapper>
     </HomeContainer>
   );
 };
