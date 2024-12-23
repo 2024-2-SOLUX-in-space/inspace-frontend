@@ -123,3 +123,33 @@ export const EditButton = styled.button`
     color: #ffffff;
   }
 `;
+
+export const PageContent = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+`;
+
+export const PageNumber = styled.div`
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  font-size: 14px;
+  color: #666;
+`;
+
+export const DiaryContent = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+`;
+
+export const DraggableImage = styled.img`
+  position: absolute;
+  max-width: 150px;
+  max-height: 150px;
+  cursor: move;
+  user-select: none;
+`;

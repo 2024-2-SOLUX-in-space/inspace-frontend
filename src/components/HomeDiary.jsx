@@ -1,6 +1,13 @@
-import React, { forwardRef, useImperativeHandle } from 'react';
+import React, { useRef } from 'react';
 import HTMLFlipBook from 'react-pageflip';
-import { DiaryWrapper, BookWrapper } from '../styles/HomeDiaryStyle';
+import { 
+  DiaryWrapper, 
+  BookWrapper, 
+  PageContent, 
+  PageNumber, 
+  DiaryContent, 
+  DraggableImage 
+} from '../styles/HomeDiaryStyle';
 
 const PageCover = React.forwardRef((props, ref) => {
   return (
@@ -15,113 +22,86 @@ const PageCover = React.forwardRef((props, ref) => {
 });
 
 const Page = React.forwardRef((props, ref) => {
-  if (props.isCover) {
-    return (
-      <div className="page" ref={ref}>
-        <div className="page-content">
-          <h2>{props.children}</h2>
-        </div>
-      </div>
-    );
-  }
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const rect = e.currentTarget.getBoundingClientRect();
+    
+    const imageWidth = 100;
+    const imageHeight = 100;
+    
+    const x = e.clientX - rect.left - (imageWidth / 2);
+    const y = e.clientY - rect.top - (imageHeight / 2);
+    
+    if (props.onImageDrop) {
+      props.onImageDrop(props.number, x, y);
+    }
+  };
 
   return (
     <div className="page" ref={ref}>
-      <div className="page-content">
-        <h2 className="page-header">Page header - {props.number}</h2>
-        <div className="page-image" style={{ backgroundImage: `url(${props.image})` }}></div>
-        <div className="page-text">{props.children}</div>
-        <div className="page-footer">{props.number}</div>
-        {props.images && props.images.map((image, index) => (
-          <img 
-            key={index} 
-            src={image.url} 
-            alt={image.title} 
-            style={{ width: '100%' }} 
-          />
-        ))}
-      </div>
+      <PageContent className="page-content">
+        <PageNumber>{props.number}</PageNumber>
+        <DiaryContent 
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+        >
+          {props.children}
+          {props.images && props.images.map((image) => (
+            <DraggableImage 
+              key={image.id} 
+              src={image.url} 
+              alt={image.alt}
+              style={{
+                position: 'absolute',
+                left: `${image.position?.x}px`,
+                top: `${image.position?.y}px`
+              }}
+            />
+          ))}
+        </DiaryContent>
+      </PageContent>
     </div>
   );
 });
 
-class HomeDiaryClass extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      page: 0,
-      totalPage: 0,
-      orientation: 'landscape',
-      state: 'read',
-      pageImages: {},
-    };
-    this.flipBook = React.createRef();
-  }
+const HomeDiary = ({ images = {}, onImageDrop }) => {
+  const flipBook = useRef();
 
-  onPage = (e) => {
-    this.setState({
-      page: e.data,
-    });
-  };
+  return (
+    <DiaryWrapper>
+      <BookWrapper>
+        <HTMLFlipBook
+          width={858}
+          height={1144}
+          size="stretch"
+          minWidth={492}
+          maxWidth={1560}
+          minHeight={624}
+          maxHeight={2392}
+          maxShadowOpacity={0.5}
+          showCover={true}
+          mobileScrollSupport={true}
+          className="flip-book"
+          ref={flipBook}
+          drawOnDemand={false}
+          flippingTime={1000}
+          usePortrait={false}
+          startPage={0}
+        >
+          <PageCover position="top">BOOK TITLE</PageCover>
+          <Page number={1} images={images[1]} onImageDrop={onImageDrop}>첫 장</Page>
+          <Page number={2} images={images[2]} onImageDrop={onImageDrop}>두 번째 장</Page>
+          <Page number={3} images={images[3]} onImageDrop={onImageDrop}>세 번째 장</Page>
+          <Page number={4} images={images[4]} onImageDrop={onImageDrop}>네 번째 장</Page>
+          <PageCover position="bottom">THE END</PageCover>
+        </HTMLFlipBook>
+      </BookWrapper>
+    </DiaryWrapper>
+  );
+};
 
-  onChangeState = (e) => {
-    this.setState({
-      state: e.data,
-    });
-  };
-
-  onChangeOrientation = (e) => {
-    this.setState({
-      orientation: e.data,
-    });
-  };
-
-  componentDidMount() {
-    setTimeout(() => {
-      if (this.flipBook.current) {
-        this.setState({
-          totalPage: this.flipBook.current.pageFlip().getPageCount(),
-        });
-      }
-    }, 100);
-  }
-
-  render() {
-    return (
-      <DiaryWrapper>
-        <BookWrapper>
-          <HTMLFlipBook
-            width={858}
-            height={1144}
-            size="stretch"
-            minWidth={492}
-            maxWidth={1560}
-            minHeight={624}
-            maxHeight={2392}
-            maxShadowOpacity={0.5}
-            showCover={true}
-            mobileScrollSupport={true}
-            onFlip={this.onPage}
-            onChangeState={this.onChangeState}
-            onChangeOrientation={this.onChangeOrientation}
-            className="flip-book"
-            ref={this.flipBook}
-            drawOnDemand={false}
-            flippingTime={1000}
-            usePortrait={false}
-            startPage={0}
-          >
-            <PageCover position="top">BOOK TITLE</PageCover>
-            <Page number={1} image={this.state.pageImages[1]}>첫 장</Page>
-            <Page number={2} image={this.state.pageImages[2]}>두 번째 장</Page>
-            <Page number={3} image={this.state.pageImages[3]}>세 번째 장</Page>
-            <Page number={4} image={this.state.pageImages[4]}>네 번째 장</Page>
-            <PageCover position="bottom">THE END</PageCover>
-          </HTMLFlipBook>
-        </BookWrapper>
-      </DiaryWrapper>
-    );
-  }
-}
-
-export default HomeDiaryClass;
+export default HomeDiary;
