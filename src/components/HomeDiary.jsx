@@ -32,6 +32,14 @@ const Page = React.forwardRef((props, ref) => {
         <div className="page-image" style={{ backgroundImage: `url(${props.image})` }}></div>
         <div className="page-text">{props.children}</div>
         <div className="page-footer">{props.number}</div>
+        {props.images && props.images.map((image, index) => (
+          <img 
+            key={index} 
+            src={image.url} 
+            alt={image.title} 
+            style={{ width: '100%' }} 
+          />
+        ))}
       </div>
     </div>
   );
@@ -44,7 +52,8 @@ class HomeDiaryClass extends React.Component {
       page: 0,
       totalPage: 0,
       orientation: 'landscape',
-      state: 'read'
+      state: 'read',
+      pageImages: {},
     };
     this.flipBook = React.createRef();
   }
@@ -103,10 +112,10 @@ class HomeDiaryClass extends React.Component {
             startPage={0}
           >
             <PageCover position="top">BOOK TITLE</PageCover>
-            <Page number={1}>첫 장</Page>
-            <Page number={2}>두 번째 장</Page>
-            <Page number={3}>세 번째 장</Page>
-            <Page number={4}>네 번째 장</Page>
+            <Page number={1} image={this.state.pageImages[1]}>첫 장</Page>
+            <Page number={2} image={this.state.pageImages[2]}>두 번째 장</Page>
+            <Page number={3} image={this.state.pageImages[3]}>세 번째 장</Page>
+            <Page number={4} image={this.state.pageImages[4]}>네 번째 장</Page>
             <PageCover position="bottom">THE END</PageCover>
           </HTMLFlipBook>
         </BookWrapper>

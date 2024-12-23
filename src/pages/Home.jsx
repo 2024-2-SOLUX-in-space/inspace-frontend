@@ -1,18 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import HomeDiary from '../components/HomeDiary';
+import EditSidebar from '../components/EditSidebar.jsx';
 import { HomeContainer, ContentWrapper, EditButton } from '../styles/HomeStyle';
 
 const Home = () => {
+  const [isEditOpen, setIsEditOpen] = useState(false);
+
   const handleEdit = () => {
-    // 편집 기능 구현
+    setIsEditOpen(!isEditOpen);
+  };
+
+  const handleCloseSidebar = () => {
+    setIsEditOpen(false);
   };
 
   return (
     <HomeContainer>
       <ContentWrapper>
         <HomeDiary />
-        <EditButton onClick={handleEdit}>공간 편집</EditButton>
+        <EditButton onClick={handleEdit}>
+          공간 편집
+        </EditButton>
       </ContentWrapper>
+      <EditSidebar 
+        isOpen={isEditOpen} 
+        onClose={handleCloseSidebar}
+      />
     </HomeContainer>
   );
 };
