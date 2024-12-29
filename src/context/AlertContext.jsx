@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import Alert from '../components/alert';
+import Alert from '../components/Alert';
 
 const AlertContext = createContext();
 
@@ -41,7 +41,7 @@ export const AlertProvider = ({ children }) => {
         confirmText={alert.confirmText}
       />
     </AlertContext.Provider>
-  );
+  );  
 };
 
 // Alert 사용을 위한 커스텀 훅
