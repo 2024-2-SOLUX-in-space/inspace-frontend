@@ -9,6 +9,7 @@ import {
   StyledImage,
   IconContainer
 } from '../styles/EditSidebarStyle';
+import stickerData from '../data/stickers.json';
 
 const initialCategoryData = {
   image: [
@@ -26,7 +27,7 @@ const initialCategoryData = {
     { id: 'music2', src: '/music2.png', alt: '음악2' },
     { id: 'music3', src: '/music3.png', alt: '음악3' }
   ],
-  sticker: [],
+  sticker: stickerData.stickers,
   file: []
 };
 
