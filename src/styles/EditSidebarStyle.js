@@ -2,17 +2,18 @@ import styled from 'styled-components';
 
 export const SidebarContainer = styled.div`
   position: fixed;
-  top: 0;
   right: 0;
-  width: 400px;
-  height: 100%;
+  top: 0;
+  width: 440px;
+  height: 100vh;
   background-color: white;
-  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
   transform: translateX(${(props) => (props.isOpen ? '0' : '100%')});
   transition: transform 0.3s ease-in-out;
   visibility: ${(props) => (props.isOpen ? 'visible' : 'hidden')};
-  opacity: ${(props) => (props.isOpen ? '1' : '0')};
+  transition:
+    transform 0.3s ease-in-out,
+    visibility 0.3s ease-in-out;
 `;
 
 export const SidebarContent = styled.div`
