@@ -1,20 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { FiFolderPlus, FiImage, FiYoutube, FiMusic } from "react-icons/fi";
+import { BiSticker } from "react-icons/bi";
 import {
   SidebarContainer,
   SidebarContent,
   DraggableContainer,
   DraggableItem,
   StyledImage,
-  EditIcons,
-  IconButton
+  IconContainer
 } from '../styles/EditSidebarStyle';
 
 const EditSidebar = ({ isOpen, onClose, images }) => {
+  const [selectedIcon, setSelectedIcon] = useState(null);
+  
   const icons = [
-    { id: 'file', src: '/icon_file.png', alt: '파일' },
-    { id: 'youtube', src: '/icon_youtube.png', alt: '유튜브' },
-    { id: 'music', src: '/icon_music.png', alt: '음악' },
-    { id: 'sticker', src: '/icon_sticker.png', alt: '스티커' }
+    { id: 'file', Icon: FiFolderPlus, alt: '파일' },
+    { id: 'image', Icon: FiImage, alt: '이미지' },
+    { id: 'youtube', Icon: FiYoutube, alt: '유튜브' },
+    { id: 'music', Icon: FiMusic, alt: '음악' },
+    { id: 'sticker', Icon: BiSticker, alt: '스티커' }
   ];
 
   const handleDragStart = (image) => (e) => {
@@ -36,14 +40,19 @@ const EditSidebar = ({ isOpen, onClose, images }) => {
             </DraggableItem>
           ))}
         </DraggableContainer>
-
-        <EditIcons>
+        
+        <IconContainer>
           {icons.map((icon) => (
-            <IconButton key={icon.id}>
-              <img src={icon.src} alt={icon.alt} />
-            </IconButton>
+            <div key={icon.id}>
+              <icon.Icon 
+                onClick={() => setSelectedIcon(icon.id)}
+                style={{ 
+                  color: selectedIcon === icon.id ? '#000000' : undefined 
+                }}
+              />
+            </div>
           ))}
-        </EditIcons>
+        </IconContainer>
       </SidebarContent>
     </SidebarContainer>
   );

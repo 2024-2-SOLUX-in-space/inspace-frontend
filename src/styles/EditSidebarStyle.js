@@ -4,7 +4,7 @@ export const SidebarContainer = styled.div`
   position: fixed;
   right: 0;
   top: 0;
-  width: 440px;
+  width: 400px;
   height: 100vh;
   background-color: white;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
@@ -49,38 +49,43 @@ export const StyledImage = styled.img`
   user-select: none;
 `;
 
-export const EditIcons = styled.div`
+export const IconContainer = styled.div`
   display: flex;
-  flex-direction: row;
-  justify-content: center;
   gap: 20px;
-  width: 100%;
-  padding: 0 20px;
-  margin-top: auto;
-`;
-
-export const IconButton = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 12px;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  outline: none;
-  transform: translateY(-20px);
+  padding: 20px;
+  margin-top: auto;
+  margin-bottom: 20px;
 
-  img {
-    width: 36px;
-    height: 36px;
+  div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 20%;
+    transition: background-color 0.2s ease-in-out;
+
+    &:hover {
+      background-color: #f5f5f5;
+    }
   }
 
-  &:hover {
-    background-color: #f5f5f5;
-    border-color: #f5f5f5;
-  }
+  svg {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    color: #b3b3b3;
+    transition: color 0.2s ease-in-out;
 
-  &:focus {
-    outline: none;
+    &:hover {
+      color: #000000;
+    }
+
+    ${(props) =>
+      props.selected &&
+      `
+      color: #000000;
+    `}
   }
 `;
