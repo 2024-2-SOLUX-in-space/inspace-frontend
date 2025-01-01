@@ -51,10 +51,13 @@ const EditSidebar = ({ isOpen, onClose }) => {
     return categoryData[selectedIcon] || [];
   };
 
+  // 현재 선택된 카테고리가 스티커인지 확인하는 함수
+  const isStickersSelected = () => selectedIcon === 'sticker';
+
   return (
     <SidebarContainer isOpen={isOpen}>
       <SidebarContent>
-        <DraggableContainer>
+        <DraggableContainer isStickers={isStickersSelected()}>
           {getCurrentData().map((item) => (
             <DraggableItem key={item.id}>
               <StyledImage 

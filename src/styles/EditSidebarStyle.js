@@ -4,7 +4,7 @@ export const SidebarContainer = styled.div`
   position: fixed;
   right: 0;
   top: 0;
-  width: 400px;
+  width: 420px;
   height: 100vh;
   background-color: white;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
@@ -26,25 +26,24 @@ export const SidebarContent = styled.div`
 `;
 
 export const DraggableContainer = styled.div`
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: ${(props) =>
+    props.isStickers ? 'repeat(2, 1fr)' : '1fr'};
   gap: 10px;
   padding: 20px;
   overflow-y: auto;
-  align-items: center;
 `;
 
 export const DraggableItem = styled.div`
-  width: 90%;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 5px;
-  margin: 0 auto;
 `;
 
 export const StyledImage = styled.img`
-  width: 100%;
+  width: 90%;
   height: auto;
   object-fit: contain;
   cursor: pointer;
