@@ -27,26 +27,27 @@ export const SidebarContent = styled.div`
 
 export const DraggableContainer = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 10px;
   padding: 20px;
-  margin: 0 20px;
   overflow-y: auto;
-  flex: 0 auto;
+  align-items: center;
 `;
 
 export const DraggableItem = styled.div`
-  cursor: grab;
-  &:active {
-    cursor: grabbing;
-  }
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  margin: 0 auto;
 `;
 
 export const StyledImage = styled.img`
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  height: auto;
   object-fit: contain;
-  user-select: none;
+  cursor: pointer;
 `;
 
 export const IconContainer = styled.div`

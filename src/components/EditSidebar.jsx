@@ -10,32 +10,57 @@ import {
   IconContainer
 } from '../styles/EditSidebarStyle';
 
-const EditSidebar = ({ isOpen, onClose, images }) => {
-  const [selectedIcon, setSelectedIcon] = useState(null);
-  
+const initialCategoryData = {
+  image: [
+    { id: 'bear1', src: '/bear1.png', alt: '곰1' },
+    { id: 'bear2', src: '/bear2.png', alt: '곰2' },
+    { id: 'bear3', src: '/bear3.png', alt: '곰3' }
+  ],
+  youtube: [
+    { id: 'youtube1', src: '/youtube1.png', alt: '유튜브1' },
+    { id: 'youtube2', src: '/youtube2.png', alt: '유튜브2' },
+    { id: 'youtube3', src: '/youtube3.png', alt: '유튜브3' }
+  ],
+  music: [
+    { id: 'music1', src: '/music1.png', alt: '음악1' },
+    { id: 'music2', src: '/music2.png', alt: '음악2' },
+    { id: 'music3', src: '/music3.png', alt: '음악3' }
+  ],
+  sticker: [],
+  file: []
+};
+
+const EditSidebar = ({ isOpen, onClose }) => {
+  const [selectedIcon, setSelectedIcon] = useState('image');
+  const [categoryData, setCategoryData] = useState(initialCategoryData);
+
   const icons = [
-    { id: 'file', Icon: FiFolderPlus, alt: '파일' },
     { id: 'image', Icon: FiImage, alt: '이미지' },
     { id: 'youtube', Icon: FiYoutube, alt: '유튜브' },
     { id: 'music', Icon: FiMusic, alt: '음악' },
-    { id: 'sticker', Icon: BiSticker, alt: '스티커' }
+    { id: 'sticker', Icon: BiSticker, alt: '스티커' },
+        { id: 'file', Icon: FiFolderPlus, alt: '파일' },
   ];
 
   const handleDragStart = (image) => (e) => {
     window.draggedImage = image;
   };
 
+  const getCurrentData = () => {
+    return categoryData[selectedIcon] || [];
+  };
+
   return (
     <SidebarContainer isOpen={isOpen}>
       <SidebarContent>
         <DraggableContainer>
-          {images.map((image) => (
-            <DraggableItem key={image.id}>
+          {getCurrentData().map((item) => (
+            <DraggableItem key={item.id}>
               <StyledImage 
-                src={image.src} 
-                alt={image.alt} 
+                src={item.src} 
+                alt={item.alt} 
                 draggable="true"
-                onDragStart={handleDragStart(image)}
+                onDragStart={handleDragStart(item)}
               />
             </DraggableItem>
           ))}
