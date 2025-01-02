@@ -15,7 +15,9 @@ const Home = () => {
     1: [],
     2: [],
     3: [],
-    4: []
+    4: [],
+    5: [],
+    6: []
   });
 
   const handleEdit = () => {
@@ -50,14 +52,14 @@ const Home = () => {
   };
 
   return (
-    <HomeContainer>
+    <HomeContainer isEditOpen={isEditOpen}>
       <ContentWrapper>
         <HomeDiary 
           images={diaryImages} 
           onImageDrop={handleImageDrop}
         />
         <EditButton onClick={handleEdit}>
-          공간 편집
+          {isEditOpen ? '공간 저장' : '공간 편집'}
         </EditButton>
       </ContentWrapper>
       <EditSidebar 

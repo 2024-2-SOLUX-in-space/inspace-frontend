@@ -9,8 +9,13 @@ export const HomeContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: url('/home_background.png') no-repeat center center;
+  background-image: ${(props) =>
+    props.isEditOpen
+      ? "url('/background.png')"
+      : "url('/home_background.png')"};
   background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 `;
 
 export const ContentWrapper = styled.div`

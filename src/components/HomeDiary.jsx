@@ -97,6 +97,9 @@ const HomeDiary = ({ images = {}, onImageDrop }) => {
           <Page number={2} images={images[2]} onImageDrop={onImageDrop}>두 번째 장</Page>
           <Page number={3} images={images[3]} onImageDrop={onImageDrop}>세 번째 장</Page>
           <Page number={4} images={images[4]} onImageDrop={onImageDrop}>네 번째 장</Page>
+          <Page number={5} images={images[5]} onImageDrop={onImageDrop}>다섯 번째 장</Page>
+          <Page number={6} images={images[6]} onImageDrop={onImageDrop}>여섯 번째 장</Page>
+          
           <PageCover position="bottom">THE END</PageCover>
         </HTMLFlipBook>
       </BookWrapper>
