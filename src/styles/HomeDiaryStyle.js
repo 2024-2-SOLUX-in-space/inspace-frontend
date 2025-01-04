@@ -153,3 +153,15 @@ export const DraggableImage = styled.img`
   cursor: move;
   user-select: none;
 `;
+
+export const DiaryOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 999;
+  pointer-events: auto;
+  display: ${({ isModalOpen }) => (isModalOpen ? 'block' : 'none')};
+`;

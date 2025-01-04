@@ -17,21 +17,22 @@ export const SidebarContainer = styled.div`
 `;
 
 export const SidebarContent = styled.div`
-  position: relative;
-  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  padding: 20px 0;
+  height: 100%;
+  padding: 20px;
 `;
 
 export const DraggableContainer = styled.div`
-  display: grid;
+  display: ${(props) => (props.isStickers ? 'grid' : 'flex')};
   grid-template-columns: ${(props) =>
-    props.isStickers ? 'repeat(2, 1fr)' : '1fr'};
+    props.isStickers ? 'repeat(2, 1fr)' : 'none'};
+  flex-direction: ${(props) => (props.isStickers ? 'unset' : 'column')};
   gap: 10px;
-  padding: 20px;
+  padding: 10px;
+  flex: 1;
   overflow-y: auto;
+  min-height: 0;
 `;
 
 export const DraggableItem = styled.div`
@@ -43,19 +44,24 @@ export const DraggableItem = styled.div`
 `;
 
 export const StyledImage = styled.img`
-  width: 90%;
-  height: auto;
+  width: ${(props) => {
+    if (props.isSticker) return '100px';
+    return props.width ? `${props.width}px` : 'auto';
+  }};
+  height: ${(props) => {
+    if (props.isSticker) return '100px';
+    return props.height ? `${props.height}px` : 'auto';
+  }};
   object-fit: contain;
+  max-width: 100%;
   cursor: pointer;
 `;
 
 export const IconContainer = styled.div`
   display: flex;
-  gap: 20px;
-  justify-content: center;
-  padding: 20px;
-  margin-top: auto;
-  margin-bottom: 20px;
+  justify-content: space-around;
+  padding: 15px 10px;
+  border-top: 1px solid #eee;
 
   div {
     display: flex;
@@ -87,5 +93,35 @@ export const IconContainer = styled.div`
       `
       color: #000000;
     `}
+  }
+`;
+
+export const AddButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 20px;
+  margin-top: auto;
+  margin-bottom: 20px;
+`;
+
+export const AddButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 16px;
+  background-color: #111827;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+
+  &:hover {
+    background-color: #1f2937;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
   }
 `;

@@ -68,11 +68,11 @@ const Page = React.forwardRef((props, ref) => {
   );
 });
 
-const HomeDiary = ({ images = {}, onImageDrop }) => {
+const HomeDiary = ({ images = {}, onImageDrop, isModalOpen }) => {
   const flipBook = useRef();
 
   return (
-    <DiaryWrapper>
+    <DiaryWrapper style={{ pointerEvents: isModalOpen ? 'none' : 'auto' }}>
       <BookWrapper>
         <HTMLFlipBook
           width={858}
