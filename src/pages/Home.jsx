@@ -1,23 +1,26 @@
 import React, { useState } from 'react';
 import HomeDiary from '../components/HomeDiary';
 import EditSidebar from '../components/EditSidebar';
+import SearchBar from '../components/SearchBar';
 import { HomeContainer, ContentWrapper, EditButton } from '../styles/HomeStyle';
 
 const initialDraggableImages = [
   { id: 'bear1', src: '/bear1.png', alt: '곰1' },
-  { id: 'bear2', src: '/bear2.png', alt: '곰2' }
+  { id: 'bear2', src: '/bear2.png', alt: '곰2' },
 ];
 
 const Home = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [draggableImages, setDraggableImages] = useState(initialDraggableImages);
+  const [draggableImages, setDraggableImages] = useState(
+    initialDraggableImages,
+  );
   const [diaryImages, setDiaryImages] = useState({
     1: [],
     2: [],
     3: [],
     4: [],
     5: [],
-    6: []
+    6: [],
   });
 
   const handleEdit = () => {
@@ -36,16 +39,16 @@ const Home = () => {
       id: `${draggedImage.id}-${Date.now()}`,
       url: draggedImage.src,
       alt: draggedImage.alt,
-      position: { x, y }
+      position: { x, y },
     };
 
-    setDiaryImages(prev => ({
+    setDiaryImages((prev) => ({
       ...prev,
-      [pageNumber]: [...prev[pageNumber], newImage]
+      [pageNumber]: [...prev[pageNumber], newImage],
     }));
 
-    setDraggableImages(prev => 
-      prev.filter(img => img.id !== draggedImage.id)
+    setDraggableImages((prev) =>
+      prev.filter((img) => img.id !== draggedImage.id),
     );
 
     window.draggedImage = null;
@@ -53,17 +56,25 @@ const Home = () => {
 
   return (
     <HomeContainer isEditOpen={isEditOpen}>
-      <ContentWrapper>
-        <HomeDiary 
-          images={diaryImages} 
-          onImageDrop={handleImageDrop}
-        />
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          zIndex: 1000,
+        }}
+      >
+        <SearchBar style={{ height: '60px', padding: '10px' }} iconInside />
+      </div>
+      <ContentWrapper style={{ marginTop: '70px' }}>
+        <HomeDiary images={diaryImages} onImageDrop={handleImageDrop} />
         <EditButton onClick={handleEdit}>
           {isEditOpen ? '공간 저장' : '공간 편집'}
         </EditButton>
       </ContentWrapper>
-      <EditSidebar 
-        isOpen={isEditOpen} 
+      <EditSidebar
+        isOpen={isEditOpen}
         onClose={handleCloseSidebar}
         images={draggableImages}
       />
