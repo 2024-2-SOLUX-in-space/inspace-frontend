@@ -98,7 +98,10 @@ const HomeDiary = ({ images = {}, onImageDrop, isModalOpen }) => {
           <Page number={4} images={images[4]} onImageDrop={onImageDrop}>네 번째 장</Page>
           <Page number={5} images={images[5]} onImageDrop={onImageDrop}>다섯 번째 장</Page>
           <Page number={6} images={images[6]} onImageDrop={onImageDrop}>여섯 번째 장</Page>
-          
+          <Page number={7} images={images[7]} onImageDrop={onImageDrop}>일곱 번째 장</Page>
+          <Page number={8} images={images[8]} onImageDrop={onImageDrop}>여덟 번째 장</Page>
+          <Page number={9} images={images[9]} onImageDrop={onImageDrop}>아홉 번째 장</Page>
+          <Page number={10} images={images[10]} onImageDrop={onImageDrop}>열 번째 장</Page>        
           <PageCover position="bottom">THE END</PageCover>
         </HTMLFlipBook>
       </BookWrapper>
