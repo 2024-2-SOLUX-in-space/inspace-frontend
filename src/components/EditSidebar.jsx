@@ -56,11 +56,15 @@ const EditSidebar = ({ isOpen, onClose }) => {
     
     window.draggedImage = {
       ...image,
-      width: image.width || (image.isSticker ? 150 : e.target.naturalWidth),
-      height: image.height || (image.isSticker ? 150 : e.target.naturalHeight),
+      width: e.target.width,
+      height: e.target.height,
       offsetX: offsetX,
       offsetY: offsetY,
-      isSticker: isStickersSelected()
+      isSticker: isStickersSelected(),
+      style: {
+        width: `${e.target.width}px`,
+        height: `${e.target.height}px`
+      }
     };
   };
 

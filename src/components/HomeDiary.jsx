@@ -56,8 +56,8 @@ const Page = React.forwardRef((props, ref) => {
                 position: 'absolute',
                 left: `${image.position?.x}px`,
                 top: `${image.position?.y}px`,
-                width: image.style?.width || 'auto',
-                height: image.style?.height || 'auto'
+                width: image.style?.width,
+                height: image.style?.height
               }}
             />
           ))}
