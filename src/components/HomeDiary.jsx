@@ -74,8 +74,8 @@ const HomeDiary = ({ images = {}, onImageDrop, isModalOpen }) => {
     <DiaryWrapper style={{ pointerEvents: isModalOpen ? 'none' : 'auto' }}>
       <BookWrapper>
         <HTMLFlipBook
-          width={858}
-          height={1144}
+          width={700}
+          height={950}
           size="stretch"
           minWidth={492}
           maxWidth={1560}
