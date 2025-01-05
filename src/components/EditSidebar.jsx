@@ -56,10 +56,11 @@ const EditSidebar = ({ isOpen, onClose }) => {
     
     window.draggedImage = {
       ...image,
-      width: image.width || e.target.naturalWidth,
-      height: image.height || e.target.naturalHeight,
+      width: image.width || (image.isSticker ? 150 : e.target.naturalWidth),
+      height: image.height || (image.isSticker ? 150 : e.target.naturalHeight),
       offsetX: offsetX,
-      offsetY: offsetY
+      offsetY: offsetY,
+      isSticker: isStickersSelected()
     };
   };
 
@@ -120,7 +121,10 @@ const EditSidebar = ({ isOpen, onClose }) => {
                   src={item.src} 
                   alt={item.alt} 
                   draggable="true"
-                  onDragStart={handleDragStart(item)}
+                  onDragStart={handleDragStart({
+                    ...item,
+                    isSticker: isStickersSelected()
+                  })}
                   isSticker={isStickersSelected()}
                   width={item.width}
                   height={item.height}

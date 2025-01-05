@@ -45,11 +45,11 @@ export const DraggableItem = styled.div`
 
 export const StyledImage = styled.img`
   width: ${(props) => {
-    if (props.isSticker) return '100px';
+    if (props.isSticker) return '150px';
     return props.width ? `${props.width}px` : 'auto';
   }};
   height: ${(props) => {
-    if (props.isSticker) return '100px';
+    if (props.isSticker) return '150px';
     return props.height ? `${props.height}px` : 'auto';
   }};
   object-fit: contain;
