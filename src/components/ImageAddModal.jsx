@@ -102,6 +102,7 @@ const BottomContainer = styled.div`
 // Modal Component
 const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
   const [title, setTitle] = useState('');
+  const maxLength = 20;
   const initialCrop = {
     unit: '%',
     x: 0,
@@ -201,11 +202,18 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
     });
   };
 
+  const handleTitleChange = (e) => {
+    const value = e.target.value;
+    if (value.length <= maxLength) {
+      setTitle(value);
+    }
+  };
+
   return (
     <ModalOverlay>
       <ModalContent>
         <ModalHeader>
-          <Title>이미지의 제목을 입력해주세요</Title>
+          <Title>이미지의 제목을 입력해주세요 ({title.length}/{maxLength})</Title>
           <CloseButton onClick={handleClose}>×</CloseButton>
         </ModalHeader>
         
@@ -229,8 +237,9 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
           <Input
             type="text"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="제목을 입력하세요"
+            onChange={handleTitleChange}
+            placeholder="제목을 입력하세요 (최대 20자)"
+            maxLength={maxLength}
           />
           <SaveButton onClick={handleSave}>저장</SaveButton>
         </BottomContainer>
