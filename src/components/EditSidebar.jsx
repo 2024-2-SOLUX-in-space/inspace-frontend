@@ -50,7 +50,17 @@ const EditSidebar = ({ isOpen, onClose }) => {
   ];
 
   const handleDragStart = (image) => (e) => {
-    window.draggedImage = image;
+    const rect = e.target.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const offsetY = e.clientY - rect.top;
+    
+    window.draggedImage = {
+      ...image,
+      width: image.width || e.target.naturalWidth,
+      height: image.height || e.target.naturalHeight,
+      offsetX: offsetX,
+      offsetY: offsetY
+    };
   };
 
   const getCurrentData = () => {

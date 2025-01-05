@@ -148,8 +148,7 @@ export const DiaryContent = styled.div`
 
 export const DraggableImage = styled.img`
   position: absolute;
-  max-width: 150px;
-  max-height: 150px;
+  object-fit: contain;
   cursor: move;
   user-select: none;
 `;

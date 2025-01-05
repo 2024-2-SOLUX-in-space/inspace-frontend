@@ -30,11 +30,8 @@ const Page = React.forwardRef((props, ref) => {
     e.preventDefault();
     const rect = e.currentTarget.getBoundingClientRect();
     
-    const imageWidth = 100;
-    const imageHeight = 100;
-    
-    const x = e.clientX - rect.left - (imageWidth / 2);
-    const y = e.clientY - rect.top - (imageHeight / 2);
+    const x = e.clientX - rect.left - (window.draggedImage.offsetX || 0);
+    const y = e.clientY - rect.top - (window.draggedImage.offsetY || 0);
     
     if (props.onImageDrop) {
       props.onImageDrop(props.number, x, y);
@@ -58,7 +55,9 @@ const Page = React.forwardRef((props, ref) => {
               style={{
                 position: 'absolute',
                 left: `${image.position?.x}px`,
-                top: `${image.position?.y}px`
+                top: `${image.position?.y}px`,
+                width: image.style?.width || 'auto',
+                height: image.style?.height || 'auto'
               }}
             />
           ))}

@@ -36,7 +36,13 @@ const Home = () => {
       id: `${draggedImage.id}-${Date.now()}`,
       url: draggedImage.src,
       alt: draggedImage.alt,
-      position: { x, y }
+      width: draggedImage.width,
+      height: draggedImage.height,
+      position: { x, y },
+      style: {
+        width: draggedImage.width ? `${draggedImage.width}px` : 'auto',
+        height: draggedImage.height ? `${draggedImage.height}px` : 'auto'
+      }
     };
 
     setDiaryImages(prev => ({
