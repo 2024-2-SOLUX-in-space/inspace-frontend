@@ -20,6 +20,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   html, body {
+    overflow: hidden;
     width: 100%;
     height: 100%;
   }
@@ -28,6 +29,10 @@ const GlobalStyle = createGlobalStyle`
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  #root {
+    width: 100%;
   }
 `;
 
