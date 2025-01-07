@@ -27,9 +27,9 @@ export const ContentWrapper = styled.div`
 export const EditButton = styled.button`
   position: absolute;
   right: 3rem;
-  bottom: 5px;
+  bottom: 4rem;
   padding: 1rem 2rem;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   background-color: transparent;
   border: none;
   cursor: pointer;
