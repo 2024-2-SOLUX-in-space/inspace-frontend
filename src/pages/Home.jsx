@@ -55,7 +55,7 @@ const Home = () => {
 
   return (
     <HomeContainer isEditOpen={isEditOpen}>
-      <ContentWrapper>
+      <ContentWrapper isEditOpen={isEditOpen}>
         <HomeDiary 
           diaryData={diaryData} 
           setDiaryData={setDiaryData}
