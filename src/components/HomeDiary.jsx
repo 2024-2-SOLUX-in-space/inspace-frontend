@@ -159,15 +159,19 @@ const HomeDiary = ({ diaryData = { images: [], coverType: 1 }, onImageDrop, isMo
           size="stretch"
           minWidth={400}
           maxWidth={1000}
-          minHeight={500}
-          maxHeight={1500}
+          minHeight={400}
+          maxHeight={1533}
           maxShadowOpacity={0.5}
           showCover={true}
           mobileScrollSupport={true}
+          disableFlipByClick={true}
+          useMouseEvents={true}
+          clickEventForward={false}
+          drawShadow={true}
+          flippingTime={1000}
           className="flip-book"
           ref={flipBook}
           drawOnDemand={false}
-          flippingTime={1000}
           usePortrait={false}
           startPage={0}
         >
