@@ -10,6 +10,8 @@ import {
 } from '../styles/HomeDiaryStyle';
 import { FiX } from "react-icons/fi";
 import { DeleteButton } from '../styles/EditSidebarStyle';
+import { ResizableBox } from 'react-resizable';
+import 'react-resizable/css/styles.css';
 
 const PageCover = React.forwardRef((props, ref) => {
   const getCoverImage = (position, coverType = 1) => {
@@ -77,10 +79,12 @@ const PageCover = React.forwardRef((props, ref) => {
 const Page = React.forwardRef((props, ref) => {
   const handleDragOver = (e) => {
     e.preventDefault();
+    e.stopPropagation();
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     const rect = e.currentTarget.getBoundingClientRect();
     
     const x = e.clientX - rect.left - (window.draggedImage.offsetX || 0);
@@ -92,28 +96,67 @@ const Page = React.forwardRef((props, ref) => {
   };
 
   return (
-    <div className="page" ref={ref}>
-      <PageContent className="page-content">
+    <div 
+      className="page" 
+      ref={ref}
+      onDragOver={(e) => e.stopPropagation()}
+    >
+      <PageContent 
+        className="page-content"
+        onDragOver={(e) => e.stopPropagation()}
+      >
         <PageNumber>{props.number}</PageNumber>
         <DiaryContent 
           onDragOver={handleDragOver}
           onDrop={handleDrop}
+          onDrag={(e) => e.stopPropagation()}
         >
           {props.children}
           {props.images && props.images.map((image) => (
-            <div key={image.id} style={{ position: 'relative' }}>
-              <DraggableImage 
-                src={image.url} 
-                alt={image.alt}
+            <div 
+              key={image.id} 
+              style={{ position: 'relative' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                props.onImageSelect?.(image.id);
+              }}
+              onDragStart={(e) => e.stopPropagation()}
+              onDrag={(e) => e.stopPropagation()}
+            >
+              <ResizableBox
+                width={200}
+                height={200}
+                minConstraints={[50, 50]}
+                maxConstraints={[500, 500]}
+                resizeHandles={
+                  props.isEditMode && props.selectedImageId === image.id 
+                    ? ['se'] 
+                    : []
+                }
                 style={{
                   position: 'absolute',
                   left: `${image.position?.x}px`,
                   top: `${image.position?.y}px`,
-                  width: image.style?.width,
-                  height: image.style?.height
                 }}
-              />
-              {!image.isSticker && (
+                onResizeStop={(e, { size }) => {
+                  props.onImageResize?.(image.id, {
+                    width: size.width,
+                    height: size.height
+                  });
+                }}
+              >
+                <DraggableImage 
+                  src={image.url} 
+                  alt={image.alt}
+                  isEditMode={props.isEditMode}
+                  isSelected={props.selectedImageId === image.id}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                  }}
+                />
+              </ResizableBox>
+              {!image.isSticker && props.isEditMode && (
                 <DeleteButton 
                   onClick={() => props.onDeleteImage(image.id)}
                   style={{
@@ -134,7 +177,7 @@ const Page = React.forwardRef((props, ref) => {
   );
 });
 
-const HomeDiary = ({ diaryData = { images: [], coverType: 1 }, onImageDrop, isModalOpen, setDiaryData }) => {
+const HomeDiary = ({ diaryData = { images: [], coverType: 1 }, onImageDrop, isModalOpen, setDiaryData, isEditMode, selectedImageId, onImageSelect }) => {
   console.log('DiaryData:', diaryData);
   const flipBook = useRef();
 
@@ -164,9 +207,7 @@ const HomeDiary = ({ diaryData = { images: [], coverType: 1 }, onImageDrop, isMo
           maxShadowOpacity={0.5}
           showCover={true}
           mobileScrollSupport={true}
-          disableFlipByClick={true}
-          useMouseEvents={true}
-          clickEventForward={false}
+          useMouseEvents={!isEditMode || !selectedImageId}
           drawShadow={true}
           flippingTime={1000}
           className="flip-book"
@@ -174,6 +215,10 @@ const HomeDiary = ({ diaryData = { images: [], coverType: 1 }, onImageDrop, isMo
           drawOnDemand={false}
           usePortrait={false}
           startPage={0}
+          clickEventForward={false}
+          showPageCorners={!selectedImageId}
+          disableFlipByClick={true}
+          swipeDistance={selectedImageId ? 0 : 30}
         >
           <PageCover position="top" coverType={2} textColor="#000">
             BOOK TITLE
@@ -185,6 +230,9 @@ const HomeDiary = ({ diaryData = { images: [], coverType: 1 }, onImageDrop, isMo
               images={getImagesForPage(i + 1)}
               onImageDrop={onImageDrop}
               onDeleteImage={handleDeleteImage}
+              isEditMode={isEditMode}
+              selectedImageId={selectedImageId}
+              onImageSelect={onImageSelect}
             >
               {`${i + 1}번째 장`}
             </Page>

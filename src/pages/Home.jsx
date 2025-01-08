@@ -11,6 +11,7 @@ const initialDraggableImages = [
 const Home = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [draggableImages, setDraggableImages] = useState(initialDraggableImages);
+  const [selectedImageId, setSelectedImageId] = useState(null);
   const [diaryData, setDiaryData] = useState({
     images: []
   });
@@ -53,6 +54,28 @@ const Home = () => {
     window.draggedImage = null;
   };
 
+  const handleImageResize = (imageId, newSize) => {
+    setDiaryData(prev => ({
+      ...prev,
+      images: prev.images.map(img => 
+        img.id === imageId 
+          ? { 
+              ...img, 
+              style: { 
+                ...img.style, 
+                width: `${newSize.width}px`, 
+                height: `${newSize.height}px` 
+              } 
+            }
+          : img
+      )
+    }));
+  };
+
+  const handleImageSelect = (imageId) => {
+    setSelectedImageId(imageId);
+  };
+
   return (
     <HomeContainer isEditOpen={isEditOpen}>
       <ContentWrapper isEditOpen={isEditOpen}>
@@ -60,6 +83,10 @@ const Home = () => {
           diaryData={diaryData} 
           setDiaryData={setDiaryData}
           onImageDrop={handleImageDrop}
+          onImageResize={handleImageResize}
+          isEditMode={isEditOpen}
+          selectedImageId={selectedImageId}
+          onImageSelect={handleImageSelect}
         />
         <EditButton onClick={handleEdit}>
           {isEditOpen ? '공간 저장' : '공간 편집'}

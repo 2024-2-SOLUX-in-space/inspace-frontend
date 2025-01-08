@@ -148,10 +148,17 @@ export const DiaryContent = styled.div`
 `;
 
 export const DraggableImage = styled.img`
-  position: absolute;
-  object-fit: contain;
-  cursor: move;
-  user-select: none;
+  cursor: ${(props) => (props.isEditMode ? 'pointer' : 'default')};
+  border: ${(props) => {
+    if (!props.isEditMode) return 'none';
+    return props.isSelected ? '2px solid #007bff' : '2px dashed #666';
+  }};
+  padding: 4px;
+  border-radius: 4px;
+
+  &:hover {
+    border-color: ${(props) => (props.isEditMode ? '#007bff' : 'none')};
+  }
 `;
 
 export const DiaryOverlay = styled.div`
