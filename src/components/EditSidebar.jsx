@@ -143,9 +143,11 @@ const EditSidebar = ({ isOpen, onClose }) => {
                     height={item.height}
                     style={item.style}
                   />
-                  <DeleteButton onClick={() => handleDeleteItem(item.id)}>
-                    <FiX />
-                  </DeleteButton>
+                  {!isStickersSelected() && (
+                    <DeleteButton onClick={() => handleDeleteItem(item.id)}>
+                      <FiX />
+                    </DeleteButton>
+                  )}
                 </div>
               </DraggableItem>
             ))}
