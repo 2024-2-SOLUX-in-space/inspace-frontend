@@ -12,12 +12,63 @@ import { FiX } from "react-icons/fi";
 import { DeleteButton } from '../styles/EditSidebarStyle';
 
 const PageCover = React.forwardRef((props, ref) => {
+  const getCoverImage = (position, coverType = 1) => {
+    if (position === 'top') {
+      switch(coverType) {
+        case 1: return '/cover1_front.png';
+        case 2: return '/cover2_front.png';
+        case 3: return '/cover3_front.png';
+        default: return '/cover1_front.png';
+      }
+    } else {
+      switch(coverType) {
+        case 1: return '/cover1_back.png';
+        case 2: return '/cover2_back.png';
+        case 3: return '/cover3_back.png';
+        default: return '/cover1_back.png';
+      }
+    }
+  };
+
+  const imageUrl = getCoverImage(props.position, props.coverType);
+  
   return (
-    <div className={`page page-cover ${props.position === 'top' ? 'page-cover-top' : 'page-cover-bottom'}`} 
-         ref={ref} 
-         data-density="hard">
+    <div 
+      className={`page page-cover ${props.position === 'top' ? 'page-cover-top' : 'page-cover-bottom'}`} 
+      ref={ref} 
+      data-density="hard"
+      style={{
+        position: 'relative',
+        backgroundColor: '#000'
+      }}
+    >
+      <img 
+        src={imageUrl}
+        alt="cover"
+        style={{
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          position: 'absolute',
+          top: 0,
+          left: 0
+        }}
+      />
       <div className="page-content">
-        <h2>{props.children}</h2>
+        <h2 style={{
+          position: 'absolute',
+          top: '19%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          color: props.textColor || '#000',
+          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',
+          zIndex: 1,
+          fontFamily: 'Arial, sans-serif',
+          fontSize: '2em',
+          fontWeight: 'bold'
+        }}>
+          {props.children}
+        </h2>
       </div>
     </div>
   );
@@ -83,7 +134,8 @@ const Page = React.forwardRef((props, ref) => {
   );
 });
 
-const HomeDiary = ({ diaryData = { images: [] }, onImageDrop, isModalOpen, setDiaryData }) => {
+const HomeDiary = ({ diaryData = { images: [], coverType: 1 }, onImageDrop, isModalOpen, setDiaryData }) => {
+  console.log('DiaryData:', diaryData);
   const flipBook = useRef();
 
   const handleDeleteImage = (id) => {
@@ -119,7 +171,9 @@ const HomeDiary = ({ diaryData = { images: [] }, onImageDrop, isModalOpen, setDi
           usePortrait={false}
           startPage={0}
         >
-          <PageCover position="top">BOOK TITLE</PageCover>
+          <PageCover position="top" coverType={2} textColor="#000">
+            BOOK TITLE
+          </PageCover>
           {[...Array(10)].map((_, i) => (
             <Page 
               key={i + 1}
@@ -131,7 +185,8 @@ const HomeDiary = ({ diaryData = { images: [] }, onImageDrop, isModalOpen, setDi
               {`${i + 1}번째 장`}
             </Page>
           ))}
-          <PageCover position="bottom">THE END</PageCover>
+          <PageCover position="bottom" coverType={2} textColor="#000"> 
+          </PageCover>
         </HTMLFlipBook>
       </BookWrapper>
     </DiaryWrapper>
