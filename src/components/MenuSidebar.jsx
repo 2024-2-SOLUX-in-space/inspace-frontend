@@ -1,4 +1,3 @@
-// 사이드바의 열림/닫힘 상태 관리 필요 
 // useState 를 사용하여 열림 상태(isOpen) 관리 
 import React, { useState } from 'react'; 
 import { FiMenu, FiChevronsLeft, FiHome, FiArchive, 
@@ -7,7 +6,7 @@ import { MenuSidebarContainer,
     MenuSidebarContent, 
     MenuSidebarIcon, 
     InactiveButton, 
-    ActiveButton} from '../styles/MenuSidebarStyle'; // 스타일 컴포넌트 
+    ActiveButton} from '../styles/MenuSidebarStyle';
 
     const MenuSidebar = () => {
         const [isOpen, setIsOpen] = useState(true); // 사이드바 열림/닫힘 상태 관리
