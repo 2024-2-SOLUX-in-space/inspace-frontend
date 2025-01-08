@@ -1,17 +1,13 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import HTMLFlipBook from 'react-pageflip';
 import { 
   DiaryWrapper, 
   BookWrapper, 
   PageContent, 
   PageNumber, 
-  DiaryContent, 
-  DraggableImage 
+  DiaryContent
 } from '../styles/HomeDiaryStyle';
-import { FiX } from "react-icons/fi";
-import { DeleteButton } from '../styles/EditSidebarStyle';
-import { ResizableBox } from 'react-resizable';
-import 'react-resizable/css/styles.css';
+import PageItem from './PageItem';
 
 const PageCover = React.forwardRef((props, ref) => {
   const getCoverImage = (position, coverType = 1) => {
@@ -95,81 +91,43 @@ const Page = React.forwardRef((props, ref) => {
     }
   };
 
+  const handleImageUpdate = (imageId, updates) => {
+    if (props.onImageUpdate) {
+      props.onImageUpdate(imageId, {
+        ...updates,
+        pageNumber: props.number
+      });
+    }
+  };
+
+  const getSpreadNumber = (pageNumber) => Math.ceil(pageNumber / 2);
+
+  const getPagePair = (pageNumber) => {
+    if (pageNumber % 2 === 0) {
+      return [pageNumber - 1, pageNumber];
+    } else {
+      return [pageNumber, pageNumber + 1];
+    }
+  };
+
   return (
-    <div 
-      className="page" 
-      ref={ref}
-      onDragOver={(e) => e.stopPropagation()}
-    >
-      <PageContent 
-        className="page-content"
-        onDragOver={(e) => e.stopPropagation()}
-      >
+    <div className="page" ref={ref}>
+      <PageContent className="page-content">
         <PageNumber>{props.number}</PageNumber>
         <DiaryContent 
           onDragOver={handleDragOver}
           onDrop={handleDrop}
-          onDrag={(e) => e.stopPropagation()}
         >
-          {props.children}
           {props.images && props.images.map((image) => (
-            <div 
-              key={image.id} 
-              style={{ position: 'relative' }}
-              onClick={(e) => {
-                e.stopPropagation();
-                props.onImageSelect?.(image.id);
-              }}
-              onDragStart={(e) => e.stopPropagation()}
-              onDrag={(e) => e.stopPropagation()}
-            >
-              <ResizableBox
-                width={200}
-                height={200}
-                minConstraints={[50, 50]}
-                maxConstraints={[500, 500]}
-                resizeHandles={
-                  props.isEditMode && props.selectedImageId === image.id 
-                    ? ['se'] 
-                    : []
-                }
-                style={{
-                  position: 'absolute',
-                  left: `${image.position?.x}px`,
-                  top: `${image.position?.y}px`,
-                }}
-                onResizeStop={(e, { size }) => {
-                  props.onImageResize?.(image.id, {
-                    width: size.width,
-                    height: size.height
-                  });
-                }}
-              >
-                <DraggableImage 
-                  src={image.url} 
-                  alt={image.alt}
-                  isEditMode={props.isEditMode}
-                  isSelected={props.selectedImageId === image.id}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                  }}
-                />
-              </ResizableBox>
-              {!image.isSticker && props.isEditMode && (
-                <DeleteButton 
-                  onClick={() => props.onDeleteImage(image.id)}
-                  style={{
-                    position: 'absolute',
-                    left: `${image.position?.x - 12}px`,
-                    top: `${image.position?.y - 12}px`,
-                    zIndex: 1001
-                  }}
-                >
-                  <FiX />
-                </DeleteButton>
-              )}
-            </div>
+            <PageItem
+              key={image.id}
+              image={image}
+              onUpdate={handleImageUpdate}
+              onDelete={props.onDeleteImage}
+              isEditMode={props.isEditMode}
+              pagePair={getPagePair(props.number)}
+              onSelectChange={props.onItemSelectChange}
+            />
           ))}
         </DiaryContent>
       </PageContent>
@@ -177,9 +135,15 @@ const Page = React.forwardRef((props, ref) => {
   );
 });
 
-const HomeDiary = ({ diaryData = { images: [], coverType: 1 }, onImageDrop, isModalOpen, setDiaryData, isEditMode, selectedImageId, onImageSelect }) => {
-  console.log('DiaryData:', diaryData);
+const HomeDiary = ({ 
+  diaryData = { images: [], coverType: 1 }, 
+  onImageDrop, 
+  isModalOpen, 
+  setDiaryData, 
+  isEditMode 
+}) => {
   const flipBook = useRef();
+  const [isItemSelected, setIsItemSelected] = useState(false);
 
   const handleDeleteImage = (id) => {
     setDiaryData(prev => ({
@@ -188,7 +152,15 @@ const HomeDiary = ({ diaryData = { images: [], coverType: 1 }, onImageDrop, isMo
     }));
   };
 
-  // 각 페이지별로 이미지 필터링
+  const handleImageUpdate = (imageId, updates) => {
+    setDiaryData(prev => ({
+      ...prev,
+      images: prev.images.map(img => 
+        img.id === imageId ? { ...img, ...updates } : img
+      )
+    }));
+  };
+
   const getImagesForPage = (pageNumber) => {
     return diaryData.images.filter(img => img.pageNumber === pageNumber);
   };
@@ -207,7 +179,7 @@ const HomeDiary = ({ diaryData = { images: [], coverType: 1 }, onImageDrop, isMo
           maxShadowOpacity={0.5}
           showCover={true}
           mobileScrollSupport={true}
-          useMouseEvents={!isEditMode || !selectedImageId}
+          useMouseEvents={!isItemSelected}
           drawShadow={true}
           flippingTime={1000}
           className="flip-book"
@@ -215,10 +187,11 @@ const HomeDiary = ({ diaryData = { images: [], coverType: 1 }, onImageDrop, isMo
           drawOnDemand={false}
           usePortrait={false}
           startPage={0}
-          clickEventForward={false}
-          showPageCorners={!selectedImageId}
+          showPageCorners={!isItemSelected}
           disableFlipByClick={true}
-          swipeDistance={selectedImageId ? 0 : 30}
+          clickEventForward={false}
+          swipeDistance={isItemSelected ? 0 : 30}
+          cornerCursor={isItemSelected ? 'default' : 'pointer'}
         >
           <PageCover position="top" coverType={2} textColor="#000">
             BOOK TITLE
@@ -230,14 +203,12 @@ const HomeDiary = ({ diaryData = { images: [], coverType: 1 }, onImageDrop, isMo
               images={getImagesForPage(i + 1)}
               onImageDrop={onImageDrop}
               onDeleteImage={handleDeleteImage}
+              onImageUpdate={handleImageUpdate}
               isEditMode={isEditMode}
-              selectedImageId={selectedImageId}
-              onImageSelect={onImageSelect}
-            >
-              {`${i + 1}번째 장`}
-            </Page>
+              onItemSelectChange={setIsItemSelected}
+            />
           ))}
-          <PageCover position="bottom" coverType={2} textColor="#000"> 
+          <PageCover position="bottom" coverType={2} textColor="#000">
           </PageCover>
         </HTMLFlipBook>
       </BookWrapper>

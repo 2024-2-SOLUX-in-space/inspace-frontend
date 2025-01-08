@@ -76,6 +76,32 @@ const Home = () => {
     setSelectedImageId(imageId);
   };
 
+  const handleImageRotate = (imageId, angle) => {
+    setDiaryData(prev => ({
+      ...prev,
+      images: prev.images.map(img => 
+        img.id === imageId 
+          ? { ...img, rotation: angle }
+          : img
+      )
+    }));
+  };
+
+  const handleImageMove = (imageId, newPageNumber, newPosition) => {
+    setDiaryData(prev => ({
+      ...prev,
+      images: prev.images.map(img => 
+        img.id === imageId 
+          ? { 
+              ...img, 
+              pageNumber: newPageNumber,
+              position: newPosition
+            }
+          : img
+      )
+    }));
+  };
+
   return (
     <HomeContainer isEditOpen={isEditOpen}>
       <ContentWrapper isEditOpen={isEditOpen}>
@@ -84,9 +110,11 @@ const Home = () => {
           setDiaryData={setDiaryData}
           onImageDrop={handleImageDrop}
           onImageResize={handleImageResize}
+          onImageMove={handleImageMove}
           isEditMode={isEditOpen}
           selectedImageId={selectedImageId}
           onImageSelect={handleImageSelect}
+          onImageRotate={handleImageRotate}
         />
         <EditButton onClick={handleEdit}>
           {isEditOpen ? '공간 저장' : '공간 편집'}
