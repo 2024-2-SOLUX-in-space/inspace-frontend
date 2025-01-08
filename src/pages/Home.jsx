@@ -11,17 +11,8 @@ const initialDraggableImages = [
 const Home = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [draggableImages, setDraggableImages] = useState(initialDraggableImages);
-  const [diaryImages, setDiaryImages] = useState({
-    1: [],
-    2: [],
-    3: [],
-    4: [],
-    5: [],
-    6: [],
-    7: [],
-    8: [],
-    9: [],
-    10: [],
+  const [diaryData, setDiaryData] = useState({
+    images: []
   });
 
   const handleEdit = () => {
@@ -40,6 +31,7 @@ const Home = () => {
       id: `${draggedImage.id}-${Date.now()}`,
       url: draggedImage.src,
       alt: draggedImage.alt,
+      pageNumber: pageNumber,
       width: draggedImage.width,
       height: draggedImage.height,
       position: { x, y },
@@ -49,9 +41,9 @@ const Home = () => {
       }
     };
 
-    setDiaryImages(prev => ({
+    setDiaryData(prev => ({
       ...prev,
-      [pageNumber]: [...prev[pageNumber], newImage]
+      images: [...prev.images, newImage]
     }));
 
     setDraggableImages(prev => 
@@ -65,7 +57,8 @@ const Home = () => {
     <HomeContainer isEditOpen={isEditOpen}>
       <ContentWrapper>
         <HomeDiary 
-          images={diaryImages} 
+          diaryData={diaryData} 
+          setDiaryData={setDiaryData}
           onImageDrop={handleImageDrop}
         />
         <EditButton onClick={handleEdit}>

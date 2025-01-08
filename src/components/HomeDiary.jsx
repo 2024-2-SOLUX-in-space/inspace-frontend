@@ -8,6 +8,8 @@ import {
   DiaryContent, 
   DraggableImage 
 } from '../styles/HomeDiaryStyle';
+import { FiX } from "react-icons/fi";
+import { DeleteButton } from '../styles/EditSidebarStyle';
 
 const PageCover = React.forwardRef((props, ref) => {
   return (
@@ -48,18 +50,32 @@ const Page = React.forwardRef((props, ref) => {
         >
           {props.children}
           {props.images && props.images.map((image) => (
-            <DraggableImage 
-              key={image.id} 
-              src={image.url} 
-              alt={image.alt}
-              style={{
-                position: 'absolute',
-                left: `${image.position?.x}px`,
-                top: `${image.position?.y}px`,
-                width: image.style?.width,
-                height: image.style?.height
-              }}
-            />
+            <div key={image.id} style={{ position: 'relative' }}>
+              <DraggableImage 
+                src={image.url} 
+                alt={image.alt}
+                style={{
+                  position: 'absolute',
+                  left: `${image.position?.x}px`,
+                  top: `${image.position?.y}px`,
+                  width: image.style?.width,
+                  height: image.style?.height
+                }}
+              />
+              {!image.isSticker && (
+                <DeleteButton 
+                  onClick={() => props.onDeleteImage(image.id)}
+                  style={{
+                    position: 'absolute',
+                    left: `${image.position?.x - 12}px`,
+                    top: `${image.position?.y - 12}px`,
+                    zIndex: 1001
+                  }}
+                >
+                  <FiX />
+                </DeleteButton>
+              )}
+            </div>
           ))}
         </DiaryContent>
       </PageContent>
@@ -67,8 +83,20 @@ const Page = React.forwardRef((props, ref) => {
   );
 });
 
-const HomeDiary = ({ images = {}, onImageDrop, isModalOpen }) => {
+const HomeDiary = ({ diaryData = { images: [] }, onImageDrop, isModalOpen, setDiaryData }) => {
   const flipBook = useRef();
+
+  const handleDeleteImage = (id) => {
+    setDiaryData(prev => ({
+      ...prev,
+      images: prev.images.filter(img => img.id !== id)
+    }));
+  };
+
+  // 각 페이지별로 이미지 필터링
+  const getImagesForPage = (pageNumber) => {
+    return diaryData.images.filter(img => img.pageNumber === pageNumber);
+  };
 
   return (
     <DiaryWrapper style={{ pointerEvents: isModalOpen ? 'none' : 'auto' }}>
@@ -92,16 +120,17 @@ const HomeDiary = ({ images = {}, onImageDrop, isModalOpen }) => {
           startPage={0}
         >
           <PageCover position="top">BOOK TITLE</PageCover>
-          <Page number={1} images={images[1]} onImageDrop={onImageDrop}>첫 장</Page>
-          <Page number={2} images={images[2]} onImageDrop={onImageDrop}>두 번째 장</Page>
-          <Page number={3} images={images[3]} onImageDrop={onImageDrop}>세 번째 장</Page>
-          <Page number={4} images={images[4]} onImageDrop={onImageDrop}>네 번째 장</Page>
-          <Page number={5} images={images[5]} onImageDrop={onImageDrop}>다섯 번째 장</Page>
-          <Page number={6} images={images[6]} onImageDrop={onImageDrop}>여섯 번째 장</Page>
-          <Page number={7} images={images[7]} onImageDrop={onImageDrop}>일곱 번째 장</Page>
-          <Page number={8} images={images[8]} onImageDrop={onImageDrop}>여덟 번째 장</Page>
-          <Page number={9} images={images[9]} onImageDrop={onImageDrop}>아홉 번째 장</Page>
-          <Page number={10} images={images[10]} onImageDrop={onImageDrop}>열 번째 장</Page>        
+          {[...Array(10)].map((_, i) => (
+            <Page 
+              key={i + 1}
+              number={i + 1}
+              images={getImagesForPage(i + 1)}
+              onImageDrop={onImageDrop}
+              onDeleteImage={handleDeleteImage}
+            >
+              {`${i + 1}번째 장`}
+            </Page>
+          ))}
           <PageCover position="bottom">THE END</PageCover>
         </HTMLFlipBook>
       </BookWrapper>

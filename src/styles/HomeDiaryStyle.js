@@ -11,6 +11,7 @@ export const DiaryWrapper = styled.div`
 
 export const BookWrapper = styled.div`
   position: relative;
+  z-index: 1;
   display: flex;
   justify-content: center;
   align-items: center;

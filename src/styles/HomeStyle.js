@@ -35,8 +35,8 @@ export const EditButton = styled.button`
   cursor: pointer;
   transition: all 0.3s ease;
   min-width: 150px;
-  cursor: pointer;
   outline: none;
+  z-index: 2000;
 
   &:focus {
     outline: none;
