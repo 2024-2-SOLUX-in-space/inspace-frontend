@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { FiFolderPlus, FiImage, FiYoutube, FiMusic, FiPlus } from "react-icons/fi";
+import { FiFolderPlus, FiImage, FiYoutube, FiMusic, FiPlus, FiX } from "react-icons/fi";
 import { BiSticker } from "react-icons/bi";
 import {
   SidebarContainer,
@@ -9,7 +9,8 @@ import {
   StyledImage,
   IconContainer,
   AddButtonContainer,
-  AddButton
+  AddButton,
+  DeleteButton
 } from '../styles/EditSidebarStyle';
 import stickerData from '../data/stickers.json';
 import ImageAddModal from './ImageAddModal';
@@ -114,6 +115,13 @@ const EditSidebar = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleDeleteItem = (itemId) => {
+    setCategoryData(prev => ({
+      ...prev,
+      [selectedIcon]: prev[selectedIcon].filter(item => item.id !== itemId)
+    }));
+  };
+
   return (
     <>
       <SidebarContainer isOpen={isOpen}>
@@ -121,19 +129,24 @@ const EditSidebar = ({ isOpen, onClose }) => {
           <DraggableContainer isStickers={isStickersSelected()}>
             {getCurrentData().map((item) => (
               <DraggableItem key={item.id}>
-                <StyledImage 
-                  src={item.src} 
-                  alt={item.alt} 
-                  draggable="true"
-                  onDragStart={handleDragStart({
-                    ...item,
-                    isSticker: isStickersSelected()
-                  })}
-                  isSticker={isStickersSelected()}
-                  width={item.width}
-                  height={item.height}
-                  style={item.style}
-                />
+                <div style={{ position: 'relative' }}>
+                  <StyledImage 
+                    src={item.src} 
+                    alt={item.alt} 
+                    draggable="true"
+                    onDragStart={handleDragStart({
+                      ...item,
+                      isSticker: isStickersSelected()
+                    })}
+                    isSticker={isStickersSelected()}
+                    width={item.width}
+                    height={item.height}
+                    style={item.style}
+                  />
+                  <DeleteButton onClick={() => handleDeleteItem(item.id)}>
+                    <FiX />
+                  </DeleteButton>
+                </div>
               </DraggableItem>
             ))}
           </DraggableContainer>

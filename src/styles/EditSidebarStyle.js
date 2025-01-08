@@ -125,3 +125,31 @@ export const AddButton = styled.button`
     height: 16px;
   }
 `;
+
+export const DeleteButton = styled.button`
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: transparent;
+  border: 2px solid #000000;
+  color: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #000000;
+    color: white;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+`;
