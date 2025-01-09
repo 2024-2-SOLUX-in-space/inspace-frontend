@@ -162,7 +162,7 @@ export const InactiveButton = styled.div`
     transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
   }
 
-  svg:hover + .tooltip { /* 아이콘에만 호버 시 툴팁 표시 */
+  svg:hover + .tooltip {
     opacity: 1;
     visibility: visible;
   }
