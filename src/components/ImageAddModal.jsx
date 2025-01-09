@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import styled from 'styled-components';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -99,115 +99,121 @@ const BottomContainer = styled.div`
   margin-top: auto;
 `;
 
+const Canvas = styled.canvas`
+  width: 0;
+  height: 0;
+  visibility: hidden;
+`;
+
 // Modal Component
 const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
-  const [title, setTitle] = useState('');
   const maxLength = 20;
-  const initialCrop = {
-    unit: '%',
+  const imgRef = useRef(null);
+  const canvasRef = useRef(null);
+  
+  const [title, setTitle] = useState('');
+  const [crop, setCrop] = useState({
+    unit: 'px',
     x: 0,
     y: 0,
-    width: 100,
-    height: 100
-  };
-  const [crop, setCrop] = useState(initialCrop);
-  const [croppedImageUrl, setCroppedImageUrl] = useState(null);
+    width: 300,
+    height: 300
+  });
+  const [completedCrop, setCompletedCrop] = useState(null);
 
-  if (!isOpen) return null;
+  const onLoad = useCallback((img) => {
+    imgRef.current = img;
+    
+    setCrop({
+      unit: 'px',
+      x: 0,
+      y: 0,
+      width: img.width,
+      height: img.height
+    });
+  }, []);
 
   const handleClose = () => {
     setTitle('');
-    setCrop(initialCrop);
-    setCroppedImageUrl(null);
-    onClose();
-  };
-
-  const handleSave = () => {
-    if (!croppedImageUrl) {
-      onSave(title, URL.createObjectURL(imageFile));
-    } else {
-      onSave(title, croppedImageUrl.url, {
-        width: croppedImageUrl.width,
-        height: croppedImageUrl.height
-      });
-    }
-    setTitle('');
-    setCrop(initialCrop);
-    setCroppedImageUrl(null);
-    onClose();
-  };
-
-  const onCropComplete = async (crop, percentCrop) => {
-    if (imageFile && crop.width && crop.height) {
-      const croppedData = await getCroppedImg(imageFile, crop);
-      setCroppedImageUrl(croppedData);
-    }
-  };
-
-  const getCroppedImg = (image, crop) => {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(image);
-      
-      reader.onload = () => {
-        const img = new Image();
-        img.src = reader.result;
-        
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const pixelRatio = window.devicePixelRatio;
-          const scaleX = img.naturalWidth / img.width;
-          const scaleY = img.naturalHeight / img.height;
-          
-          const cropWidth = crop.width * scaleX;
-          const cropHeight = crop.height * scaleY;
-          
-          canvas.width = cropWidth;
-          canvas.height = cropHeight;
-          
-          const ctx = canvas.getContext('2d');
-          ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-          ctx.imageSmoothingQuality = 'high';
-
-          ctx.drawImage(
-            img,
-            crop.x * scaleX,
-            crop.y * scaleY,
-            cropWidth,
-            cropHeight,
-            0,
-            0,
-            cropWidth,
-            cropHeight
-          );
-
-          canvas.toBlob(
-            (blob) => {
-              if (!blob) {
-                console.error('Canvas is empty');
-                return;
-              }
-              const croppedImageUrl = URL.createObjectURL(blob);
-              resolve({
-                url: croppedImageUrl,
-                width: cropWidth,
-                height: cropHeight
-              });
-            },
-            'image/jpeg',
-            1
-          );
-        };
-      };
+    setCrop({
+      unit: 'px',
+      x: 0,
+      y: 0,
+      width: 300,
+      height: 300
     });
+    setCompletedCrop(null);
+    onClose();
   };
 
-  const handleTitleChange = (e) => {
+  const createCroppedImage = useCallback(() => {
+    if (!completedCrop || !canvasRef.current || !imgRef.current) {
+      return;
+    }
+
+    const ctx = canvasRef.current.getContext('2d');
+    if (!ctx) return;
+
+    const scaleX = imgRef.current.naturalWidth / imgRef.current.width;
+    const scaleY = imgRef.current.naturalHeight / imgRef.current.height;
+    const pixelRatio = window.devicePixelRatio;
+
+    const cropWidth = completedCrop.width * pixelRatio * scaleX;
+    const cropHeight = completedCrop.height * pixelRatio * scaleY;
+
+    canvasRef.current.width = cropWidth;
+    canvasRef.current.height = cropHeight;
+
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, cropWidth, cropHeight);
+
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    ctx.imageSmoothingQuality = 'high';
+
+    ctx.drawImage(
+      imgRef.current,
+      completedCrop.x * scaleX,
+      completedCrop.y * scaleY,
+      completedCrop.width * scaleX,
+      completedCrop.height * scaleY,
+      0,
+      0,
+      cropWidth,
+      cropHeight
+    );
+  }, [completedCrop]);
+
+  const handleSave = useCallback(() => {
+    if (!completedCrop) return;
+
+    createCroppedImage();
+
+    canvasRef.current.toBlob(
+      (blob) => {
+        if (!blob) {
+          console.error('Canvas is empty');
+          return;
+        }
+        const croppedImageUrl = URL.createObjectURL(blob);
+        onSave(title, croppedImageUrl, {
+          width: completedCrop.width,
+          height: completedCrop.height
+        });
+        handleClose();
+      },
+      'image/png',
+      1
+    );
+  }, [completedCrop, createCroppedImage, onSave, title, handleClose]);
+
+  const handleTitleChange = useCallback((e) => {
     const value = e.target.value;
     if (value.length <= maxLength) {
       setTitle(value);
     }
-  };
+  }, [maxLength]);
+
+  if (!isOpen) return null;
 
   return (
     <ModalOverlay>
@@ -222,12 +228,16 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
             <ReactCrop
               crop={crop}
               onChange={(c) => setCrop(c)}
-              onComplete={onCropComplete}
+              onComplete={(c) => setCompletedCrop(c)}
+              onImageLoaded={onLoad}
+              minWidth={100}
+              minHeight={100}
             >
               <img
+                ref={imgRef}
                 src={URL.createObjectURL(imageFile)}
                 alt="크롭할 이미지"
-                style={{ maxWidth: '100%' }}
+                style={{ maxWidth: '100%', maxHeight: '450px' }}
               />
             </ReactCrop>
           )}
@@ -243,6 +253,8 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
           />
           <SaveButton onClick={handleSave}>저장</SaveButton>
         </BottomContainer>
+
+        <Canvas ref={canvasRef} />
       </ModalContent>
     </ModalOverlay>
   );
