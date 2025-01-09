@@ -34,7 +34,7 @@ const PageCover = React.forwardRef((props, ref) => {
     switch(coverType) {
       case 1:
         return {
-          top: '7%',
+          top: '25%',
           left: '50%',
           color: '#C8B695',
           textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',
@@ -43,7 +43,7 @@ const PageCover = React.forwardRef((props, ref) => {
         };
       case 2:
         return {
-          top: '19%',
+          top: '36%',
           left: '48%',
           color: '#000000',
           textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
@@ -62,7 +62,7 @@ const PageCover = React.forwardRef((props, ref) => {
         };
       default:
         return {
-          top: '7%',
+          top: '25%',
           left: '50%',
           color: 'rgb(227, 197, 141)',
           textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',
@@ -234,7 +234,7 @@ const HomeDiary = ({
           swipeDistance={isItemSelected ? 0 : 30}
           cornerCursor={isItemSelected ? 'default' : 'pointer'}
         >
-          <PageCover position="top" coverType={3} textColor="#000">
+          <PageCover position="top" coverType={1} textColor="#000">
             BOOK TITLE
           </PageCover>
           {[...Array(10)].map((_, i) => (
