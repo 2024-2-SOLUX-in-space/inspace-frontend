@@ -1,0 +1,472 @@
+{
+  "stickers": [
+    {
+      "id": "sticker-0",
+      "src": "/stickers/RedSticker1.png",
+      "alt": "스티커 1",
+      "color": "red"
+    },
+    {
+      "id": "sticker-1",
+      "src": "/stickers/RedSticker10.png",
+      "alt": "스티커 2",
+      "color": "red"
+    },
+    {
+      "id": "sticker-2",
+      "src": "/stickers/RedSticker11.png",
+      "alt": "스티커 3",
+      "color": "red"
+    },
+    {
+      "id": "sticker-3",
+      "src": "/stickers/RedSticker12.png",
+      "alt": "스티커 4",
+      "color": "red"
+    },
+    {
+      "id": "sticker-4",
+      "src": "/stickers/RedSticker13.png",
+      "alt": "스티커 5",
+      "color": "red"
+    },
+    {
+      "id": "sticker-5",
+      "src": "/stickers/RedSticker14.png",
+      "alt": "스티커 6",
+      "color": "red"
+    },
+    {
+      "id": "sticker-6",
+      "src": "/stickers/RedSticker2.png",
+      "alt": "스티커 7",
+      "color": "red"
+    },
+    {
+      "id": "sticker-7",
+      "src": "/stickers/RedSticker3.png",
+      "alt": "스티커 8",
+      "color": "red"
+    },
+    {
+      "id": "sticker-8",
+      "src": "/stickers/RedSticker4.png",
+      "alt": "스티커 9",
+      "color": "red"
+    },
+    {
+      "id": "sticker-9",
+      "src": "/stickers/RedSticker5.png",
+      "alt": "스티커 10",
+      "color": "red"
+    },
+    {
+      "id": "sticker-10",
+      "src": "/stickers/RedSticker6.png",
+      "alt": "스티커 11",
+      "color": "red"
+    },
+    {
+      "id": "sticker-11",
+      "src": "/stickers/RedSticker7.png",
+      "alt": "스티커 12",
+      "color": "red"
+    },
+    {
+      "id": "sticker-12",
+      "src": "/stickers/RedSticker8.png",
+      "alt": "스티커 13",
+      "color": "red"
+    },
+    {
+      "id": "sticker-13",
+      "src": "/stickers/RedSticker9.png",
+      "alt": "스티커 14",
+      "color": "red"
+    },
+    {
+      "id": "sticker-14",
+      "src": "/stickers/OrangeSticker1.png",
+      "alt": "스티커 15",
+      "color": "orange"
+    },
+    {
+      "id": "sticker-15",
+      "src": "/stickers/OrangeSticker10.png",
+      "alt": "스티커 16",
+      "color": "orange"
+    },
+    {
+      "id": "sticker-16",
+      "src": "/stickers/OrangeSticker11.png",
+      "alt": "스티커 17",
+      "color": "orange"
+    },
+    {
+      "id": "sticker-17",
+      "src": "/stickers/OrangeSticker12.png",
+      "alt": "스티커 18",
+      "color": "orange"
+    },
+    {
+      "id": "sticker-18",
+      "src": "/stickers/OrangeSticker2.png",
+      "alt": "스티커 19",
+      "color": "orange"
+    },
+    {
+      "id": "sticker-19",
+      "src": "/stickers/OrangeSticker3.png",
+      "alt": "스티커 20",
+      "color": "orange"
+    },
+    {
+      "id": "sticker-20",
+      "src": "/stickers/OrangeSticker4.png",
+      "alt": "스티커 21",
+      "color": "orange"
+    },
+    {
+      "id": "sticker-21",
+      "src": "/stickers/OrangeSticker5.png",
+      "alt": "스티커 22",
+      "color": "orange"
+    },
+    {
+      "id": "sticker-22",
+      "src": "/stickers/OrangeSticker6.png",
+      "alt": "스티커 23",
+      "color": "orange"
+    },
+    {
+      "id": "sticker-23",
+      "src": "/stickers/OrangeSticker7.png",
+      "alt": "스티커 24",
+      "color": "orange"
+    },
+    {
+      "id": "sticker-24",
+      "src": "/stickers/OrangeSticker8.png",
+      "alt": "스티커 25",
+      "color": "orange"
+    },
+    {
+      "id": "sticker-25",
+      "src": "/stickers/OrangeSticker9.png",
+      "alt": "스티커 26",
+      "color": "orange"
+    },
+    {
+      "id": "sticker-26",
+      "src": "/stickers/YellowSticker1.png",
+      "alt": "스티커 27",
+      "color": "yellow"
+    },
+    {
+      "id": "sticker-27",
+      "src": "/stickers/YellowSticker10.png",
+      "alt": "스티커 28",
+      "color": "yellow"
+    },
+    {
+      "id": "sticker-28",
+      "src": "/stickers/YellowSticker11.png",
+      "alt": "스티커 29",
+      "color": "yellow"
+    },
+    {
+      "id": "sticker-29",
+      "src": "/stickers/YellowSticker12.png",
+      "alt": "스티커 30",
+      "color": "yellow"
+    },
+    {
+      "id": "sticker-30",
+      "src": "/stickers/YellowSticker13.png",
+      "alt": "스티커 31",
+      "color": "yellow"
+    },
+    {
+      "id": "sticker-31",
+      "src": "/stickers/YellowSticker2.png",
+      "alt": "스티커 32",
+      "color": "yellow"
+    },
+    {
+      "id": "sticker-32",
+      "src": "/stickers/YellowSticker3.png",
+      "alt": "스티커 33",
+      "color": "yellow"
+    },
+    {
+      "id": "sticker-33",
+      "src": "/stickers/YellowSticker4.png",
+      "alt": "스티커 34",
+      "color": "yellow"
+    },
+    {
+      "id": "sticker-34",
+      "src": "/stickers/YellowSticker5.png",
+      "alt": "스티커 35",
+      "color": "yellow"
+    },
+    {
+      "id": "sticker-35",
+      "src": "/stickers/YellowSticker6.png",
+      "alt": "스티커 36",
+      "color": "yellow"
+    },
+    {
+      "id": "sticker-36",
+      "src": "/stickers/YellowSticker7.png",
+      "alt": "스티커 37",
+      "color": "yellow"
+    },
+    {
+      "id": "sticker-37",
+      "src": "/stickers/YellowSticker8.png",
+      "alt": "스티커 38",
+      "color": "yellow"
+    },
+    {
+      "id": "sticker-38",
+      "src": "/stickers/YellowSticker9.png",
+      "alt": "스티커 39",
+      "color": "yellow"
+    },
+    {
+      "id": "sticker-39",
+      "src": "/stickers/GreenSticker1.png",
+      "alt": "스티커 40",
+      "color": "green"
+    },
+    {
+      "id": "sticker-40",
+      "src": "/stickers/GreenSticker10.png",
+      "alt": "스티커 41",
+      "color": "green"
+    },
+    {
+      "id": "sticker-41",
+      "src": "/stickers/GreenSticker11.png",
+      "alt": "스티커 42",
+      "color": "green"
+    },
+    {
+      "id": "sticker-42",
+      "src": "/stickers/GreenSticker12.png",
+      "alt": "스티커 43",
+      "color": "green"
+    },
+    {
+      "id": "sticker-43",
+      "src": "/stickers/GreenSticker13.png",
+      "alt": "스티커 44",
+      "color": "green"
+    },
+    {
+      "id": "sticker-44",
+      "src": "/stickers/GreenSticker2.png",
+      "alt": "스티커 45",
+      "color": "green"
+    },
+    {
+      "id": "sticker-45",
+      "src": "/stickers/GreenSticker3.png",
+      "alt": "스티커 46",
+      "color": "green"
+    },
+    {
+      "id": "sticker-46",
+      "src": "/stickers/GreenSticker4.png",
+      "alt": "스티커 47",
+      "color": "green"
+    },
+    {
+      "id": "sticker-47",
+      "src": "/stickers/GreenSticker5.png",
+      "alt": "스티커 48",
+      "color": "green"
+    },
+    {
+      "id": "sticker-48",
+      "src": "/stickers/GreenSticker6.png",
+      "alt": "스티커 49",
+      "color": "green"
+    },
+    {
+      "id": "sticker-49",
+      "src": "/stickers/GreenSticker7.png",
+      "alt": "스티커 50",
+      "color": "green"
+    },
+    {
+      "id": "sticker-50",
+      "src": "/stickers/GreenSticker8.png",
+      "alt": "스티커 51",
+      "color": "green"
+    },
+    {
+      "id": "sticker-51",
+      "src": "/stickers/GreenSticker9.png",
+      "alt": "스티커 52",
+      "color": "green"
+    },
+    {
+      "id": "sticker-52",
+      "src": "/stickers/BlueSticker1.png",
+      "alt": "스티커 53",
+      "color": "blue"
+    },
+    {
+      "id": "sticker-53",
+      "src": "/stickers/BlueSticker10.png",
+      "alt": "스티커 54",
+      "color": "blue"
+    },
+    {
+      "id": "sticker-54",
+      "src": "/stickers/BlueSticker11.png",
+      "alt": "스티커 55",
+      "color": "blue"
+    },
+    {
+      "id": "sticker-55",
+      "src": "/stickers/BlueSticker12.png",
+      "alt": "스티커 56",
+      "color": "blue"
+    },
+    {
+      "id": "sticker-56",
+      "src": "/stickers/BlueSticker13.png",
+      "alt": "스티커 57",
+      "color": "blue"
+    },
+    {
+      "id": "sticker-57",
+      "src": "/stickers/BlueSticker14.png",
+      "alt": "스티커 58",
+      "color": "blue"
+    },
+    {
+      "id": "sticker-58",
+      "src": "/stickers/BlueSticker15.png",
+      "alt": "스티커 59",
+      "color": "blue"
+    },
+    {
+      "id": "sticker-59",
+      "src": "/stickers/BlueSticker16.png",
+      "alt": "스티커 60",
+      "color": "blue"
+    },
+    {
+      "id": "sticker-60",
+      "src": "/stickers/BlueSticker2.png",
+      "alt": "스티커 61",
+      "color": "blue"
+    },
+    {
+      "id": "sticker-61",
+      "src": "/stickers/BlueSticker3.png",
+      "alt": "스티커 62",
+      "color": "blue"
+    },
+    {
+      "id": "sticker-62",
+      "src": "/stickers/BlueSticker4.png",
+      "alt": "스티커 63",
+      "color": "blue"
+    },
+    {
+      "id": "sticker-63",
+      "src": "/stickers/BlueSticker5.png",
+      "alt": "스티커 64",
+      "color": "blue"
+    },
+    {
+      "id": "sticker-64",
+      "src": "/stickers/BlueSticker6.png",
+      "alt": "스티커 65",
+      "color": "blue"
+    },
+    {
+      "id": "sticker-65",
+      "src": "/stickers/BlueSticker7.png",
+      "alt": "스티커 66",
+      "color": "blue"
+    },
+    {
+      "id": "sticker-66",
+      "src": "/stickers/BlueSticker8.png",
+      "alt": "스티커 67",
+      "color": "blue"
+    },
+    {
+      "id": "sticker-67",
+      "src": "/stickers/BlueSticker9.png",
+      "alt": "스티커 68",
+      "color": "blue"
+    },
+    {
+      "id": "sticker-68",
+      "src": "/stickers/PurpleSticker1.png",
+      "alt": "스티커 69",
+      "color": "purple"
+    },
+    {
+      "id": "sticker-69",
+      "src": "/stickers/PurpleSticker10.png",
+      "alt": "스티커 70",
+      "color": "purple"
+    },
+    {
+      "id": "sticker-70",
+      "src": "/stickers/PurpleSticker2.png",
+      "alt": "스티커 71",
+      "color": "purple"
+    },
+    {
+      "id": "sticker-71",
+      "src": "/stickers/PurpleSticker3.png",
+      "alt": "스티커 72",
+      "color": "purple"
+    },
+    {
+      "id": "sticker-72",
+      "src": "/stickers/PurpleSticker4.png",
+      "alt": "스티커 73",
+      "color": "purple"
+    },
+    {
+      "id": "sticker-73",
+      "src": "/stickers/PurpleSticker5.png",
+      "alt": "스티커 74",
+      "color": "purple"
+    },
+    {
+      "id": "sticker-74",
+      "src": "/stickers/PurpleSticker6.png",
+      "alt": "스티커 75",
+      "color": "purple"
+    },
+    {
+      "id": "sticker-75",
+      "src": "/stickers/PurpleSticker7.png",
+      "alt": "스티커 76",
+      "color": "purple"
+    },
+    {
+      "id": "sticker-76",
+      "src": "/stickers/PurpleSticker8.png",
+      "alt": "스티커 77",
+      "color": "purple"
+    },
+    {
+      "id": "sticker-77",
+      "src": "/stickers/PurpleSticker9.png",
+      "alt": "스티커 78",
+      "color": "purple"
+    }
+  ]
+}

@@ -31,7 +31,7 @@ import { MenuSidebarContainer,
           { icon: <FiArchive />, id: "archive", tooltip: "공간 목록 보기" },
           { icon: <FiFilePlus />, id: "filePlus", tooltip: "공간 추가하기" },
           { icon: <FiEdit />, id: "edit", tooltip: "공간 편집하기" },
-          { icon: <FiHeart />, id: "heart", tooltip: "팔로워/팔로잉<br> 확인하기" },
+          { icon: <FiHeart />, id: "heart", tooltip: "팔로워/팔로잉" },
         ];
       
         return (
@@ -62,10 +62,7 @@ import { MenuSidebarContainer,
                         onClick={() => handleIconClick(item.id)}
                       >
                         {item.icon}
-                        <span
-                        className="tooltip"
-                        dangerouslySetInnerHTML={{ __html: item.tooltip }}
-                        ></span>
+                        <span className="tooltip">{item.tooltip}</span>
                       </MenuSidebarIcon>
                     ))}
                   </MenuSidebarContent>

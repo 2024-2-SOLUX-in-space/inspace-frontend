@@ -2,16 +2,22 @@ import { useState } from 'react'
 import GlobalStyle from './styles/GlobalStyle'
 import { ThemeProvider } from 'styled-components'
 import MenuSidebar from './components/MenuSidebar';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
 
 function App() {
   return (
-    <ThemeProvider theme={{}}>
+    <Router>
       <GlobalStyle />
       <div>
         <MenuSidebar />
       </div>
-    </ThemeProvider>
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </Router>
   );
 }
 
-export default App
+export default App;

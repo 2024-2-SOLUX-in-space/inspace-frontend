@@ -7,16 +7,24 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "react-scripts start",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "stickers": "node scripts/generateStickerData.js"
   },
   "dependencies": {
     "eslint-plugin-styled-components": "^0.0.0",
     "eslint-plugin-styled-components-a11y": "^2.1.36",
+    "page-flip": "^2.0.7",
     "react": "^18.3.1",
+    "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.4.0",
+    "react-image-crop": "^11.0.7",
+    "react-modal": "^3.16.3",
     "react-pageflip": "^2.0.3",
-    "react-router-dom": "^7.0.1",
+    "react-router-dom": "^7.0.2",
     "styled-components": "^6.1.13"
   },
   "devDependencies": {
