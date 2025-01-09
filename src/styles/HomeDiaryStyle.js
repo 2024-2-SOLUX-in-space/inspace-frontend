@@ -49,24 +49,6 @@ export const BookWrapper = styled.div`
       color: hsl(35, 35%, 35%);
       border: solid 1px hsl(35, 20%, 50%);
       z-index: 0;
-
-      &.page-cover-top {
-        box-shadow:
-          inset 0px 0 30px 0px rgba(36, 10, 3, 0.5),
-          -2px 0 5px 2px rgba(0, 0, 0, 0.4);
-      }
-
-      &.page-cover-bottom {
-        box-shadow:
-          inset 0px 0 30px 0px rgba(36, 10, 3, 0.5),
-          10px 0 8px 0px rgba(0, 0, 0, 0.4);
-      }
-
-      h2 {
-        text-align: center;
-        padding-top: 50%;
-        font-size: 210%;
-      }
     }
   }
 

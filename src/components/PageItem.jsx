@@ -7,6 +7,23 @@ import { DraggableImage } from '../styles/HomeDiaryStyle';
 const PageItem = ({ image, onUpdate, onDelete, isEditMode, pagePair, onSelectChange }) => {
   const [isSelected, setIsSelected] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+
+  const calculateMouseOffset = (event, target) => {
+    const rect = target.getBoundingClientRect();
+    const rotation = image.rotation || 0;
+    const radian = (rotation * Math.PI) / 180;
+    
+    // 마우스 위치와 타겟의 상대 위치 계산
+    const relativeX = event.clientX - rect.left;
+    const relativeY = event.clientY - rect.top;
+    
+    // 회전을 고려한 오프셋 계산
+    const offsetX = relativeX * Math.cos(radian) + relativeY * Math.sin(radian);
+    const offsetY = -relativeX * Math.sin(radian) + relativeY * Math.cos(radian);
+    
+    return { x: offsetX, y: offsetY };
+  };
 
   const handleDelete = (e) => {
     e.preventDefault();
@@ -40,6 +57,43 @@ const PageItem = ({ image, onUpdate, onDelete, isEditMode, pagePair, onSelectCha
       return;
     }
     onUpdate(image.id, updates);
+  };
+
+  const handleDrag = ({ target, delta, inputEvent }) => {
+    inputEvent.stopPropagation();
+    inputEvent.preventDefault();
+    
+    const parentDiv = target.closest('.page-item');
+    const currentLeft = parseFloat(parentDiv.style.left) || 0;
+    const currentTop = parseFloat(parentDiv.style.top) || 0;
+    
+    const rotation = image.rotation || 0;
+    const radian = (rotation * Math.PI) / 180;
+    
+    // 회전을 고려한 delta 값 계산
+    const adjustedDeltaX = delta[0] * Math.cos(radian) + delta[1] * Math.sin(radian);
+    const adjustedDeltaY = -delta[0] * Math.sin(radian) + delta[1] * Math.cos(radian);
+    
+    const newLeft = currentLeft + adjustedDeltaX;
+    const newTop = currentTop + adjustedDeltaY;
+
+    parentDiv.style.left = `${newLeft}px`;
+    parentDiv.style.top = `${newTop}px`;
+    
+    handleImageUpdate({
+      position: { x: newLeft, y: newTop }
+    });
+  };
+
+  const handleRotate = ({ target, transform, rotate, inputEvent }) => {
+    const parentDiv = target.closest('.page-item');
+    parentDiv.style.transform = `rotate(${rotate}deg)`;
+    target.style.transform = 'none';
+    const offset = calculateMouseOffset(inputEvent, target);
+    setDragOffset(offset);
+    handleImageUpdate({
+      rotation: rotate
+    });
   };
 
   return (
@@ -84,32 +138,23 @@ const PageItem = ({ image, onUpdate, onDelete, isEditMode, pagePair, onSelectCha
           snappable={true}
           keepRatio={false}
           bounds="parent"
-          renderDirections={["se"]}
-          onDragStart={() => setIsDragging(true)}
-          onDragEnd={() => setIsDragging(false)}
-          onDrag={({ target, transform, beforeTransform, left, top, delta }) => {
-            const parentDiv = target.closest('.page-item');
-            const currentLeft = parseFloat(parentDiv.style.left) || 0;
-            const currentTop = parseFloat(parentDiv.style.top) || 0;
-            
-            const newLeft = currentLeft + delta[0];
-            const newTop = currentTop + delta[1];
-
-            parentDiv.style.left = `${newLeft}px`;
-            parentDiv.style.top = `${newTop}px`;
-            
-            handleImageUpdate({
-              position: { x: newLeft, y: newTop }
-            });
+          renderDirections={["nw","se"]}
+          onDragStart={({ inputEvent, target }) => {
+            setIsDragging(true);
+            const offset = calculateMouseOffset(inputEvent, target);
+            setDragOffset(offset);
+            inputEvent.stopPropagation();
+            inputEvent.preventDefault();
           }}
-          onRotate={({ target, transform, rotate }) => {
-            const parentDiv = target.closest('.page-item');
-            parentDiv.style.transform = `rotate(${rotate}deg)`;
-            target.style.transform = 'none';
-            handleImageUpdate({
-              rotation: rotate
-            });
+          onDragEnd={({ inputEvent, target }) => {
+            setIsDragging(false);
+            const offset = calculateMouseOffset(inputEvent, target);
+            setDragOffset(offset);
+            inputEvent.stopPropagation();
+            inputEvent.preventDefault();
           }}
+          onDrag={handleDrag}
+          onRotate={handleRotate}
           onResize={({ target, width, height }) => {
             const parentDiv = target.closest('.page-item');
             parentDiv.style.width = `${width}px`;
