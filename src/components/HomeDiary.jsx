@@ -30,6 +30,50 @@ const PageCover = React.forwardRef((props, ref) => {
 
   const imageUrl = getCoverImage(props.position, props.coverType);
   
+  const getTitleStyle = (coverType) => {
+    switch(coverType) {
+      case 1:
+        return {
+          top: '7%',
+          left: '50%',
+          color: '#C8B695',
+          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',
+          width: '80%',
+          textAlign: 'center'
+        };
+      case 2:
+        return {
+          top: '19%',
+          left: '48%',
+          color: '#000000',
+          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+        };
+      case 3:
+        return {
+          top: '64%',
+          left: '50%',
+          color: '#000000',
+          textShadow: '1px 1px 3px rgba(231, 212, 87, 0.5)',
+          backgroundColor: '#E9CBA5',
+          padding: '5px 15px',
+          width: '60%',
+          textAlign: 'center',
+          borderRadius: '3px',
+        };
+      default:
+        return {
+          top: '7%',
+          left: '50%',
+          color: 'rgb(227, 197, 141)',
+          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',
+          width: '80%',
+          textAlign: 'center',
+        };
+    }
+  };
+
+  const titleStyle = getTitleStyle(props.coverType);
+
   return (
     <div 
       className={`page page-cover ${props.position === 'top' ? 'page-cover-top' : 'page-cover-bottom'}`} 
@@ -55,15 +99,12 @@ const PageCover = React.forwardRef((props, ref) => {
       <div className="page-content">
         <h2 style={{
           position: 'absolute',
-          top: '19%',
-          left: '50%',
+          ...titleStyle,
           transform: 'translate(-50%, -50%)',
-          color: props.textColor || '#000',
-          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',
           zIndex: 1,
-          fontFamily: 'Arial, sans-serif',
           fontSize: '2em',
-          fontWeight: 'bold'
+          fontWeight: 'bold',
+          fontFamily: "'Bodoni MT', 'Times New Roman', serif"
         }}>
           {props.children}
         </h2>
@@ -193,12 +234,12 @@ const HomeDiary = ({
           swipeDistance={isItemSelected ? 0 : 30}
           cornerCursor={isItemSelected ? 'default' : 'pointer'}
         >
-          <PageCover position="top" coverType={2} textColor="#000">
+          <PageCover position="top" coverType={3} textColor="#000">
             BOOK TITLE
           </PageCover>
           {[...Array(10)].map((_, i) => (
             <Page 
-              key={i + 1}
+              key={i + 1} 
               number={i + 1}
               images={getImagesForPage(i + 1)}
               onImageDrop={onImageDrop}
@@ -208,7 +249,7 @@ const HomeDiary = ({
               onItemSelectChange={setIsItemSelected}
             />
           ))}
-          <PageCover position="bottom" coverType={2} textColor="#000">
+          <PageCover position="bottom" coverType={1} textColor="#000">
           </PageCover>
         </HTMLFlipBook>
       </BookWrapper>
