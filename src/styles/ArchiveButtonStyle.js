@@ -1,11 +1,7 @@
 import styled from 'styled-components';
 
-export const ArchiveContainer = styled.div.attrs((props) => {
-  return {
-    'aria-hidden': !props.isOpen,
-  };
-})`
-  display: block !important;
+/* 공간 목록 창 */
+export const ArchiveList = styled.div`
   position: fixed;
   top: 20%;
   left: 20%;

@@ -60,6 +60,7 @@ import ArchiveButton from '../components/ArchiveButton';
                       <MenuSidebarIcon
                         key={item.id}
                         className={activeIcon === item.id ? "active" : ""}
+                        isActive = {activeIcon === item.id}
                         onClick={() => handleIconClick(item.id)}
                       >
                         {item.icon}
