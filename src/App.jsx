@@ -7,15 +7,21 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 
 function App() {
+  const [isArchiveOpen, setIsArchiveOpen] = useState(false);
+
   return (
     <Router>
       <GlobalStyle />
       <div>
-        <MenuSidebar />
+        <MenuSidebar 
+          isArchiveOpen = {isArchiveOpen}
+          toggleArchive={() => setIsArchiveOpen((prev) => !prev)}
+        />
       </div>
       <Routes>
         <Route path="/" element={<Home />} />
       </Routes>
+
     </Router>
   );
 }

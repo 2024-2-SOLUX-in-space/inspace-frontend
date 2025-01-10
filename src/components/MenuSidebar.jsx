@@ -7,11 +7,12 @@ import { MenuSidebarContainer,
     MenuSidebarIcon, 
     InactiveButton, 
     ActiveButton} from '../styles/MenuSidebarStyle';
+import ArchiveButton from '../components/ArchiveButton';
 
-    const MenuSidebar = () => {
+    const MenuSidebar = ( { isArchiveOpen, toggleArchive }) => {
         const [isOpen, setIsOpen] = useState(true); // 사이드바 열림/닫힘 상태 관리
         const [activeIcon, setActiveIcon] = useState(null); // 활성화된 아이콘 상태 관리
-      
+
         // 사이드바 열림/닫힘 상태 토글 함수 
         const toggleSidebar = () => {
           setIsOpen(!isOpen); 
@@ -19,9 +20,10 @@ import { MenuSidebarContainer,
       
         // 아이콘 클릭 시 실행되는 함수 
         const handleIconClick = (iconName) => {
+          if (iconName === "archive") {
+            toggleArchive();
+          }
           setActiveIcon(iconName); // 아이콘의 id 값을 activeIcon 상태에 저장 
-          console.log(`${iconName} clicked`); // 어떤 아이콘이 클릭되었는지 알 수 있다 
-          // ***화면 전환 또는 알림창 추가*** 
         };
       
         // 아이콘을 배열로 저장하는 상수 
@@ -42,7 +44,6 @@ import { MenuSidebarContainer,
                 <span className="tooltip">메뉴바 열기</span>
               </ActiveButton>
           
-              {/* 사이드바 */}
               <MenuSidebarContainer isOpen={isOpen}>
                 <div onClick={toggleSidebar}>
                   {isOpen && (
@@ -65,6 +66,14 @@ import { MenuSidebarContainer,
                         <span className="tooltip">{item.tooltip}</span>
                       </MenuSidebarIcon>
                     ))}
+
+                    { activeIcon === "archive" && (
+                      < ArchiveButton 
+                        isArchiveOpen = {isArchiveOpen}
+                        toggleArchive = {toggleArchive}
+                      />
+                    )}
+
                   </MenuSidebarContent>
                 )}
               </MenuSidebarContainer>
