@@ -71,8 +71,8 @@ const PageItem = ({ image, onUpdate, onDelete, isEditMode, pagePair, onSelectCha
     const radian = (rotation * Math.PI) / 180;
     
     // 회전을 고려한 delta 값 계산
-    const adjustedDeltaX = delta[0] * Math.cos(radian) + delta[1] * Math.sin(radian);
-    const adjustedDeltaY = -delta[0] * Math.sin(radian) + delta[1] * Math.cos(radian);
+    const adjustedDeltaX = delta[0] * Math.cos(radian) - delta[1] * Math.sin(radian);
+    const adjustedDeltaY = delta[0] * Math.sin(radian) + delta[1] * Math.cos(radian);
     
     const newLeft = currentLeft + adjustedDeltaX;
     const newTop = currentTop + adjustedDeltaY;
@@ -87,12 +87,14 @@ const PageItem = ({ image, onUpdate, onDelete, isEditMode, pagePair, onSelectCha
 
   const handleRotate = ({ target, transform, rotate, inputEvent }) => {
     const parentDiv = target.closest('.page-item');
-    parentDiv.style.transform = `rotate(${rotate}deg)`;
+    const currentRotation = image.rotation || 0;
+    const newRotation = currentRotation + (rotate * 0.03);
+    parentDiv.style.transform = `rotate(${newRotation}deg)`;
     target.style.transform = 'none';
     const offset = calculateMouseOffset(inputEvent, target);
     setDragOffset(offset);
     handleImageUpdate({
-      rotation: rotate
+      rotation: newRotation
     });
   };
 
@@ -139,6 +141,10 @@ const PageItem = ({ image, onUpdate, onDelete, isEditMode, pagePair, onSelectCha
           keepRatio={false}
           bounds="parent"
           renderDirections={["nw","se"]}
+          rotationPosition="top"
+          throttleRotate={0}
+          rotateAroundCenter={true}
+          initialRotation={image.rotation || 0}
           onDragStart={({ inputEvent, target }) => {
             setIsDragging(true);
             const offset = calculateMouseOffset(inputEvent, target);
