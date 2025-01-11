@@ -60,8 +60,8 @@ import ArchiveButton from '../components/ArchiveButton';
                       <MenuSidebarIcon
                         key={item.id}
                         className={activeIcon === item.id ? "active" : ""}
-                        isActive = {activeIcon === item.id}
-                        onClick={() => handleIconClick(item.id)}
+                        isActive = {activeIcon === item.id} // 활성화 상태 전달 
+                        onClick={() => handleIconClick(item.id)} // 상태 관리
                       >
                         {item.icon}
                         <span className="tooltip">{item.tooltip}</span>

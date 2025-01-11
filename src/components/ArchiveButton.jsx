@@ -1,10 +1,12 @@
 import React from "react";
-import { ArchiveList } from "../styles/ArchiveButtonStyle";
+import { ArchiveList, ClickedArchive } from "../styles/ArchiveButtonStyle";
 
 const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
 
   return (
     <>
+
+        <ClickedArchive isActive = {isArchiveOpen} onClick = {toggleArchive} />
 
       {/* 조건부 렌더링 - ArchiveList */}
       {isArchiveOpen && (
