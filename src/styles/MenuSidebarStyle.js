@@ -31,8 +31,7 @@ export const MenuSidebarIcon = styled.div`
   color: black;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
-  background-color: ${( { isActive }) => 
-    ( isActive ? "#ECECEC" : "transparent" ) };
+
   justify-content: center;
   width: 45px;
   height: 45px;
