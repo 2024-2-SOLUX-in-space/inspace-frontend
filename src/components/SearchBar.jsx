@@ -40,14 +40,14 @@ const IconContainer = styled.div`
   display: flex;
   gap: 20px;
   font-size: 1.4rem;
-  margin-right: 5px;
+  margin-right: 30px;
 `;
 
 const BellIconButton = styled.button`
   border: none;
   background: none;
   cursor: pointer;
-  padding: 6px;
+  padding: 10px;
   border-radius: 20%;
   transition: background-color 0.3s;
 
@@ -60,7 +60,7 @@ const IconButton = styled.button`
   border: none;
   background: none;
   cursor: pointer;
-  padding: 5px;
+  padding: 10px;
   border-radius: 20%;
   transition: background-color 0.3s;
 
