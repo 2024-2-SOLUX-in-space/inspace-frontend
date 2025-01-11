@@ -30,11 +30,8 @@ const Page = React.forwardRef((props, ref) => {
     e.preventDefault();
     const rect = e.currentTarget.getBoundingClientRect();
     
-    const imageWidth = 100;
-    const imageHeight = 100;
-    
-    const x = e.clientX - rect.left - (imageWidth / 2);
-    const y = e.clientY - rect.top - (imageHeight / 2);
+    const x = e.clientX - rect.left - (window.draggedImage.offsetX || 0);
+    const y = e.clientY - rect.top - (window.draggedImage.offsetY || 0);
     
     if (props.onImageDrop) {
       props.onImageDrop(props.number, x, y);
@@ -58,7 +55,9 @@ const Page = React.forwardRef((props, ref) => {
               style={{
                 position: 'absolute',
                 left: `${image.position?.x}px`,
-                top: `${image.position?.y}px`
+                top: `${image.position?.y}px`,
+                width: image.style?.width,
+                height: image.style?.height
               }}
             />
           ))}
@@ -68,20 +67,20 @@ const Page = React.forwardRef((props, ref) => {
   );
 });
 
-const HomeDiary = ({ images = {}, onImageDrop }) => {
+const HomeDiary = ({ images = {}, onImageDrop, isModalOpen }) => {
   const flipBook = useRef();
 
   return (
-    <DiaryWrapper>
+    <DiaryWrapper style={{ pointerEvents: isModalOpen ? 'none' : 'auto' }}>
       <BookWrapper>
         <HTMLFlipBook
-          width={858}
-          height={1144}
+          width={500}
+          height={700}
           size="stretch"
-          minWidth={492}
-          maxWidth={1560}
-          minHeight={624}
-          maxHeight={2392}
+          minWidth={400}
+          maxWidth={1000}
+          minHeight={500}
+          maxHeight={1500}
           maxShadowOpacity={0.5}
           showCover={true}
           mobileScrollSupport={true}
@@ -99,7 +98,10 @@ const HomeDiary = ({ images = {}, onImageDrop }) => {
           <Page number={4} images={images[4]} onImageDrop={onImageDrop}>네 번째 장</Page>
           <Page number={5} images={images[5]} onImageDrop={onImageDrop}>다섯 번째 장</Page>
           <Page number={6} images={images[6]} onImageDrop={onImageDrop}>여섯 번째 장</Page>
-          
+          <Page number={7} images={images[7]} onImageDrop={onImageDrop}>일곱 번째 장</Page>
+          <Page number={8} images={images[8]} onImageDrop={onImageDrop}>여덟 번째 장</Page>
+          <Page number={9} images={images[9]} onImageDrop={onImageDrop}>아홉 번째 장</Page>
+          <Page number={10} images={images[10]} onImageDrop={onImageDrop}>열 번째 장</Page>        
           <PageCover position="bottom">THE END</PageCover>
         </HTMLFlipBook>
       </BookWrapper>

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { FiFolderPlus, FiImage, FiYoutube, FiMusic } from "react-icons/fi";
+import React, { useState, useRef } from 'react';
+import { FiFolderPlus, FiImage, FiYoutube, FiMusic, FiPlus } from "react-icons/fi";
 import { BiSticker } from "react-icons/bi";
 import {
   SidebarContainer,
@@ -7,9 +7,12 @@ import {
   DraggableContainer,
   DraggableItem,
   StyledImage,
-  IconContainer
+  IconContainer,
+  AddButtonContainer,
+  AddButton
 } from '../styles/EditSidebarStyle';
 import stickerData from '../data/stickers.json';
+import ImageAddModal from './ImageAddModal';
 
 const initialCategoryData = {
   image: [
@@ -34,56 +37,145 @@ const initialCategoryData = {
 const EditSidebar = ({ isOpen, onClose }) => {
   const [selectedIcon, setSelectedIcon] = useState('image');
   const [categoryData, setCategoryData] = useState(initialCategoryData);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef(null);
 
   const icons = [
     { id: 'image', Icon: FiImage, alt: '이미지' },
     { id: 'youtube', Icon: FiYoutube, alt: '유튜브' },
     { id: 'music', Icon: FiMusic, alt: '음악' },
     { id: 'sticker', Icon: BiSticker, alt: '스티커' },
-        { id: 'file', Icon: FiFolderPlus, alt: '파일' },
+    { id: 'file', Icon: FiFolderPlus, alt: '파일' },
   ];
 
   const handleDragStart = (image) => (e) => {
-    window.draggedImage = image;
+    const rect = e.target.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const offsetY = e.clientY - rect.top;
+    
+    window.draggedImage = {
+      ...image,
+      width: e.target.width,
+      height: e.target.height,
+      offsetX: offsetX,
+      offsetY: offsetY,
+      isSticker: isStickersSelected(),
+      style: {
+        width: `${e.target.width}px`,
+        height: `${e.target.height}px`
+      }
+    };
   };
 
   const getCurrentData = () => {
     return categoryData[selectedIcon] || [];
   };
 
-  // 현재 선택된 카테고리가 스티커인지 확인하는 함수
   const isStickersSelected = () => selectedIcon === 'sticker';
 
-  return (
-    <SidebarContainer isOpen={isOpen}>
-      <SidebarContent>
-        <DraggableContainer isStickers={isStickersSelected()}>
-          {getCurrentData().map((item) => (
-            <DraggableItem key={item.id}>
-              <StyledImage 
-                src={item.src} 
-                alt={item.alt} 
-                draggable="true"
-                onDragStart={handleDragStart(item)}
-              />
-            </DraggableItem>
-          ))}
-        </DraggableContainer>
+  const handleFileButtonClick = () => {
+    setSelectedIcon('file');
+    fileInputRef.current?.click();
+  };
+
+  const handleFileUpload = (e) => {
+    const files = e.target.files;
+    if (files && files[0]) {
+      setSelectedFile(files[0]);
+      setIsModalOpen(true);
+    }
+  };
+
+  const handleSaveImage = (title, croppedImageUrl, dimensions) => {
+    if (selectedFile) {
+      const img = new Image();
+      img.onload = () => {
+        const newImage = {
+          id: `file-${Date.now()}`,
+          src: croppedImageUrl,
+          alt: title || selectedFile.name,
+          width: dimensions?.width || img.width,
+          height: dimensions?.height || img.height,
+          style: {
+            width: dimensions?.width ? `${dimensions.width}px` : 'auto',
+            height: dimensions?.height ? `${dimensions.height}px` : 'auto'
+          }
+        };
+
+        setCategoryData(prev => ({
+          ...prev,
+          file: [...prev.file, newImage]
+        }));
         
-        <IconContainer>
-          {icons.map((icon) => (
-            <div key={icon.id}>
-              <icon.Icon 
-                onClick={() => setSelectedIcon(icon.id)}
-                style={{ 
-                  color: selectedIcon === icon.id ? '#000000' : undefined 
-                }}
-              />
-            </div>
-          ))}
-        </IconContainer>
-      </SidebarContent>
-    </SidebarContainer>
+        setSelectedFile(null);
+      };
+      img.src = croppedImageUrl;
+    }
+  };
+
+  return (
+    <>
+      <SidebarContainer isOpen={isOpen}>
+        <SidebarContent>
+          <DraggableContainer isStickers={isStickersSelected()}>
+            {getCurrentData().map((item) => (
+              <DraggableItem key={item.id}>
+                <StyledImage 
+                  src={item.src} 
+                  alt={item.alt} 
+                  draggable="true"
+                  onDragStart={handleDragStart({
+                    ...item,
+                    isSticker: isStickersSelected()
+                  })}
+                  isSticker={isStickersSelected()}
+                  width={item.width}
+                  height={item.height}
+                  style={item.style}
+                />
+              </DraggableItem>
+            ))}
+          </DraggableContainer>
+
+          {selectedIcon === 'file' && (
+            <AddButtonContainer>
+              <AddButton onClick={() => fileInputRef.current?.click()}>
+                <FiPlus />
+                추가
+              </AddButton>
+            </AddButtonContainer>
+          )}
+          
+          <IconContainer>
+            {icons.map((icon) => (
+              <div key={icon.id}>
+                <icon.Icon 
+                  onClick={() => setSelectedIcon(icon.id)}
+                  style={{ 
+                    color: selectedIcon === icon.id ? '#000000' : undefined 
+                  }}
+                />
+              </div>
+            ))}
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: 'none' }}
+              onChange={handleFileUpload}
+              accept="image/*"
+            />
+          </IconContainer>
+        </SidebarContent>
+      </SidebarContainer>
+
+      <ImageAddModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        imageFile={selectedFile}
+        onSave={handleSaveImage}
+      />
+    </>
   );
 };
 

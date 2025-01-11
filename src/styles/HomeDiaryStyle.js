@@ -148,8 +148,19 @@ export const DiaryContent = styled.div`
 
 export const DraggableImage = styled.img`
   position: absolute;
-  max-width: 150px;
-  max-height: 150px;
+  object-fit: contain;
   cursor: move;
   user-select: none;
+`;
+
+export const DiaryOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 999;
+  pointer-events: auto;
+  display: ${({ isModalOpen }) => (isModalOpen ? 'block' : 'none')};
 `;
