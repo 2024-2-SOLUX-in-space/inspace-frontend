@@ -44,9 +44,9 @@ export const MenuSidebarIcon = styled.div`
 
   .tooltip {
     position: absolute;
-    top: 20%;
-    left: 280%;
-    transform: translateX(-50%);
+    top: 50%;
+    left: 170%;
+    transform: translateY(-50%);
     background-color: white;
     color: black;
     padding: 5px 10px;

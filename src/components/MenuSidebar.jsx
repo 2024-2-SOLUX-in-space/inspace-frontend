@@ -29,10 +29,10 @@ import ArchiveButton from '../components/ArchiveButton';
         // 아이콘을 배열로 저장하는 상수 
         // map 메서드 사용해 메뉴 렌더링
         const menuItems = [
-          { icon: <FiHome />, id: "home", tooltip: "홈으로 이동" },
-          { icon: <FiArchive />, id: "archive", tooltip: "공간 목록 보기" },
-          { icon: <FiFilePlus />, id: "filePlus", tooltip: "공간 추가하기" },
-          { icon: <FiEdit />, id: "edit", tooltip: "공간 편집하기" },
+          { icon: <FiHome />, id: "home", tooltip: "홈" },
+          { icon: <FiArchive />, id: "archive", tooltip: "공간 목록" },
+          { icon: <FiFilePlus />, id: "filePlus", tooltip: "공간 추가" },
+          { icon: <FiEdit />, id: "edit", tooltip: "공간 편집" },
           { icon: <FiHeart />, id: "heart", tooltip: "팔로워/팔로잉" },
         ];
       
