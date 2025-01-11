@@ -17,28 +17,43 @@ const Logo = styled.img`
 `;
 
 const SearchInputWrapper = styled.div`
-  flex: 1;
+  flex: 1.2;
   display: flex;
   align-items: center;
-  margin: 0 10px;
-  border: 1px solid #ddd;
+  margin: 0 30px;
   border-radius: 20px;
-  padding: 8px 12px;
-  background: #fff;
+  padding: 10px 10px;
+  background-color: #f5f5f5;
 `;
 
 const SearchInput = styled.input`
   flex: 1;
+  width: 100%;
   border: none;
   outline: none;
-  padding: 8px;
+  padding: 10px;
   font-size: 1rem;
+  background-color: #f5f5f5;
 `;
 
 const IconContainer = styled.div`
   display: flex;
-  gap: 15px;
-  font-size: 1.2rem;
+  gap: 20px;
+  font-size: 1.4rem;
+  margin-right: 5px;
+`;
+
+const BellIconButton = styled.button`
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 20%;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #ececec;
+  }
 `;
 
 const IconButton = styled.button`
@@ -46,11 +61,11 @@ const IconButton = styled.button`
   background: none;
   cursor: pointer;
   padding: 5px;
-  border-radius: 50%;
+  border-radius: 20%;
   transition: background-color 0.3s;
 
   &:hover {
-    background-color: #f0f0f0;
+    background-color: #ececec;
   }
 `;
 
@@ -80,9 +95,9 @@ const SearchBar = () => {
         />
       </SearchInputWrapper>
       <IconContainer>
-        <IconButton>
+        <BellIconButton>
           <FaBell />
-        </IconButton>
+        </BellIconButton>
         <IconButton>
           <FaUser />
         </IconButton>

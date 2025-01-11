@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaTimes } from 'react-icons/fa';
+import { FaTimes, FaImage, FaMusic, FaYoutube } from 'react-icons/fa';
 import SearchBar from '../components/SearchBar';
 import {
   SearchResultContainer,
@@ -11,9 +11,9 @@ import {
 import SearchResultImage from '../img/SearchResultImage.png';
 
 const initialHashtags = [
-  { id: 1, label: 'image', active: true },
-  { id: 2, label: 'music', active: true },
-  { id: 3, label: 'youtube', active: true },
+  { id: 1, label: 'image', icon: <FaImage size={16} />, active: true },
+  { id: 2, label: 'music', icon: <FaMusic size={16} />, active: true },
+  { id: 3, label: 'youtube', icon: <FaYoutube size={16} />, active: true },
 ];
 
 const SearchResult = () => {
@@ -39,8 +39,16 @@ const SearchResult = () => {
             key={tag.id}
             active={tag.active}
             onClick={() => handleHashtagClick(tag.id)}
+            style={{
+              backgroundColor: tag.active ? 'black' : '#F5F5F5',
+              color: tag.active ? 'white' : 'black',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              borderRadius: '12px',
+            }}
           >
-            #{tag.label} {tag.active && <FaTimes />}
+            {tag.icon} {tag.label} {tag.active && <FaTimes size={14} />}
           </Hashtag>
         ))}
       </HashtagContainer>
