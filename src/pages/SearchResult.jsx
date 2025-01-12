@@ -39,9 +39,11 @@ const FixedSearchBar = styled.div`
   position: fixed;
   top: 0;
   width: 100%;
+  height: 70px;
   background: white;
-  z-index: 10;
+  z-index: 1000;
   padding: 10px 0;
+  border-bottom: 1px solid #eee;
 `;
 
 const MasonryGrid = styled.div`
@@ -179,7 +181,7 @@ const SearchResult = () => {
   return (
     <SearchResultContainer>
       <FixedSearchBar>
-        <SearchBar />
+        <SearchBar iconInside />
       </FixedSearchBar>
 
       <HashtagContainer>
