@@ -75,22 +75,58 @@ const DetailView = styled.div`
   align-items: center;
   text-align: center;
 
-  .username {
+  .image-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+  }
+
+  .user-info {
+    position: fixed;
+    top: 50px;
+    left: 40px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
     font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 10px;
+    color: black;
+  }
+
+  .profile-image {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+  }
+
+  .title {
+    position: fixed;
+    top: 520px;
+    align-items: center;
+    font-size: 2rem;
+    color: black;
+    margin-top: 10px;
   }
 
   img {
-    max-width: 60%;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    max-width: 40%;
+    border-radius: 10px;
   }
 
-  p {
+  .add-button {
+    padding: 10px 20px;
+    background: black;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    width: 15%;
     font-size: 1.2rem;
-    margin-top: 10px;
-    font-weight: bold;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
   }
 `;
 
@@ -111,8 +147,8 @@ const SearchResult = () => {
   const [hashtags, setHashtags] = useState(initialHashtags);
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageData, setImageData] = useState({
-    title: '런던 어쩌구 가게의 곰돌이 인형',
-    username: 'Space',
+    username: 'Unknown User',
+    title: 'No Title Available',
   });
 
   const handleHashtagClick = (id) => {
@@ -126,15 +162,18 @@ const SearchResult = () => {
   const handleImageClick = async (src) => {
     try {
       const response = await axios.get('/api/image-data');
-      setImageData(response.data);
+      const { username = 'Space', title = 'Teddy Bear' } = response.data || {};
+      setImageData({ username, title });
     } catch (error) {
       console.error('Failed to fetch data from backend:', error);
+      setImageData({ username: 'Error', title: 'Failed to load data' });
     }
     setSelectedImage(src);
   };
 
   const closeDetailView = () => {
     setSelectedImage(null);
+    setImageData({ username: 'Unknown User', title: 'No Title Available' });
   };
 
   return (
@@ -166,7 +205,7 @@ const SearchResult = () => {
             <img
               src={`/src/img/Dummy/image_${index + 1}.png`}
               alt={`Image ${index + 1}`}
-              style={{ width: '100%', borderRadius: '8px' }}
+              style={{ width: '100%', borderRadius: '10px' }}
             />
           </GridItem>
         ))}
@@ -175,11 +214,19 @@ const SearchResult = () => {
       <DetailView visible={!!selectedImage}>
         <CloseButton size={30} onClick={closeDetailView} />
         {selectedImage && (
-          <>
-            <div className="username">{imageData.username}</div>
+          <div className="image-container">
+            <div className="user-info">
+              <img
+                className="profile-image"
+                src="src/img/ProfileImage.png"
+                alt="Profile"
+              />
+              {imageData.username}
+            </div>
             <img src={selectedImage} alt="Detailed view" />
-            <p>{imageData.title}</p>
-          </>
+            <p className="title">{imageData.title}</p>
+            <button className="add-button">+ add</button>
+          </div>
         )}
       </DetailView>
     </SearchResultContainer>
