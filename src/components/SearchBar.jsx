@@ -75,6 +75,12 @@ const SearchBar = () => {
     }
   };
 
+  //마이페이지 이동 로직
+  const handleUserClick = () => {
+    setIsUserFilled(!isUserFilled);
+    //navigate('/mypage');
+  };
+
   return (
     <SearchBarContainer>
       <Logo src="/src/img/Logo.png" alt="Logo" />
@@ -108,7 +114,7 @@ const SearchBar = () => {
           />
         </IconButton>
         <IconButton 
-          onClick={() => setIsUserFilled(!isUserFilled)} 
+          onClick={handleUserClick}
           isSelected={isUserFilled}
         >
           <FiUser 
