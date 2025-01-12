@@ -1,40 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { FaTimes, FaImage, FaMusic, FaYoutube } from 'react-icons/fa';
 import SearchBar from '../components/SearchBar';
 import styled from 'styled-components';
-
-const images = [
-  '/src/img/Dummy/image_1.png',
-  '/src/img/Dummy/image_2.png',
-  '/src/img/Dummy/image_3.png',
-  '/src/img/Dummy/image_4.png',
-  '/src/img/Dummy/image_5.png',
-  '/src/img/Dummy/image_6.png',
-  '/src/img/Dummy/image_7.png',
-  '/src/img/Dummy/image_8.png',
-  '/src/img/Dummy/image_9.png',
-  '/src/img/Dummy/image_10.png',
-  '/src/img/Dummy/image_11.png',
-  '/src/img/Dummy/image_12.png',
-  '/src/img/Dummy/image_13.png',
-  '/src/img/Dummy/image_14.png',
-  '/src/img/Dummy/image_15.png',
-  '/src/img/Dummy/image_16.png',
-  '/src/img/Dummy/image_17.png',
-  '/src/img/Dummy/image_18.png',
-  '/src/img/Dummy/image_19.png',
-  '/src/img/Dummy/image_20.png',
-  '/src/img/Dummy/image_21.png',
-  '/src/img/Dummy/image_22.png',
-  '/src/img/Dummy/image_23.png',
-  '/src/img/Dummy/image_24.png',
-  '/src/img/Dummy/image_25.png',
-  '/src/img/Dummy/image_26.png',
-  '/src/img/Dummy/image_27.png',
-  '/src/img/Dummy/image_28.png',
-  '/src/img/Dummy/image_29.png',
-  '/src/img/Dummy/image_30.png',
-];
 
 const SearchResultContainer = styled.div`
   padding: 20px;
@@ -85,6 +53,52 @@ const MasonryGrid = styled.div`
 const GridItem = styled.div`
   break-inside: avoid;
   margin-bottom: 10px;
+  cursor: pointer;
+`;
+
+const DetailView = styled.div`
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100vh;
+  width: 50%;
+  background: white;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  z-index: 100;
+  transform: ${(props) =>
+    props.visible ? 'translateX(0)' : 'translateX(100%)'};
+  transition: transform 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  .username {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  img {
+    max-width: 60%;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+
+  p {
+    font-size: 1.2rem;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+`;
+
+const CloseButton = styled(FaTimes)`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
 `;
 
 const initialHashtags = [
@@ -95,6 +109,11 @@ const initialHashtags = [
 
 const SearchResult = () => {
   const [hashtags, setHashtags] = useState(initialHashtags);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imageData, setImageData] = useState({
+    title: '런던 어쩌구 가게의 곰돌이 인형',
+    username: 'Space',
+  });
 
   const handleHashtagClick = (id) => {
     setHashtags(
@@ -102,6 +121,20 @@ const SearchResult = () => {
         tag.id === id ? { ...tag, active: !tag.active } : tag,
       ),
     );
+  };
+
+  const handleImageClick = async (src) => {
+    try {
+      const response = await axios.get('/api/image-data');
+      setImageData(response.data);
+    } catch (error) {
+      console.error('Failed to fetch data from backend:', error);
+    }
+    setSelectedImage(src);
+  };
+
+  const closeDetailView = () => {
+    setSelectedImage(null);
   };
 
   return (
@@ -122,18 +155,33 @@ const SearchResult = () => {
         ))}
       </HashtagContainer>
 
-      {/* Pinterest-Style Masonry Layout */}
       <MasonryGrid>
-        {images.map((src, index) => (
-          <GridItem key={index}>
+        {[...Array(30).keys()].map((index) => (
+          <GridItem
+            key={index}
+            onClick={() =>
+              handleImageClick(`/src/img/Dummy/image_${index + 1}.png`)
+            }
+          >
             <img
-              src={src}
+              src={`/src/img/Dummy/image_${index + 1}.png`}
               alt={`Image ${index + 1}`}
               style={{ width: '100%', borderRadius: '8px' }}
             />
           </GridItem>
         ))}
       </MasonryGrid>
+
+      <DetailView visible={!!selectedImage}>
+        <CloseButton size={30} onClick={closeDetailView} />
+        {selectedImage && (
+          <>
+            <div className="username">{imageData.username}</div>
+            <img src={selectedImage} alt="Detailed view" />
+            <p>{imageData.title}</p>
+          </>
+        )}
+      </DetailView>
     </SearchResultContainer>
   );
 };
