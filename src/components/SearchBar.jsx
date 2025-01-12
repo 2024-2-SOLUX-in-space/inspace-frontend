@@ -10,7 +10,6 @@ const SearchBarContainer = styled.div`
   justify-content: space-between;
   padding: 15px 20px;
   background-color: #fff;
-  border-bottom: 1px solid #ddd;
 `;
 
 const Logo = styled.img`
