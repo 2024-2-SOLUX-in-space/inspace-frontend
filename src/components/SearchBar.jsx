@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FaSearch, FaBell, FaUser } from 'react-icons/fa';
+import { FiSearch, FiBell, FiUser } from "react-icons/fi";
 import { useNavigate } from 'react-router-dom';
 
 const SearchBarContainer = styled.div`
@@ -14,6 +14,7 @@ const SearchBarContainer = styled.div`
 
 const Logo = styled.img`
   height: 40px;
+  padding-left: 10px;
 `;
 
 const SearchInputWrapper = styled.div`
@@ -28,32 +29,17 @@ const SearchInputWrapper = styled.div`
 
 const SearchInput = styled.input`
   flex: 1;
-  width: 100%;
   border: none;
   outline: none;
   padding: 10px;
-  font-size: 1rem;
+  font-size: 1.2rem;
   background-color: #f5f5f5;
 `;
 
 const IconContainer = styled.div`
   display: flex;
   gap: 20px;
-  font-size: 1.4rem;
   margin-right: 30px;
-`;
-
-const BellIconButton = styled.button`
-  border: none;
-  background: none;
-  cursor: pointer;
-  padding: 10px;
-  border-radius: 20%;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #ececec;
-  }
 `;
 
 const IconButton = styled.button`
@@ -63,17 +49,27 @@ const IconButton = styled.button`
   padding: 10px;
   border-radius: 20%;
   transition: background-color 0.3s;
+  outline: none;
+  background-color: ${props => props.isSelected ? '#ececec' : 'transparent'};
 
   &:hover {
     background-color: #ececec;
+  }
+
+  &:focus {
+    outline: none;
   }
 `;
 
 const SearchBar = () => {
   const [searchText, setSearchText] = useState('');
+  const [isBellFilled, setIsBellFilled] = useState(false);
+  const [isUserFilled, setIsUserFilled] = useState(false);
+  const [isSearchFilled, setIsSearchFilled] = useState(false);
   const navigate = useNavigate();
 
   const handleSearch = () => {
+    setIsSearchFilled(!isSearchFilled);
     if (searchText.trim()) {
       navigate('/search');
     }
@@ -83,8 +79,15 @@ const SearchBar = () => {
     <SearchBarContainer>
       <Logo src="/src/img/Logo.png" alt="Logo" />
       <SearchInputWrapper>
-        <IconButton onClick={handleSearch}>
-          <FaSearch style={{ marginRight: '10px' }} />
+        <IconButton 
+          onClick={handleSearch} 
+          isSelected={isSearchFilled}
+        >
+          <FiSearch 
+            size={24} 
+            style={{ marginRight: '10px' }} 
+            fill={isSearchFilled ? 'currentColor' : 'none'} 
+          />
         </IconButton>
         <SearchInput
           type="text"
@@ -95,11 +98,23 @@ const SearchBar = () => {
         />
       </SearchInputWrapper>
       <IconContainer>
-        <BellIconButton>
-          <FaBell />
-        </BellIconButton>
-        <IconButton>
-          <FaUser />
+        <IconButton 
+          onClick={() => setIsBellFilled(!isBellFilled)} 
+          isSelected={isBellFilled}
+        >
+          <FiBell 
+            size={32} 
+            fill={isBellFilled ? 'currentColor' : 'none'} 
+          />
+        </IconButton>
+        <IconButton 
+          onClick={() => setIsUserFilled(!isUserFilled)} 
+          isSelected={isUserFilled}
+        >
+          <FiUser 
+            size={32} 
+            fill={isUserFilled ? 'currentColor' : 'none'} 
+          />
         </IconButton>
       </IconContainer>
     </SearchBarContainer>
