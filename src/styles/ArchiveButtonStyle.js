@@ -40,8 +40,8 @@ export const ListBox = styled.div `
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 1px;
-  margin: 0;
+  padding: 7px 1px;
+  margin: 0px;
   cursor: pointer;
   border-bottom: 1px solid black;
   background-color: ${ ({isSelected}) => ( isSelected ? "#ECECEC" : "white" ) };

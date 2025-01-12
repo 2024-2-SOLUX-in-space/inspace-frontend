@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ArchiveList, ClickedArchive, ListBox } from "../styles/ArchiveButtonStyle";
 import FixModel from "./FixModel";
+import TrashModel from "./TrashModel";
 
 const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
   const [spaces, setSpaces] = useState([
@@ -37,6 +38,12 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
       });
     };    
 
+    // trash 삭제 기능 
+    const handleDeleteSpace = (id) => {
+      setSpaces( (prevSpaces) => prevSpaces.filter( (space) =>
+        space.id !== id));
+    };
+
   return (
     <>
       { /* 아이콘 배경 */ }
@@ -58,6 +65,7 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
                     onPinToggle={handlePinToggle}
                   />
                   <span> {space.title} </span>
+                  <TrashModel spaceId={space.id} onDelete={handleDeleteSpace} />
 
               </ListBox>
             ))}
