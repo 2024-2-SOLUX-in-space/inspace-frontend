@@ -4,16 +4,18 @@ import styled from 'styled-components';
 export const ArchiveList = styled.div`
   position: fixed;
   top: 20%;
-  left: 20%;
-  width: 60%;
-  height: 60%;
+  left: 7%;
+  width: 250px;
+  height: 300px;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 2000;
+  z-index: 900;
   color: black;
+  padding: 10px;
 `;
 
+/* 클릭 시 회색 배경 */
 export const ClickedArchive = styled.div`
   display: flex;
   align-items: center;
@@ -31,4 +33,20 @@ export const ClickedArchive = styled.div`
   top: 230px;
   left: 15px;
   z-index: -1000; 
+`;
+
+/* 목록 속 개별 공간 */
+export const ListBox = styled.div `
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 1px;
+  margin: 0;
+  cursor: pointer;
+  border-bottom: 1px solid black;
+  background-color: ${ ({isSelected}) => ( isSelected ? "#ECECEC" : "white" ) };
+
+  &:hover {
+    background-color: #ECECEC;
+  }
 `;
