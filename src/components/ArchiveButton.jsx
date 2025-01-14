@@ -1,16 +1,26 @@
-import React, { useState } from "react";
-import { ArchiveList, ClickedArchive, ListBox } from "../styles/ArchiveButtonStyle";
+import React, { useState, useEffect } from "react";
+import { ArchiveList, ClickedArchive, ListBox, TitleContainer } from "../styles/ArchiveButtonStyle";
 import FixModel from "./FixModel";
 import TrashModel from "./TrashModel";
+import SwitchModel from "./SwitchModel";
 
 const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
   const [spaces, setSpaces] = useState([
-    { id: 1, title: "공간 1", isPinned: true }, 
-    { id: 2, title: "공간 2", isPinned: false }, 
-    { id: 3, title: "공간 3", isPinned: false }, 
-    { id: 4, title: "공간 4", isPinned: false }, 
-    { id: 5, title: "공간 5", isPinned: false }, 
+    { id: 1, title: "해리포터와 마법사의 돌", isPinned: true, isPublic: false }, 
+    { id: 2, title: "더 퍼스트 슬램덩크", isPinned: false, isPublic: true }, 
+    { id: 3, title: "에브리씽 에브리웨어 올 앳 원스", isPinned: false, isPublic: false }, 
+    { id: 4, title: "대도시의 사랑법", isPinned: false, isPublic: true }, 
+    { id: 5, title: "위키드", isPinned: false, isPublic: false },
+    { id: 6, title: "지킬앤하이드", isPinned: false, isPublic: true }, 
+    { id: 7, title: "시라노", isPinned: false, isPublic: false }, 
+    { id: 8, title: "명성황후", isPinned: false, isPublic: false }, 
   ]); 
+
+  const [isScrollable, setIsScrollable] = useState(false);
+  useEffect( () => {
+    setIsScrollable(spaces.length > 5);
+  }, [spaces]);
+
 
   // 선택된 공간 (회색 배경)
   const [ selectedBox, setSelectedBox ] = useState(null); 
@@ -18,7 +28,7 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
   // 클릭 시 공간 이동 
     const handleListBoxClick = (id) => {
       setSelectedBox(id); 
-      // **추후 연동** 개별 공간 목록 클릭 시 공간 이동 
+      // **추후 연동 필요** 개별 공간 목록 클릭 시 공간 이동 
     }
 
     // 핀버튼 클릭 시 >> 검정색으로, 상단으로 
@@ -30,10 +40,8 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
             ? { ...space, isPinned: true }
             : { ...space, isPinned: false }
         );
-    
         const pinnedSpace = updatedSpaces.find((space) => space.id === id);
         const otherSpaces = updatedSpaces.filter((space) => space.id !== id);
-    
         return [pinnedSpace, ...otherSpaces];
       });
     };    
@@ -44,14 +52,20 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
         space.id !== id));
     };
 
+    // 공개/비공개 전환 기능
+    const handleSwitchToggle = (id) => {
+      setSpaces( (prevSpaces) => prevSpaces.map( (space) => 
+        space.id === id ? { ...space, isPublic: !space.isPublic } : space 
+        )
+      );
+    };
+
   return (
     <>
-      { /* 아이콘 배경 */ }
       <ClickedArchive isActive = {isArchiveOpen} onClick = {toggleArchive} />
 
-      {/* 조건부 렌더링 - ArchiveList */}
       {isArchiveOpen && (
-        <ArchiveList>
+        <ArchiveList isScrollable = {isScrollable}>
             {spaces.map( (space) => (
               <ListBox 
                 key = {space.id}
@@ -64,7 +78,12 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
                     isPinned = {space.isPinned}
                     onPinToggle={handlePinToggle}
                   />
-                  <span> {space.title} </span>
+                  <TitleContainer> {space.title} </TitleContainer>
+                  <SwitchModel
+                    spaceId={space.id}
+                    isPublic={space.isPublic}
+                    onSwitchToggle={handleSwitchToggle}
+                  />
                   <TrashModel spaceId={space.id} onDelete={handleDeleteSpace} />
 
               </ListBox>

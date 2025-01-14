@@ -1,16 +1,14 @@
 import styled from "styled-components";
 
-export const TrashButton = styled.button`
-  background: transparent;
-  border: none;
+export const SwitchButton = styled.div`
   cursor: pointer;
   display: flex;
-  color: red;
+  margin-right: 3px; /* 책 ~ 쓰레기통 */
   font-size: 17px;
   align-items: center;
   justify-content: center;
   padding: 5px;
-  margin-right: 10px;
+
   &:hover {
     transform: scale(1.1);
     transition: transform 0.2s ease-in-out;

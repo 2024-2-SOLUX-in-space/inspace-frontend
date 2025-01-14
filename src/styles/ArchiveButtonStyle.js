@@ -5,14 +5,18 @@ export const ArchiveList = styled.div`
   position: fixed;
   top: 20%;
   left: 7%;
-  width: 250px;
+  width: 280px;
   height: 300px;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 900;
   color: black;
-  padding: 10px;
+  padding: 8px;
+
+  /* 스크롤 */
+  max-height: ${ ({isScrollable}) => (isScrollable ? "300px" : "auto")}; 
+  overflow-y: ${ ({isScrollable }) => (isScrollable ? "auto" : "hidden")}; 
 `;
 
 /* 클릭 시 회색 배경 */
@@ -40,7 +44,7 @@ export const ListBox = styled.div `
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 7px 1px;
+  padding: 10px 1px;
   margin: 0px;
   cursor: pointer;
   border-bottom: 1px solid black;
@@ -49,4 +53,15 @@ export const ListBox = styled.div `
   &:hover {
     background-color: #ECECEC;
   }
+`;
+
+/* 아이콘, 제목 너비 조정 */
+export const TitleContainer = styled.span`
+  flex-grow: 1; 
+  text-align: left;
+  margin: 0 10px; 
+  white-space: nowrap; 
+  overflow: hidden;
+  text-overflow: ellipsis; 
+  font-size: 15px;
 `;

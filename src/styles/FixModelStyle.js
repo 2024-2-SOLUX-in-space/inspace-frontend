@@ -1,10 +1,11 @@
 import styled from "styled-components";
 
 export const PinButton = styled.img`
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   cursor: pointer;
-  margin-left: 7px;
+  margin-left: 6px;
+  margin-right: 0px; /* 핀버튼 ~ 제목 */
 
   filter: ${({ isPinned }) =>
     isPinned 
