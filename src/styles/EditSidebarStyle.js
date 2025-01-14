@@ -3,9 +3,9 @@ import styled from 'styled-components';
 export const SidebarContainer = styled.div`
   position: absolute;
   right: 0;
-  top: 0;
-  width: 420px;
-  height: 100vh;
+  top: 70px;
+  width: 400px;
+  height: 93vh;
   background-color: white;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
   transform: translateX(${(props) => (props.isOpen ? '0' : '100%')});
@@ -14,13 +14,16 @@ export const SidebarContainer = styled.div`
   transition:
     transform 0.3s ease-in-out,
     visibility 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 `;
 
 export const SidebarContent = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 20px;
+  padding: 10px;
 `;
 
 export const DraggableContainer = styled.div`
@@ -59,8 +62,8 @@ export const StyledImage = styled.img`
 
 export const IconContainer = styled.div`
   display: flex;
-  justify-content: space-around;
-  padding: 15px 10px;
+  justify-content: space-between;
+  padding: 15px 25px;
   border-top: 1px solid #eee;
 
   div {
@@ -73,19 +76,19 @@ export const IconContainer = styled.div`
     transition: background-color 0.2s ease-in-out;
 
     &:hover {
-      background-color: #f5f5f5;
+      background-color: #e0e0e0;
     }
   }
 
   svg {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     cursor: pointer;
     color: #b3b3b3;
     transition: color 0.2s ease-in-out;
 
     &:hover {
-      color: #000000;
+      color: #333333;
     }
 
     ${(props) =>
