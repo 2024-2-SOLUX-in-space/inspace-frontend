@@ -55,7 +55,7 @@ const ForgotPasswordPage = () => {
             label="Email"
             value={email}
             onChange={handleEmailChange}
-            placeholder="inspace@example.com"
+            placeholder="inspace@gmail.com"
             type="text"
           />
           <button
