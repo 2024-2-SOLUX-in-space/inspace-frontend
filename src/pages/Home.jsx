@@ -3,6 +3,7 @@ import HomeDiary from '../components/HomeDiary';
 import EditSidebar from '../components/EditSidebar';
 import SearchBar from '../components/SearchBar';
 import { HomeContainer, ContentWrapper, EditButton } from '../styles/HomeStyle';
+import styled from 'styled-components';
 
 const initialDraggableImages = [
   { id: 'bear1', src: '/bear1.png', alt: '곰1' },
@@ -115,10 +116,11 @@ const Home = () => {
           height: '70px',
           backgroundColor: 'white',
           zIndex: 1000,
-          borderBottom: '1px solid #eee'
+          borderBottom: '1px solid #eee',
+          padding: '10px 0'
         }}
       >
-        <SearchBar style={{ height: '60px', padding: '10px' }} iconInside />
+        <SearchBar iconInside />
       </div>
       <ContentWrapper isEditOpen={isEditOpen}>
         <HomeDiary 
