@@ -5,6 +5,7 @@ import MenuSidebar from './components/MenuSidebar';
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
+import SearchResult from './pages/SearchResult';
 
 function App() {
   const [isArchiveOpen, setIsArchiveOpen] = useState(false);
@@ -20,6 +21,7 @@ function App() {
       </div>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/search" element={<SearchResult />} />
       </Routes>
 
     </Router>
