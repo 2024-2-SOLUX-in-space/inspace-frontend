@@ -19,8 +19,8 @@ const ModalContent = styled.div`
   background-color: white;
   border-radius: 0.5rem;
   padding: 1.5rem;
-  width: 1000px;
-  height: 700px;
+  width: 900px;
+  height: 600px;
   margin: 0 1rem;
   display: flex;
   flex-direction: column;
@@ -46,7 +46,7 @@ const Title = styled.h2`
 const CloseButton = styled.button`
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 2rem;
   cursor: pointer;
 `;
 
