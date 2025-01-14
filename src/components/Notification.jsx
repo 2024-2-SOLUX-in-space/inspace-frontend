@@ -14,7 +14,7 @@ const Content = styled.div`
   align-items: center;
   gap: 8px;
   width: 100%;
-  font-size: 16px;
+  font-size: 12px;
   color: #666;
 `;
 

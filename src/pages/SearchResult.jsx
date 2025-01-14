@@ -16,18 +16,20 @@ const HashtagContainer = styled.div`
   padding: 10px 20px;
   background: white;
   min-height: 60px;
+  margin-top: 8vh;
 `;
 
 const Hashtag = styled.div`
   cursor: pointer;
-  padding: 10px 15px;
-  border-radius: 20px;
+  padding: 5px 8px;
+  border-radius: 15px;
   background-color: ${(props) => (props.active ? 'black' : '#F5F5F5')};
   color: ${(props) => (props.active ? 'white' : 'black')};
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
   white-space: nowrap;
+  font-size: 0.9rem;
 `;
 
 const FixedSearchBar = styled.div`
@@ -37,12 +39,15 @@ const FixedSearchBar = styled.div`
   width: 100%;
   background: white;
   z-index: 10;
+  padding: 0.5% 1%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 8vh;
 `;
 
 const MasonryGrid = styled.div`
   column-count: 5;
   column-gap: 10px;
-  margin-top: 100px;
+  margin-top: 7vh;
   padding: 0 20px;
   width: 100%;
 `;
@@ -164,8 +169,21 @@ const SearchResult = () => {
   return (
     <SearchResultContainer>
       <FixedSearchBar>
-        <SearchBar />
-
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '70px',
+          backgroundColor: 'white',
+          zIndex: 1000,
+          borderBottom: '1px solid #eee',
+          padding: '10px 0'
+        }}
+      >
+        <SearchBar iconInside />
+      </div>
       <HashtagContainer>
         {hashtags.map((tag) => (
           <Hashtag
@@ -179,7 +197,7 @@ const SearchResult = () => {
         </HashtagContainer>
       </FixedSearchBar>
 
-      <div style={{ overflowY: 'auto', height: 'calc(100vh - 160px)' }}>
+      <div style={{ overflowY: 'auto', height: 'calc(150vh - 100px)', marginTop: '58vh' }}>
         <MasonryGrid>
           {[...Array(30).keys()].map((index) => (
             <GridItem
