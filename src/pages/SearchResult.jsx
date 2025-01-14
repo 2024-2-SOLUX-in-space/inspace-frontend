@@ -5,49 +5,46 @@ import SearchBar from '../components/SearchBar';
 import styled from 'styled-components';
 
 const SearchResultContainer = styled.div`
-  padding: 20px;
-  overflow-y: auto;
-  height: 100vh;
+  position: relative;
 `;
 
 const HashtagContainer = styled.div`
-  position: fixed;
-  top: 100px;
-  left: 0;
   width: 100%;
-  height: 10%;
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   padding: 10px 20px;
   background: white;
-  z-index: 9;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  min-height: 60px;
 `;
 
 const Hashtag = styled.div`
   cursor: pointer;
-  padding: 10px;
+  padding: 10px 15px;
   border-radius: 20px;
   background-color: ${(props) => (props.active ? 'black' : '#F5F5F5')};
   color: ${(props) => (props.active ? 'white' : 'black')};
   display: flex;
   align-items: center;
   gap: 8px;
+  white-space: nowrap;
 `;
 
 const FixedSearchBar = styled.div`
   position: fixed;
   top: 0;
+  left: 0;
   width: 100%;
   background: white;
   z-index: 10;
-  padding: 10px 0;
 `;
 
 const MasonryGrid = styled.div`
   column-count: 5;
   column-gap: 10px;
-  margin-top: 160px;
+  margin-top: 100px;
+  padding: 0 20px;
+  width: 100%;
 `;
 
 const GridItem = styled.div`
@@ -63,7 +60,6 @@ const DetailView = styled.div`
   height: 100vh;
   width: 50%;
   background: white;
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
   padding: 20px;
   z-index: 100;
   transform: ${(props) =>
@@ -79,8 +75,7 @@ const DetailView = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
-    position: relative;
+    gap: 20px;
   }
 
   .user-info {
@@ -95,19 +90,9 @@ const DetailView = styled.div`
     color: black;
   }
 
-  .profile-image {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-  }
-
   .title {
-    position: fixed;
-    top: 520px;
-    align-items: center;
     font-size: 2rem;
     color: black;
-    margin-top: 10px;
   }
 
   img {
@@ -180,7 +165,6 @@ const SearchResult = () => {
     <SearchResultContainer>
       <FixedSearchBar>
         <SearchBar />
-      </FixedSearchBar>
 
       <HashtagContainer>
         {hashtags.map((tag) => (
@@ -192,24 +176,27 @@ const SearchResult = () => {
             {tag.icon} {tag.label} {tag.active && <FaTimes size={14} />}
           </Hashtag>
         ))}
-      </HashtagContainer>
+        </HashtagContainer>
+      </FixedSearchBar>
 
-      <MasonryGrid>
-        {[...Array(30).keys()].map((index) => (
-          <GridItem
-            key={index}
-            onClick={() =>
-              handleImageClick(`/src/img/Dummy/image_${index + 1}.png`)
-            }
-          >
-            <img
-              src={`/src/img/Dummy/image_${index + 1}.png`}
-              alt={`Image ${index + 1}`}
-              style={{ width: '100%', borderRadius: '10px' }}
-            />
-          </GridItem>
-        ))}
-      </MasonryGrid>
+      <div style={{ overflowY: 'auto', height: 'calc(100vh - 160px)' }}>
+        <MasonryGrid>
+          {[...Array(30).keys()].map((index) => (
+            <GridItem
+              key={index}
+              onClick={() =>
+                handleImageClick(`/src/img/Dummy/image_${index + 1}.png`)
+              }
+            >
+              <img
+                src={`/src/img/Dummy/image_${index + 1}.png`}
+                alt={`Image ${index + 1}`}
+                style={{ width: '100%', borderRadius: '10px' }}
+              />
+            </GridItem>
+          ))}
+        </MasonryGrid>
+      </div>
 
       <DetailView visible={!!selectedImage}>
         <CloseButton size={30} onClick={closeDetailView} />
@@ -224,7 +211,7 @@ const SearchResult = () => {
               {imageData.username}
             </div>
             <img src={selectedImage} alt="Detailed view" />
-            <p className="title">{imageData.title}</p>
+            <div className="title">{imageData.title}</div>
             <button className="add-button">+ add</button>
           </div>
         )}
