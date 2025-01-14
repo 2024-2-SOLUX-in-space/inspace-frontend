@@ -20,23 +20,24 @@ export const HomeContainer = styled.div`
 
 export const ContentWrapper = styled.div`
   position: relative;
-  width: 950px;
-  height: 858px;
+  transition: transform 0.3s ease-in-out;
+  transform: ${(props) =>
+    props.isEditOpen ? 'translateX(-150px)' : 'translateX(0)'};
 `;
 
 export const EditButton = styled.button`
-  position: absolute;
-  right: 3rem;
-  bottom: 5px;
+  position: fixed;
+  right: -2rem;
+  bottom: -5rem;
   padding: 1rem 2rem;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   background-color: transparent;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
   min-width: 150px;
-  cursor: pointer;
   outline: none;
+  z-index: 1000;
 
   &:focus {
     outline: none;

@@ -11,6 +11,10 @@ export const DiaryWrapper = styled.div`
 
 export const BookWrapper = styled.div`
   position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  z-index: 1;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -22,7 +26,8 @@ export const BookWrapper = styled.div`
     background-color: hsl(35, 55%, 98%);
     color: hsl(35, 35%, 35%);
     border: solid 1px hsl(35, 20%, 70%);
-    overflow: hidden;
+    overflow: visible !important;
+    z-index: 1;
 
     &.--left {
       border-right: 0;
@@ -43,24 +48,7 @@ export const BookWrapper = styled.div`
       background-color: hsl(35, 45%, 80%);
       color: hsl(35, 35%, 35%);
       border: solid 1px hsl(35, 20%, 50%);
-
-      &.page-cover-top {
-        box-shadow:
-          inset 0px 0 30px 0px rgba(36, 10, 3, 0.5),
-          -2px 0 5px 2px rgba(0, 0, 0, 0.4);
-      }
-
-      &.page-cover-bottom {
-        box-shadow:
-          inset 0px 0 30px 0px rgba(36, 10, 3, 0.5),
-          10px 0 8px 0px rgba(0, 0, 0, 0.4);
-      }
-
-      h2 {
-        text-align: center;
-        padding-top: 50%;
-        font-size: 210%;
-      }
+      z-index: 0;
     }
   }
 
@@ -105,6 +93,10 @@ export const BookWrapper = styled.div`
       text-align: right;
     }
   }
+
+  .react-pageflip {
+    overflow: visible !important;
+  }
 `;
 
 export const EditButton = styled.button`
@@ -128,6 +120,8 @@ export const PageContent = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
+  overflow: visible;
+  z-index: 1;
   padding: 20px;
 `;
 
@@ -143,14 +137,24 @@ export const DiaryContent = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
+  overflow: visible;
+  z-index: 1;
   min-height: 500px;
 `;
 
 export const DraggableImage = styled.img`
-  position: absolute;
-  object-fit: contain;
-  cursor: move;
-  user-select: none;
+  cursor: ${(props) => (props.isEditMode ? 'move' : 'default')};
+  border: ${(props) => {
+    if (!props.isEditMode) return 'none';
+    return props.isSelected ? '2px solid #007bff' : '2px dashed #666';
+  }};
+  padding: 4px;
+  border-radius: 4px;
+  transform-origin: center center;
+
+  &:hover {
+    border-color: ${(props) => (props.isEditMode ? '#007bff' : 'none')};
+  }
 `;
 
 export const DiaryOverlay = styled.div`
@@ -163,4 +167,32 @@ export const DiaryOverlay = styled.div`
   z-index: 999;
   pointer-events: auto;
   display: ${({ isModalOpen }) => (isModalOpen ? 'block' : 'none')};
+`;
+
+export const DeleteButton = styled.button`
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: transparent;
+  border: 2px solid #000000;
+  color: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transform-origin: top left;
+
+  &:hover {
+    background-color: #000000;
+    color: white;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
 `;
