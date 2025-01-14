@@ -224,7 +224,7 @@ const SearchBar = () => {
 
   return (
     <SearchBarContainer>
-      <Logo src="/src/img/Logo.png" alt="Logo" />
+      <Logo src="/src/img/Logo.png" alt="Logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }} />
       <SearchInputWrapper>
         <FiSearch size={24} style={{ marginRight: '10px' }} />
         <SearchInput
