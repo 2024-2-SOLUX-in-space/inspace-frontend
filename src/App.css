@@ -40,3 +40,10 @@
 .read-the-docs {
   color: #888;
 }
+
+.archive-button-container {
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
+  z-index: 2000;
+}
