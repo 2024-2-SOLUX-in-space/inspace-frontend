@@ -210,13 +210,13 @@ const HomeDiary = ({
     <DiaryWrapper style={{ pointerEvents: isModalOpen ? 'none' : 'auto' }}>
       <BookWrapper>
         <HTMLFlipBook
-          width={500}
-          height={700}
+          width={450}
+          height={630}
           size="stretch"
-          minWidth={400}
-          maxWidth={1000}
-          minHeight={400}
-          maxHeight={1533}
+          minWidth={360}
+          maxWidth={850}
+          minHeight={360}
+          maxHeight={1300}
           maxShadowOpacity={0.5}
           showCover={true}
           mobileScrollSupport={true}
