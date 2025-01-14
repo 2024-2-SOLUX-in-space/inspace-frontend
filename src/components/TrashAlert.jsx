@@ -5,7 +5,7 @@ const AlertOverlay = styled.div`
   position: fixed;
   inset: 0;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   z-index: 50;
   padding-top: 10vh;
@@ -15,6 +15,10 @@ const AlertBackground = styled.div`
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.7);
+  top: 0;
+  left: 75px;
+  right: 0;
+  bottom: 0; 
 `;
 
 const AlertContent = styled.div`

@@ -34,7 +34,7 @@ export const ClickedArchive = styled.div`
   transition: background-color 0.2s ease-in-out;
 
   position: absolute;
-  top: 230px;
+  top: 240px;
   left: 15px;
   z-index: -1000; 
 `;
@@ -44,10 +44,10 @@ export const ListBox = styled.div `
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 1px;
+  padding: 15px 3px 15px 1px;
   margin: 0px;
   cursor: pointer;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #ECECEC;
   background-color: ${ ({isSelected}) => ( isSelected ? "#ECECEC" : "white" ) };
 
   &:hover {

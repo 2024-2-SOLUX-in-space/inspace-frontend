@@ -19,7 +19,7 @@ export const MenuSidebarContent = styled.div`
   flex-direction: column;
   gap: 20px;
   padding: 15px;
-  margin-top: 150px; 
+  margin-top: 160px; 
 `;
 
 // 개별 아이콘
@@ -70,7 +70,7 @@ export const MenuSidebarIcon = styled.div`
 // FiMenu 버튼 (ActiveButton)
 export const ActiveButton = styled.div`
   position: fixed;
-  top: 100px;
+  top: 110px;
   left: 16px;
   color: black;
   font-size: 30px;
@@ -122,7 +122,7 @@ export const ActiveButton = styled.div`
 // FiChevronsLeft 버튼 (InactiveButton)
 export const InactiveButton = styled.div`
   position: fixed;
-  top: 100px;
+  top: 110px;
   left: 16px;
   font-size: 30px;
   color: black;
