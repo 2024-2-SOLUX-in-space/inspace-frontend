@@ -1,10 +1,11 @@
-import { useState } from 'react'
-import GlobalStyle from './styles/GlobalStyle'
-import { ThemeProvider } from 'styled-components'
+import { useState } from 'react';
+import GlobalStyle from './styles/GlobalStyle';
+import { ThemeProvider } from 'styled-components';
 import MenuSidebar from './components/MenuSidebar';
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
+import MyPage from './pages/MyPage';
 import SearchResult from './pages/SearchResult';
 
 function App() {
@@ -14,16 +15,16 @@ function App() {
     <Router>
       <GlobalStyle />
       <div>
-        <MenuSidebar 
-          isArchiveOpen = {isArchiveOpen}
+        <MenuSidebar
+          isArchiveOpen={isArchiveOpen}
           toggleArchive={() => setIsArchiveOpen((prev) => !prev)}
         />
       </div>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/search" element={<SearchResult />} />
+        <Route path="/mypage" element={<MyPage />} />
       </Routes>
-
     </Router>
   );
 }
