@@ -15,26 +15,18 @@ function TextField({
 }) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  const handleMouseDown = () => {
-    setIsPasswordVisible(true);
+  // 클릭 시 비밀번호 표시 토글
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible((prev) => !prev);
   };
 
-  const handleMouseUp = () => {
-    setIsPasswordVisible(false);
-  };
-
-  const handleMouseLeave = () => {
-    setIsPasswordVisible(false);
-  };
+  // 실제로 input 태그에 적용될 type 결정
+  const inputType =
+    type === 'password' ? (isPasswordVisible ? 'text' : 'password') : type;
 
   const handleInputChange = (e) => {
     onChange(e);
   };
-
-  // 실제로 input 태그에 적용될 type 결정
-  // password field이면서 isPasswordVisible=true이면 'text', 아니면 'password'
-  const inputType =
-    type === 'password' ? (isPasswordVisible ? 'text' : 'password') : type;
 
   return (
     <>
@@ -55,11 +47,9 @@ function TextField({
           {type === 'password' && (
             <img
               className="my-textfield-icon"
-              src={isPasswordVisible ? VisibleButton : InvisibleButton}
-              alt={isPasswordVisible ? 'Visible' : 'Invisible'}
-              onMouseDown={handleMouseDown}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseLeave}
+              src={isPasswordVisible ? InvisibleButton : VisibleButton}
+              alt={isPasswordVisible ? 'Invisible' : 'Visible'}
+              onClick={togglePasswordVisibility}
             />
           )}
         </div>

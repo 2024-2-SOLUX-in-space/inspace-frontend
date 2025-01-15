@@ -16,8 +16,20 @@ function SignUpPage() {
   const { showAlert } = useAlert();
 
   const handleJoin = () => {
+    if (!nickname.trim()) {
+      showAlert('닉네임을 입력해주세요.');
+      return;
+    }
+    if (!email.trim()) {
+      showAlert('이메일을 입력해주세요.');
+      return;
+    }
     if (password.length < 8 || password.length > 20) {
       showAlert('비밀번호는 8자 이상 20자 이하여야 합니다.');
+      return;
+    }
+    if (!confirmPwd.trim()) {
+      showAlert('비밀번호를 확인해주세요.');
       return;
     }
     if (password !== confirmPwd) {
@@ -63,12 +75,8 @@ function SignUpPage() {
     }
   };
 
-  const isJoinDisabled =
-    !nickname.trim() || !email.trim() || !password.trim() || !confirmPwd.trim();
-
   return (
     <>
-      {/* style 태그 분리 */}
       <style>{signUpPageStyles}</style>
 
       <div className="signup-container">
@@ -112,7 +120,6 @@ function SignUpPage() {
           <button
             className="join-now-button"
             onClick={handleJoin}
-            disabled={isJoinDisabled}
             aria-label="Join Right Now"
           >
             Join Right Now
