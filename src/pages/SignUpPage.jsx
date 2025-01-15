@@ -24,6 +24,10 @@ function SignUpPage() {
       showAlert('이메일을 입력해주세요.');
       return;
     }
+    if (!password.trim()) {
+      showAlert('비밀번호를 입력해주세요.');
+      return;
+    }
     if (password.length < 8 || password.length > 20) {
       showAlert('비밀번호는 8자 이상 20자 이하여야 합니다.');
       return;
