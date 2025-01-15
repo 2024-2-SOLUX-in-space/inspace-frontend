@@ -1,3 +1,6 @@
+// LandingPageStyle.js
+
+const landingPageStyle = `
 .landing-container {
   width: 100vw;
   height: 100vh;
@@ -20,6 +23,15 @@
   background: transparent;
   padding: 0;
   cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.button:hover,
+.button:focus,
+.button:active {
+  border: none;
+  outline: none;
 }
 
 /* 버튼에 들어가는 이미지 스타일 */
@@ -43,3 +55,6 @@
   left: -5px;
   margin-top: 30px;
 }
+`;
+
+export default landingPageStyle;

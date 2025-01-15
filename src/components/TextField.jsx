@@ -1,9 +1,9 @@
 // TextField.jsx
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import '../styles/TextField.css';
 import InvisibleButton from '../assets/InvisibleButton.png';
 import VisibleButton from '../assets/VisibleButton.png';
+import textFieldStyles from '../styles/TextFieldStyle.js';
 
 function TextField({
   label,
@@ -37,30 +37,34 @@ function TextField({
     type === 'password' ? (isPasswordVisible ? 'text' : 'password') : type;
 
   return (
-    <div className="my-textfield-container">
-      <div className="my-textfield-label">{label}</div>
-      <div className="my-textfield-wrapper">
-        <input
-          className="my-textfield-input"
-          type={inputType}
-          value={value}
-          onChange={handleInputChange}
-          placeholder={placeholder}
-          maxLength={maxLength}
-        />
+    <>
+      <style>{textFieldStyles}</style>
 
-        {type === 'password' && (
-          <img
-            className="my-textfield-icon"
-            src={isPasswordVisible ? VisibleButton : InvisibleButton}
-            alt={isPasswordVisible ? 'Visible' : 'Invisible'}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseLeave}
+      <div className="my-textfield-container">
+        <div className="my-textfield-label">{label}</div>
+        <div className="my-textfield-wrapper">
+          <input
+            className="my-textfield-input"
+            type={inputType}
+            value={value}
+            onChange={handleInputChange}
+            placeholder={placeholder}
+            maxLength={maxLength}
           />
-        )}
+
+          {type === 'password' && (
+            <img
+              className="my-textfield-icon"
+              src={isPasswordVisible ? VisibleButton : InvisibleButton}
+              alt={isPasswordVisible ? 'Visible' : 'Invisible'}
+              onMouseDown={handleMouseDown}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseLeave}
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

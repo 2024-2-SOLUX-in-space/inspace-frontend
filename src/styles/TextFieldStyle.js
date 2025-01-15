@@ -1,4 +1,6 @@
-/* TextField.css */
+// TextFieldStyle.js
+
+const textFieldStyles = `
 .my-textfield-container {
   display: flex;
   flex-direction: column;
@@ -49,3 +51,6 @@
 .my-textfield-icon:hover {
   opacity: 1;
 }
+`;
+
+export default textFieldStyles;

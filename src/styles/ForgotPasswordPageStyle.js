@@ -1,4 +1,6 @@
-/* ForgotPasswordPage.css */
+// ForgotPasswordPageStyle.js
+
+const forgotPasswordPageStyles = `
 .forgot-password-page {
   background: url('/ForgotPasswordPage.png') no-repeat center center;
   background-size: cover;
@@ -28,6 +30,13 @@
   width: 15rem;
   height: auto;
   display: block;
+}
+  
+.signup-button:hover,
+.signup-button:focus,
+.signup-button:active {
+  border: none;
+  outline: none;
 }
 
 /* 아래쪽 중앙에 배치할 컨테이너 */
@@ -69,6 +78,13 @@
   display: block;
 }
 
+.go-button:hover,
+.go-button:focus,
+.go-button:active {
+  border: none;
+  outline: none;
+}
+
 /* Go 버튼이 비활성화되었을 때 회색으로 변경 */
 .go-button:disabled {
   opacity: 0.3;
@@ -78,3 +94,6 @@
 .go-button:hover:not(:disabled) img {
   opacity: 0.8;
 }
+`;
+
+export default forgotPasswordPageStyles;

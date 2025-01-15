@@ -1,9 +1,9 @@
 // LogInPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/LogInPage.css';
 import LogInTextField from '../components/LogInTextField';
 import SignUpButtonImg from '../assets/SignUpButton.png';
+import logInPageStyles from '../styles/LogInPageStyle.js';
 
 function LogInPage() {
   const [email, setEmail] = useState('');
@@ -48,56 +48,60 @@ function LogInPage() {
   };
 
   return (
-    <div className="login-page">
-      {/* 페이지 우상단 회원가입 버튼 */}
-      <button
-        className="signup-button"
-        onClick={goToSignUp}
-        aria-label="Sign Up"
-      >
-        <img src={SignUpButtonImg} alt="Sign Up" />
-      </button>
+    <>
+      <style>{logInPageStyles}</style>
 
-      {/* 아래쪽 중앙에 배치할 컨테이너 */}
-      <div className="bottom-center-container">
-        <LogInTextField
-          label="Email"
-          value={email}
-          onChange={handleEmailChange}
-          placeholder="inspace@gmail.com"
-          type="text"
-          onKeyPress={handleKeyPress}
-        />
+      <div className="login-page">
+        {/* 페이지 우상단 회원가입 버튼 */}
+        <button
+          className="signup-button"
+          onClick={goToSignUp}
+          aria-label="Sign Up"
+        >
+          <img src={SignUpButtonImg} alt="Sign Up" />
+        </button>
 
-        <LogInTextField
-          label="Password"
-          value={password}
-          onChange={handlePasswordChange}
-          placeholder="비밀번호를 입력해주세요."
-          type="password"
-          onKeyPress={handleKeyPress}
-        />
+        {/* 아래쪽 중앙에 배치할 컨테이너 */}
+        <div className="bottom-center-container">
+          <LogInTextField
+            label="Email"
+            value={email}
+            onChange={handleEmailChange}
+            placeholder="inspace@gmail.com"
+            type="text"
+            onKeyPress={handleKeyPress}
+          />
 
-        {/* Forgot Password와 Log In 버튼을 한 줄에 배치 */}
-        <div className="login-actions">
-          <button
-            className="forgot-password-button"
-            onClick={goToForgotPassword}
-          >
-            Forgot Password?
-          </button>
+          <LogInTextField
+            label="Password"
+            value={password}
+            onChange={handlePasswordChange}
+            placeholder="비밀번호를 입력해주세요."
+            type="password"
+            onKeyPress={handleKeyPress}
+          />
 
-          {/* Log In 버튼 */}
-          <button
-            className="login-button"
-            onClick={handleLogin}
-            disabled={!email.trim() || !password.trim()}
-          >
-            Log In
-          </button>
+          {/* Forgot Password와 Log In 버튼을 한 줄에 배치 */}
+          <div className="login-actions">
+            <button
+              className="forgot-password-button"
+              onClick={goToForgotPassword}
+            >
+              Forgot Password?
+            </button>
+
+            {/* Log In 버튼 */}
+            <button
+              className="login-button"
+              onClick={handleLogin}
+              disabled={!email.trim() || !password.trim()}
+            >
+              Log In
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

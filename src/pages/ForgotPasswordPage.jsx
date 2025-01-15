@@ -5,7 +5,7 @@ import { useAlert } from '../context/AlertContext';
 import LogInTextField from '../components/LogInTextField';
 import SignUpButtonImg from '../assets/SignUpButton.png';
 import GoButtonImg from '../assets/GoButton.png';
-import '../styles/ForgotPasswordPage.css';
+import forgotPasswordPageStyles from '../styles/ForgotPasswordPageStyle.js';
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
@@ -38,37 +38,41 @@ const ForgotPasswordPage = () => {
   };
 
   return (
-    <div className="forgot-password-page">
-      {/* 페이지 우상단에 위치하는 회원가입 버튼 */}
-      <button
-        className="signup-button"
-        onClick={goToSignUp}
-        aria-label="Sign Up"
-      >
-        <img src={SignUpButtonImg} alt="Sign Up" />
-      </button>
+    <>
+      <style>{forgotPasswordPageStyles}</style>
 
-      {/* 가운데 하단에 위치시킬 이메일 필드와 Go 버튼 */}
-      <div className="forgot-password-center-container">
-        <div className="email-container">
-          <LogInTextField
-            label="Email"
-            value={email}
-            onChange={handleEmailChange}
-            placeholder="inspace@gmail.com"
-            type="text"
-          />
-          <button
-            className="go-button"
-            onClick={handleGoClick}
-            aria-label="Go"
-            disabled={!email.trim()}
-          >
-            <img src={GoButtonImg} alt="Go" />
-          </button>
+      <div className="forgot-password-page">
+        {/* 페이지 우상단에 위치하는 회원가입 버튼 */}
+        <button
+          className="signup-button"
+          onClick={goToSignUp}
+          aria-label="Sign Up"
+        >
+          <img src={SignUpButtonImg} alt="Sign Up" />
+        </button>
+
+        {/* 가운데 하단에 위치시킬 이메일 필드와 Go 버튼 */}
+        <div className="forgot-password-center-container">
+          <div className="email-container">
+            <LogInTextField
+              label="Email"
+              value={email}
+              onChange={handleEmailChange}
+              placeholder="inspace@gmail.com"
+              type="text"
+            />
+            <button
+              className="go-button"
+              onClick={handleGoClick}
+              aria-label="Go"
+              disabled={!email.trim()}
+            >
+              <img src={GoButtonImg} alt="Go" />
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

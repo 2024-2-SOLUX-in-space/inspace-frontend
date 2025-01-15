@@ -1,4 +1,6 @@
-/* LogInPage.css */
+// LogInPageStyle.js
+
+const logInPageStyles = `
 .login-page {
   background: url('/LogInPage.png') no-repeat center center;
   background-size: cover;
@@ -31,6 +33,13 @@
   display: block;
 }
 
+.signup-button:hover,
+.signup-button:focus,
+.signup-button:active {
+  border: none;
+  outline: none;
+}
+
 /* 아래쪽 중앙에 배치할 컨테이너 */
 .bottom-center-container {
   position: absolute;
@@ -45,7 +54,7 @@
 
 /* Forgot Password와 Log In 버튼을 같은 줄에서 양쪽 배치 */
 .login-actions {
-  width: 400px; /* 텍스트필드와 동일 폭 */
+  width: 400px;
   display: flex;
   justify-content: space-between;
 }
@@ -63,6 +72,13 @@
 
 .forgot-password-button:hover {
   opacity: 0.8;
+}
+
+.forgot-password-button:hover,
+.forgot-password-button:focus,
+.forgot-password-button:active {
+  border: none;
+  outline: none;
 }
 
 /* Log In 버튼 */
@@ -85,3 +101,6 @@
 .login-button:hover:not(:disabled) {
   opacity: 0.8;
 }
+`;
+
+export default logInPageStyles;

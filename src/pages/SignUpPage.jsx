@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAlert } from '../context/AlertContext';
 import TextField from '../components/TextField';
 import SignUpLogo from '../assets/signupLogo.png';
-import '../styles/SignUpPage.css';
+import signUpPageStyles from '../styles/SignUpPageStyle.js';
 
 function SignUpPage() {
   const [nickname, setNickname] = useState('');
@@ -67,54 +67,59 @@ function SignUpPage() {
     !nickname.trim() || !email.trim() || !password.trim() || !confirmPwd.trim();
 
   return (
-    <div className="signup-container">
-      {/* 왼쪽: Sign Up 로고 */}
-      <div className="signup-left">
-        <img src={SignUpLogo} alt="Sign Up Logo" className="signup-logo" />
-      </div>
+    <>
+      {/* style 태그 분리 */}
+      <style>{signUpPageStyles}</style>
 
-      {/* 오른쪽: 폼 영역 */}
-      <div className="signup-right">
-        <TextField
-          label="Nickname"
-          value={nickname}
-          onChange={handleNicknameChange}
-          placeholder="10자 이내의 닉네임"
-          maxLength={10}
-        />
-        <TextField
-          label="Email"
-          value={email}
-          onChange={handleEmailChange}
-          placeholder="inspace@gmail.com"
-          maxLength={50}
-        />
-        <TextField
-          label="Password"
-          type="password"
-          value={password}
-          onChange={handlePasswordChange}
-          placeholder="8~20자 사이의 비밀번호를 입력해주세요."
-          maxLength={20}
-        />
-        <TextField
-          label="Confirm Password"
-          type="password"
-          value={confirmPwd}
-          onChange={handleConfirmPwdChange}
-          placeholder="다시 한 번 입력해주세요."
-          maxLength={20}
-        />
-        <button
-          className="join-now-button"
-          onClick={handleJoin}
-          disabled={isJoinDisabled}
-          aria-label="Join Right Now"
-        >
-          Join Right Now
-        </button>
+      <div className="signup-container">
+        {/* 왼쪽: Sign Up 로고 */}
+        <div className="signup-left">
+          <img src={SignUpLogo} alt="Sign Up Logo" className="signup-logo" />
+        </div>
+
+        {/* 오른쪽: 폼 영역 */}
+        <div className="signup-right">
+          <TextField
+            label="Nickname"
+            value={nickname}
+            onChange={handleNicknameChange}
+            placeholder="10자 이내의 닉네임"
+            maxLength={10}
+          />
+          <TextField
+            label="Email"
+            value={email}
+            onChange={handleEmailChange}
+            placeholder="inspace@gmail.com"
+            maxLength={50}
+          />
+          <TextField
+            label="Password"
+            type="password"
+            value={password}
+            onChange={handlePasswordChange}
+            placeholder="8~20자 사이의 비밀번호를 입력해주세요."
+            maxLength={20}
+          />
+          <TextField
+            label="Confirm Password"
+            type="password"
+            value={confirmPwd}
+            onChange={handleConfirmPwdChange}
+            placeholder="다시 한 번 입력해주세요."
+            maxLength={20}
+          />
+          <button
+            className="join-now-button"
+            onClick={handleJoin}
+            disabled={isJoinDisabled}
+            aria-label="Join Right Now"
+          >
+            Join Right Now
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

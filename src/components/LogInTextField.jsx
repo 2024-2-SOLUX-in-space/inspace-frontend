@@ -1,8 +1,8 @@
 // LogInTextField.jsx
 import React, { useState } from 'react';
-import '../styles/LogInTextField.css';
 import InvisibleButtonIcon from '../assets/InvisibleButton.png';
 import VisibleButtonIcon from '../assets/VisibleButton.png';
+import logInTextFieldStyles from '../styles/LogInTextFieldStyle.js';
 
 function LogInTextField({
   label,
@@ -38,33 +38,37 @@ function LogInTextField({
     type === 'password' && !isPasswordVisible ? 'password' : 'text';
 
   return (
-    <div className="logintextfield-container">
-      <div className="logintextfield-label">{label}</div>
+    <>
+      <style>{logInTextFieldStyles}</style>
 
-      {/* 비밀번호 필드와 아이콘을 같이 담을 래퍼 */}
-      <div className="logintextfield-wrapper">
-        <input
-          className="logintextfield-input"
-          type={inputType}
-          value={value}
-          onChange={handleInputChange}
-          placeholder={placeholder}
-          onKeyPress={onKeyPress} // 엔터키 처리 콜백
-        />
+      <div className="logintextfield-container">
+        <div className="logintextfield-label">{label}</div>
 
-        {/* 비밀번호 필드일 때만 아이콘 표시 */}
-        {type === 'password' && (
-          <img
-            className="logintextfield-icon"
-            src={isPasswordVisible ? VisibleButtonIcon : InvisibleButtonIcon}
-            alt={isPasswordVisible ? 'Visible' : 'Invisible'}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseLeave}
+        {/* 비밀번호 필드와 아이콘을 같이 담을 래퍼 */}
+        <div className="logintextfield-wrapper">
+          <input
+            className="logintextfield-input"
+            type={inputType}
+            value={value}
+            onChange={handleInputChange}
+            placeholder={placeholder}
+            onKeyPress={onKeyPress} // 엔터키 처리 콜백
           />
-        )}
+
+          {/* 비밀번호 필드일 때만 아이콘 표시 */}
+          {type === 'password' && (
+            <img
+              className="logintextfield-icon"
+              src={isPasswordVisible ? VisibleButtonIcon : InvisibleButtonIcon}
+              alt={isPasswordVisible ? 'Visible' : 'Invisible'}
+              onMouseDown={handleMouseDown}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseLeave}
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -1,4 +1,6 @@
-/* 전체 레이아웃 (좌우 2열) */
+// SignUpPage.js
+
+const signUpPageStyles = `
 .signup-container {
   display: flex;
   width: 100vw;
@@ -48,8 +50,15 @@
   position: absolute;
   bottom: 3rem;
   right: 3rem;
-  border: none;
   margin-top: 0;
+  outline: none;
+}
+
+.join-now-button:hover,
+.join-now-button:focus,
+.join-now-button:active {
+  border: none;
+  outline: none;
 }
 
 .join-now-button:hover:not(:disabled) {
@@ -61,3 +70,6 @@
   opacity: 0.5;
   color: black;
 }
+`;
+
+export default signUpPageStyles;

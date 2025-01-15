@@ -1,4 +1,6 @@
-/* LogInTextField.css */
+// LogInTextFieldStyle.js
+
+const logInTextFieldStyles = `
 .logintextfield-container {
   position: relative;
   display: inline-block;
@@ -52,3 +54,6 @@
 .logintextfield-icon:hover {
   opacity: 1;
 }
+`;
+
+export default logInTextFieldStyles;
