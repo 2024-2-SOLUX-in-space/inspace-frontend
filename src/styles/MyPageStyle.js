@@ -1,4 +1,5 @@
 /* MyPage.css */
+const myPageStyles = `
 .mypage-container {
   display: flex;
   width: 100vw;
@@ -69,6 +70,13 @@
   border: none;
   margin-top: 0;
 }
+  
+.edit-button:hover,
+.edit-button:focus,
+.edit-button:active {
+  outline: 0;
+  border: 0;
+}
 
 .edit-button:hover:not(:disabled) {
   opacity: 0.8;
@@ -79,3 +87,6 @@
   opacity: 0.5;
   color: black;
 }
+`;
+
+export default myPageStyles;

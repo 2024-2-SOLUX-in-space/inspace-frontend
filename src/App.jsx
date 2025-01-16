@@ -1,5 +1,4 @@
 // App.jsx
-
 import React from 'react';
 import {
   BrowserRouter as Router,
@@ -18,6 +17,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import MenuSidebar from './components/MenuSidebar';
 import Home from './pages/Home';
 import MyPage from './pages/MyPage';
+import MyPageEdit from './pages/MyPageEdit';
 import SearchResult from './pages/SearchResult';
 
 function App() {
@@ -38,6 +38,8 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/home" element={<Home />} />
           <Route path="/search" element={<SearchResult />} />
+          <Route path="/mypage" element={<MyPage />} />
+          <Route path="/mypage-edit" element={<MyPageEdit />} />
         </Routes>
       </Router>
     </AlertProvider>
@@ -49,7 +51,14 @@ export default App;
 function SidebarWrapper({ isArchiveOpen, toggleArchive }) {
   const location = useLocation();
 
-  const hideSidebarPaths = ['/', '/signup', '/login', '/forgot-password'];
+  const hideSidebarPaths = [
+    '/',
+    '/signup',
+    '/login',
+    '/forgot-password',
+    '/mypage',
+    '/mypage-edit',
+  ];
   const shouldHideSidebar = hideSidebarPaths.includes(location.pathname);
 
   if (shouldHideSidebar) return null;
