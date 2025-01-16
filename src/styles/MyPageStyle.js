@@ -1,4 +1,4 @@
-/* MyPage.css */
+// MyPageStyle.js
 const myPageStyles = `
 .mypage-container {
   display: flex;
@@ -28,7 +28,7 @@ const myPageStyles = `
   opacity: 0.8;
 }
 
-/* 왼쪽 영역: 프로필 또는 로고 */
+/* 왼쪽 영역: 로고 */
 .mypage-left {
   flex: 5.5;
   display: flex;
@@ -41,7 +41,7 @@ const myPageStyles = `
   height: auto;
 }
 
-/* 오른쪽 영역 */
+/* 오른쪽 영역: 입력 폼 */
 .mypage-right {
   flex: 4.5;
   display: flex;

@@ -1,10 +1,10 @@
-// myPageEditStyles.js
+// MyPageEditStyle.js
 const myPageEditStyles = `
 .mypage-edit-container {
   display: flex;
   width: 100vw;
   height: 100vh;
-  background-image: url('/background.png'); /* 백그라운드 이미지 예시 */
+  background-image: url('/background.png');
   background-size: cover;
   background-position: center;
   font-family: 'SejongGeulggot', sans-serif;

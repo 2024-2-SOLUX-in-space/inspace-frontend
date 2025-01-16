@@ -10,6 +10,7 @@ import myPageStyles from '../styles/MyPageStyle.js';
 const MyPage = () => {
   const [nickname, setUsername] = useState('');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const navigate = useNavigate();
   const { showAlert } = useAlert();
@@ -38,23 +39,26 @@ const MyPage = () => {
 
         {/* 오른쪽 영역 */}
         <div className="mypage-right">
-          <div className="input-box">
-            <TextField
-              label="Nickname"
-              value={nickname}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-            <TextField
-              label="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-
-          <button className="edit-button" onClick={handleEdit}>
-            Edit
-          </button>
+          <TextField
+            label="Nickname"
+            value={nickname}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <TextField
+            label="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <TextField
+            label="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </div>
+
+        <button className="edit-button" onClick={handleEdit}>
+          Edit
+        </button>
       </div>
     </>
   );
