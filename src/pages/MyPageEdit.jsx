@@ -2,10 +2,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAlert } from '../context/AlertContext';
-import SearchBar from '../components/SearchBar';
 import TextField from '../components/TextField';
 import ProfileLogo from '../assets/EditProfileLogo.png';
-import myPageEditStyles from '../styles/MyPageEditStyle.js';
+import {
+  MyPageEditContainer,
+  MyPageEditLeft,
+  MyPageEditLogo,
+  MyPageEditRight,
+  CancelButton,
+  SaveButton,
+} from '../styles/MyPageEditStyle';
 
 const MyPageEdit = () => {
   const [nickname, setNickname] = useState('');
@@ -77,71 +83,57 @@ const MyPageEdit = () => {
     !nickname.trim() || !email.trim() || !password.trim() || !confirmPwd.trim();
 
   return (
-    <>
-      {/* JS 스타일 삽입 */}
-      <style>{myPageEditStyles}</style>
+    <MyPageEditContainer>
+      {/* 왼쪽 영역: 로고 */}
+      <MyPageEditLeft>
+        <MyPageEditLogo src={ProfileLogo} alt="Edit Profile Logo" />
+      </MyPageEditLeft>
 
-      <div className="mypage-edit-container">
-        {/* 왼쪽 영역: 로고 */}
-        <div className="mypage-edit-left">
-          <img
-            src={ProfileLogo}
-            alt="Edit Profile Logo"
-            className="mypage-edit-logo"
-          />
-        </div>
+      {/* 오른쪽 영역: 입력 폼 */}
+      <MyPageEditRight>
+        <TextField
+          label="Nickname"
+          value={nickname}
+          onChange={handleNicknameChange}
+          placeholder="10자 이내의 닉네임"
+          maxLength={10}
+        />
+        <TextField
+          label="Email"
+          value={email}
+          onChange={handleEmailChange}
+          placeholder="inspace@gmail.com"
+          maxLength={50}
+        />
+        <TextField
+          label="Password"
+          type="password"
+          value={password}
+          onChange={handlePasswordChange}
+          placeholder="8~20자 사이의 비밀번호"
+          maxLength={20}
+        />
+        <TextField
+          label="Confirm Password"
+          type="password"
+          value={confirmPwd}
+          onChange={handleConfirmPwdChange}
+          placeholder="비밀번호 확인"
+          maxLength={20}
+        />
 
-        {/* 오른쪽 영역: 입력 폼 */}
-        <div className="mypage-edit-right">
-          <TextField
-            label="Nickname"
-            value={nickname}
-            onChange={handleNicknameChange}
-            placeholder="10자 이내의 닉네임"
-            maxLength={10}
-          />
-          <TextField
-            label="Email"
-            value={email}
-            onChange={handleEmailChange}
-            placeholder="inspace@gmail.com"
-            maxLength={50}
-          />
-          <TextField
-            label="Password"
-            type="password"
-            value={password}
-            onChange={handlePasswordChange}
-            placeholder="8~20자 사이의 비밀번호"
-            maxLength={20}
-          />
-          <TextField
-            label="Confirm Password"
-            type="password"
-            value={confirmPwd}
-            onChange={handleConfirmPwdChange}
-            placeholder="비밀번호 확인"
-            maxLength={20}
-          />
-
-          <button
-            className="cancel-button"
-            onClick={handleCancel}
-            aria-label="Cancel"
-          >
-            Cancel
-          </button>
-          <button
-            className="save-button"
-            onClick={handleSave}
-            disabled={isSaveDisabled}
-            aria-label="Save"
-          >
-            Save
-          </button>
-        </div>
-      </div>
-    </>
+        <CancelButton onClick={handleCancel} aria-label="Cancel">
+          Cancel
+        </CancelButton>
+        <SaveButton
+          onClick={handleSave}
+          disabled={isSaveDisabled}
+          aria-label="Save"
+        >
+          Save
+        </SaveButton>
+      </MyPageEditRight>
+    </MyPageEditContainer>
   );
 };
 
