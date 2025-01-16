@@ -47,6 +47,7 @@ export const MyPageRight = styled.div`
   padding: 2rem;
   gap: 1.5rem;
   pointer-events: none;
+  opacity: 0.8;
 `;
 
 export const EditButton = styled.button`
