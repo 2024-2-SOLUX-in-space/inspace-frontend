@@ -8,8 +8,9 @@ import { MenuSidebarContainer,
     InactiveButton, 
     ActiveButton} from '../styles/MenuSidebarStyle';
 import ArchiveButton from '../components/ArchiveButton';
+import AddButton from '../components/AddButton';
 
-    const MenuSidebar = ( { isArchiveOpen, toggleArchive }) => {
+    const MenuSidebar = ( { isArchiveOpen, toggleArchive, isAddButtonOpen, toggleAddButton }) => {
         const [isOpen, setIsOpen] = useState(true); // 사이드바 열림/닫힘 상태 관리
         const [activeIcon, setActiveIcon] = useState(null); // 활성화된 아이콘 상태 관리
 
@@ -22,6 +23,9 @@ import ArchiveButton from '../components/ArchiveButton';
         const handleIconClick = (iconName) => {
           if (iconName === "archive") {
             toggleArchive();
+          }
+          if (iconName === "filePlus") {
+            toggleAddButton();
           }
           setActiveIcon(iconName); // 아이콘의 id 값을 activeIcon 상태에 저장 
         };
@@ -73,6 +77,11 @@ import ArchiveButton from '../components/ArchiveButton';
                         isArchiveOpen = {isArchiveOpen}
                         toggleArchive = {toggleArchive}
                       />
+                    )}
+
+                    { activeIcon === "filePlus" && (
+                      <AddButton isAddButtonOpen = {isAddButtonOpen} 
+                      toggleAddButton = {toggleAddButton} />
                     )}
 
                   </MenuSidebarContent>

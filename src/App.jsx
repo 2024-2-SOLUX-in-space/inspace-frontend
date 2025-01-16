@@ -9,6 +9,7 @@ import SearchResult from './pages/SearchResult';
 
 function App() {
   const [isArchiveOpen, setIsArchiveOpen] = useState(false);
+  const [isAddButtonOpen, setIsAddButtonOpen] = useState(false);
 
   return (
     <Router>
@@ -17,6 +18,9 @@ function App() {
         <MenuSidebar 
           isArchiveOpen = {isArchiveOpen}
           toggleArchive={() => setIsArchiveOpen((prev) => !prev)}
+
+          isAddButtonOpen = {isAddButtonOpen}
+          toggleAddButton={() => setIsAddButtonOpen((prev) => !prev)}
         />
       </div>
       <Routes>
