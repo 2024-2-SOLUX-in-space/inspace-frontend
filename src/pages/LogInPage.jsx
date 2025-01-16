@@ -10,7 +10,7 @@ function LogInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const { setUser } = useUser(); // 전역 user 상태를 업데이트할 수 있는 setUser
+  const { setUser } = useUser(); //  전역 user 상태를 업데이트할 수 있는 setUser
   const navigate = useNavigate();
 
   const goToSignUp = () => {

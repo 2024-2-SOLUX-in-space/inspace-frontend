@@ -73,7 +73,7 @@ const MyPageEdit = () => {
       return;
     }
 
-    // 전역 user 상태 업데이트
+    //  전역 user 상태 업데이트
     setUser({
       nickname,
       email,

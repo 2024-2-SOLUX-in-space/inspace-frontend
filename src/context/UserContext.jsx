@@ -5,7 +5,6 @@ const UserContext = createContext();
 
 // Provider 컴포넌트를 만들고, children을 감싸서 user 상태를 전역으로 공급합니다.
 export const UserProvider = ({ children }) => {
-  // 닉네임, 이메일, 비밀번호를 객체로 관리
   const [user, setUser] = useState({
     nickname: '',
     email: '',

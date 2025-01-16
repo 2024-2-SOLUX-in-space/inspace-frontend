@@ -17,7 +17,7 @@ import {
 const MyPage = () => {
   const navigate = useNavigate();
   const { showAlert } = useAlert();
-  const { user } = useUser(); // 전역 user 상태에서 nickname, email, password를 꺼냄
+  const { user } = useUser(); //  전역 user 상태에서 nickname, email, password를 꺼냄
 
   const handleEdit = () => {
     navigate('/mypage-edit');
