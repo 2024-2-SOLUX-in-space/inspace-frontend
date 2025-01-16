@@ -25,6 +25,7 @@ function App() {
   const [isArchiveOpen, setIsArchiveOpen] = useState(false);
 
   return (
+    /* userprovider -> 유저 정보 반영 체크를 위함*/
     <UserProvider>
       <AlertProvider>
         <Router>
