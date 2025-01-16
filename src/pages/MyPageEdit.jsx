@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAlert } from '../context/AlertContext';
+import { useUser } from '../context/UserContext'; // 추가
 import TextField from '../components/TextField';
 import ProfileLogo from '../assets/EditProfileLogo.png';
 import {
@@ -14,13 +15,15 @@ import {
 } from '../styles/MyPageEditStyle';
 
 const MyPageEdit = () => {
-  const [nickname, setNickname] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPwd, setConfirmPwd] = useState('');
-
   const navigate = useNavigate();
   const { showAlert } = useAlert();
+  const { user, setUser } = useUser(); // 전역 user 상태를 가져옴
+
+  // 기존 user 정보로 초기값 설정
+  const [nickname, setNickname] = useState(user.nickname);
+  const [email, setEmail] = useState(user.email);
+  const [password, setPassword] = useState(user.password);
+  const [confirmPwd, setConfirmPwd] = useState('');
 
   // 이메일/비밀번호 유효성 검사를 위한 정규식
   const emailRegex = /^[A-Za-z0-9@._-]+$/;
@@ -70,7 +73,13 @@ const MyPageEdit = () => {
       return;
     }
 
-    // 실제 수정 로직을 여기에 추가
+    // 전역 user 상태 업데이트
+    setUser({
+      nickname,
+      email,
+      password,
+    });
+
     showAlert(
       '프로필 수정이 완료되었습니다!',
       () => navigate('/mypage'),

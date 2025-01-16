@@ -1,6 +1,7 @@
 // LogInPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 import LogInTextField from '../components/LogInTextField';
 import SignUpButtonImg from '../assets/SignUpButton.png';
 import logInPageStyles from '../styles/LogInPageStyle.js';
@@ -9,6 +10,7 @@ function LogInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const { setUser } = useUser(); // 전역 user 상태를 업데이트할 수 있는 setUser
   const navigate = useNavigate();
 
   const goToSignUp = () => {
@@ -44,6 +46,15 @@ function LogInPage() {
 
   const handleLogin = () => {
     if (!email.trim() || !password.trim()) return;
+
+    // 전역 상태에 이메일, 비밀번호 저장 (닉네임은 아직 모르는 상태이므로 빈값이거나 추후 설정)
+    setUser((prev) => ({
+      ...prev,
+      email,
+      password,
+      // nickname: '' // 필요하다면
+    }));
+
     navigate('/home');
   };
 
@@ -61,7 +72,6 @@ function LogInPage() {
           <img src={SignUpButtonImg} alt="Sign Up" />
         </button>
 
-        {/* 아래쪽 중앙에 배치할 컨테이너 */}
         <div className="bottom-center-container">
           <LogInTextField
             label="Email"
@@ -81,7 +91,6 @@ function LogInPage() {
             onKeyPress={handleKeyPress}
           />
 
-          {/* Forgot Password와 Log In 버튼을 한 줄에 배치 */}
           <div className="login-actions">
             <button
               className="forgot-password-button"
@@ -89,8 +98,6 @@ function LogInPage() {
             >
               Forgot Password?
             </button>
-
-            {/* Log In 버튼 */}
             <button
               className="login-button"
               onClick={handleLogin}

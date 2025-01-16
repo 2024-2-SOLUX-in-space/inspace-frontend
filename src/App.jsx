@@ -9,6 +9,7 @@ import {
 import { useState } from 'react';
 import { AlertProvider } from './context/AlertContext';
 import { ThemeProvider } from 'styled-components';
+import { UserProvider } from './context/UserContext';
 import GlobalStyle from './styles/GlobalStyle';
 import LandingPage from './pages/LandingPage';
 import SignUpPage from './pages/SignUpPage';
@@ -24,25 +25,27 @@ function App() {
   const [isArchiveOpen, setIsArchiveOpen] = useState(false);
 
   return (
-    <AlertProvider>
-      <Router>
-        <GlobalStyle />
-        <SidebarWrapper
-          isArchiveOpen={isArchiveOpen}
-          toggleArchive={setIsArchiveOpen}
-        />
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/login" element={<LogInPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/search" element={<SearchResult />} />
-          <Route path="/mypage" element={<MyPage />} />
-          <Route path="/mypage-edit" element={<MyPageEdit />} />
-        </Routes>
-      </Router>
-    </AlertProvider>
+    <UserProvider>
+      <AlertProvider>
+        <Router>
+          <GlobalStyle />
+          <SidebarWrapper
+            isArchiveOpen={isArchiveOpen}
+            toggleArchive={setIsArchiveOpen}
+          />
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/login" element={<LogInPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/search" element={<SearchResult />} />
+            <Route path="/mypage" element={<MyPage />} />
+            <Route path="/mypage-edit" element={<MyPageEdit />} />
+          </Routes>
+        </Router>
+      </AlertProvider>
+    </UserProvider>
   );
 }
 

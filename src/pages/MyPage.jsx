@@ -1,7 +1,8 @@
 // MyPage.jsx
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAlert } from '../context/AlertContext';
+import { useUser } from '../context/UserContext'; // 추가
 import TextField from '../components/TextField';
 import ProfileLogo from '../assets/ProfileLogo.png';
 import {
@@ -14,12 +15,9 @@ import {
 } from '../styles/MyPageStyle';
 
 const MyPage = () => {
-  const [nickname, setNickname] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
   const navigate = useNavigate();
   const { showAlert } = useAlert();
+  const { user } = useUser(); // 전역 user 상태에서 nickname, email, password를 꺼냄
 
   const handleEdit = () => {
     navigate('/mypage-edit');
@@ -28,6 +26,12 @@ const MyPage = () => {
   const handleLogout = () => {
     showAlert('로그아웃 하시겠습니까?', () => navigate('/'), '확인');
   };
+
+  // password를 UI에서만 마스킹
+  const maskedPassword =
+    user.password && user.password.length > 0
+      ? '⦁'.repeat(user.password.length)
+      : '';
 
   return (
     <MyPageContainer>
@@ -39,22 +43,25 @@ const MyPage = () => {
         <MyPageLogo src={ProfileLogo} alt="Profile Logo" />
       </MyPageLeft>
 
-      {/* 오른쪽 영역: 입력 폼 */}
+      {/* 오른쪽 영역: 입력 폼 (읽기 전용) */}
       <MyPageRight>
         <TextField
           label="Nickname"
-          value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
+          value={user.nickname}
+          onChange={() => {}}
+          disabled
         />
         <TextField
           label="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={user.email}
+          onChange={() => {}}
+          disabled
         />
         <TextField
           label="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={maskedPassword}
+          onChange={() => {}}
+          disabled
         />
       </MyPageRight>
 
