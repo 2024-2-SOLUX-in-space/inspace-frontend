@@ -1,6 +1,7 @@
 // MyPageStyle.js
-const myPageStyles = `
-.mypage-container {
+import styled from 'styled-components';
+
+export const MyPageContainer = styled.div`
   display: flex;
   width: 100vw;
   height: 100vh;
@@ -8,10 +9,9 @@ const myPageStyles = `
   background-size: cover;
   background-position: center;
   font-family: 'SejongGeulggot', sans-serif;
-}
+`;
 
-/* 로그아웃 버튼 - 화면 왼쪽 상단 */
-.logout-button {
+export const LogoutButton = styled.button`
   position: absolute;
   top: 10rem;
   right: 2rem;
@@ -21,44 +21,34 @@ const myPageStyles = `
   padding: 0.5rem 1rem;
   cursor: pointer;
   transition: opacity 0.3s ease;
-}
 
-/* 로그아웃 버튼 hover 효과 */
-.logout-button:hover:not(:disabled) {
-  opacity: 0.8;
-}
+  &:hover:not(:disabled) {
+    opacity: 0.8;
+  }
+`;
 
-/* 왼쪽 영역: 로고 */
-.mypage-left {
+export const MyPageLeft = styled.div`
   flex: 5.5;
   display: flex;
   align-items: center;
   justify-content: center;
-}
+`;
 
-.mypage-logo {
+export const MyPageLogo = styled.img`
   max-width: 70%;
   height: auto;
-}
+`;
 
-/* 오른쪽 영역: 입력 폼 */
-.mypage-right {
+export const MyPageRight = styled.div`
   flex: 4.5;
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: 2rem;
   gap: 1.5rem;
-}
+`;
 
-/* 공통 인풋 박스 스타일 */
-.input-box {
-  display: flex;
-  flex-direction: column;
-}
-
-/* 정보 수정 버튼 */
-.edit-button {
+export const EditButton = styled.button`
   background-color: transparent;
   padding: 1rem 2rem;
   font-size: 2rem;
@@ -69,24 +59,21 @@ const myPageStyles = `
   right: 3rem;
   border: none;
   margin-top: 0;
-}
-  
-.edit-button:hover,
-.edit-button:focus,
-.edit-button:active {
-  outline: 0;
-  border: 0;
-}
 
-.edit-button:hover:not(:disabled) {
-  opacity: 0.8;
-}
+  &:hover,
+  &:focus,
+  &:active {
+    outline: 0;
+    border: 0;
+  }
 
-.edit-button:disabled {
-  background-color: transparent;
-  opacity: 0.5;
-  color: black;
-}
+  &:hover:not(:disabled) {
+    opacity: 0.8;
+  }
+
+  &:disabled {
+    background-color: transparent;
+    opacity: 0.5;
+    color: black;
+  }
 `;
-
-export default myPageStyles;

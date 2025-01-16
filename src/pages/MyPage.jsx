@@ -2,13 +2,19 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAlert } from '../context/AlertContext';
-import SearchBar from '../components/SearchBar';
 import TextField from '../components/TextField';
 import ProfileLogo from '../assets/ProfileLogo.png';
-import myPageStyles from '../styles/MyPageStyle.js';
+import {
+  MyPageContainer,
+  LogoutButton,
+  MyPageLeft,
+  MyPageLogo,
+  MyPageRight,
+  EditButton,
+} from '../styles/MyPageStyle';
 
 const MyPage = () => {
-  const [nickname, setUsername] = useState('');
+  const [nickname, setNickname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -24,43 +30,37 @@ const MyPage = () => {
   };
 
   return (
-    <>
-      <style>{myPageStyles}</style>
-      <div className="mypage-container">
-        {/* 로그아웃 버튼 - 화면 왼쪽 상단 */}
-        <button className="logout-button" onClick={handleLogout}>
-          Log Out
-        </button>
+    <MyPageContainer>
+      {/* 로그아웃 버튼 */}
+      <LogoutButton onClick={handleLogout}>Log Out</LogoutButton>
 
-        {/* 왼쪽 영역 */}
-        <div className="mypage-left">
-          <img src={ProfileLogo} alt="Profile Logo" className="mypage-logo" />
-        </div>
+      {/* 왼쪽 영역: 로고 */}
+      <MyPageLeft>
+        <MyPageLogo src={ProfileLogo} alt="Profile Logo" />
+      </MyPageLeft>
 
-        {/* 오른쪽 영역 */}
-        <div className="mypage-right">
-          <TextField
-            label="Nickname"
-            value={nickname}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <TextField
-            label="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <TextField
-            label="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
+      {/* 오른쪽 영역: 입력 폼 */}
+      <MyPageRight>
+        <TextField
+          label="Nickname"
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value)}
+        />
+        <TextField
+          label="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <TextField
+          label="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </MyPageRight>
 
-        <button className="edit-button" onClick={handleEdit}>
-          Edit
-        </button>
-      </div>
-    </>
+      {/* 정보 수정 버튼 */}
+      <EditButton onClick={handleEdit}>Edit</EditButton>
+    </MyPageContainer>
   );
 };
 
