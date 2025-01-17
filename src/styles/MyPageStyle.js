@@ -13,11 +13,11 @@ export const MyPageContainer = styled.div`
 
 export const LogoutButton = styled.button`
   position: absolute;
-  top: 10rem;
-  right: 2rem;
+  top: 5.5rem;
+  right: 1.5rem;
   background-color: transparent;
   border: none;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   padding: 0.5rem 1rem;
   cursor: pointer;
   transition: opacity 0.3s ease;
