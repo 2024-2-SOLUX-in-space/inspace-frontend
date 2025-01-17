@@ -79,6 +79,10 @@ export const CloseButton = styled.button`
   &:hover {
     color: #555;
   }
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 /* 표지 이미지 컨테이너 */
@@ -149,5 +153,9 @@ export const SelectButton = styled.button`
   &:disabled {
     background-color: #cccccc;
     cursor: not-allowed;
+  }
+
+  &:focus {
+    outline: none;
   }
 `;

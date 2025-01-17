@@ -154,6 +154,10 @@ export const NextButton = styled.button`
     background-color: #ccc;
     cursor: not-allowed;
   }
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 export const DescriptionText = styled.p`

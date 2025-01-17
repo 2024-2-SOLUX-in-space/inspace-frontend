@@ -10,7 +10,7 @@ export const MenuSidebarContainer = styled.div`
   background-color: white;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   transition: left 0.3s ease-in-out; 
-  z-index: 1000; /* 사이드바가 토글 버튼 위에 배치 */
+  z-index: 2; /* 사이드바가 토글 버튼 위에 배치 */
 `;
 
 // 아이콘 전체 박스 (토글 버튼 제외)
@@ -75,7 +75,7 @@ export const ActiveButton = styled.div`
   color: black;
   font-size: 30px;
   cursor: pointer;
-  z-index: 999; /* 사이드바보다 아래에 위치 */
+  z-index: 1; /* 사이드바보다 아래에 위치 */
 
   display: flex;
   align-items: center;

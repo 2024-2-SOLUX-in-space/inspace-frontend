@@ -15,4 +15,8 @@ export const TrashButton = styled.button`
     transform: scale(1.1);
     transition: transform 0.2s ease-in-out;
   }
+
+  &:focus {
+    outline: none;
+  }
 `;

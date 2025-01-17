@@ -10,6 +10,7 @@ import SearchResult from './pages/SearchResult';
 function App() {
   const [isArchiveOpen, setIsArchiveOpen] = useState(false);
   const [isAddButtonOpen, setIsAddButtonOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   return (
     <Router>
@@ -21,6 +22,9 @@ function App() {
 
           isAddButtonOpen = {isAddButtonOpen}
           toggleAddButton={() => setIsAddButtonOpen((prev) => !prev)}
+
+          isEditOpen = {isEditOpen}
+          toggleEdit = { () => setIsEditOpen( (prev) => !prev)}
         />
       </div>
       <Routes>

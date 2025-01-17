@@ -9,8 +9,10 @@ import { MenuSidebarContainer,
     ActiveButton} from '../styles/MenuSidebarStyle';
 import ArchiveButton from '../components/ArchiveButton';
 import AddButton from '../components/AddButton';
+import EditButton from '../components/EditButton';
 
-    const MenuSidebar = ( { isArchiveOpen, toggleArchive, isAddButtonOpen, toggleAddButton }) => {
+    const MenuSidebar = ( { isArchiveOpen, toggleArchive, isAddButtonOpen, toggleAddButton, 
+      isEditOpen, toggleEdit }) => {
         const [isOpen, setIsOpen] = useState(true); // 사이드바 열림/닫힘 상태 관리
         const [activeIcon, setActiveIcon] = useState(null); // 활성화된 아이콘 상태 관리
 
@@ -26,6 +28,9 @@ import AddButton from '../components/AddButton';
           }
           if (iconName === "filePlus") {
             toggleAddButton();
+          }
+          if (iconName === "edit") {
+            toggleEdit();
           }
           setActiveIcon(iconName); // 아이콘의 id 값을 activeIcon 상태에 저장 
         };
@@ -83,6 +88,13 @@ import AddButton from '../components/AddButton';
                       <AddButton isAddButtonOpen = {isAddButtonOpen} 
                       toggleAddButton = {toggleAddButton} />
                     )}
+
+                    { activeIcon === "edit" && (
+                      <EditButton
+                        isEditOpen = {isEditOpen}
+                        toggleEdit = {toggleEdit} 
+                      />
+                    )}  
 
                   </MenuSidebarContent>
                 )}
