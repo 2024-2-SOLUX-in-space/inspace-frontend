@@ -3,50 +3,58 @@ import styled from 'styled-components';
 import { FiSearch, FiBell, FiUser } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import Notification from './Notification';
-
 const SearchBarContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 15px 20px;
+  padding: 0 2%;
   background-color: #fff;
+  height: 5vh;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 `;
 
 const Logo = styled.img`
-  height: 40px;
+  height: 35px;
   padding-left: 10px;
 `;
 
 const SearchInputWrapper = styled.div`
-  flex: 1.2;
+  flex: 1;
   display: flex;
   align-items: center;
-  margin: 0 30px;
+  margin: 0 1%;
   border-radius: 20px;
-  padding: 10px 10px;
+  padding: 0 10px;
   background-color: #f5f5f5;
+  height: 100%;
 `;
 
 const SearchInput = styled.input`
   flex: 1;
   border: none;
   outline: none;
-  padding: 10px;
-  font-size: 1.2rem;
+  padding: 0 10px;
+  font-size: 16px;
   background-color: #f5f5f5;
+  height: 100%;
 `;
 
 const IconContainer = styled.div`
   display: flex;
-  gap: 20px;
-  margin-right: 30px;
+  gap: 15px;
+  margin: 0 10px;
 `;
 
 const IconButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   background: none;
   cursor: pointer;
-  padding: 10px;
+  padding: 5px;
   border-radius: 20%;
   transition: background-color 0.3s;
   outline: none;
@@ -60,6 +68,11 @@ const IconButton = styled.button`
   &:focus {
     outline: none;
   }
+
+  svg {
+    width: 4vh;
+    height: 4vh;
+  }
 `;
 
 const IconButtonWrapper = styled.div`
@@ -68,12 +81,13 @@ const IconButtonWrapper = styled.div`
 
 const NotificationBadge = styled.div`
   position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 10px;
-  height: 10px;
+  top: 0px;
+  right: 0px;
+  width: 8px;
+  height: 8px;
   background-color: #ff4b4b;
   border-radius: 50%;
+  z-index: 1;
 `;
 
 const NotificationsWrapper = styled.div`
@@ -88,10 +102,10 @@ const NotificationsContainer = styled.div`
   border-radius: 16px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  min-width: 320px;
+  min-width: 300px;
 
-  @media (max-width: 768px) {
-    min-width: 280px;
+  @media (max-width: 500px) {
+    min-width: 250px;
   }
 `;
 
@@ -141,7 +155,7 @@ const EmptyNotification = styled.div`
 `;
 
 const NotificationsContent = styled.div`
-  max-height: 250px;
+  max-height: 200px;
   overflow-y: auto;
 
   /* 스크롤바 전체 너비 */
@@ -211,15 +225,14 @@ const SearchBar = () => {
 
   return (
     <SearchBarContainer>
-      <Logo src="/src/img/Logo.png" alt="Logo" />
+      <Logo
+        src="/src/img/Logo.png"
+        alt="Logo"
+        onClick={() => navigate('/')}
+        style={{ cursor: 'pointer' }}
+      />
       <SearchInputWrapper>
-        <IconButton onClick={handleSearch} isSelected={isSearchFilled}>
-          <FiSearch
-            size={24}
-            style={{ marginRight: '10px' }}
-            fill={isSearchFilled ? 'currentColor' : 'none'}
-          />
-        </IconButton>
+        <FiSearch size={24} style={{ marginRight: '10px' }} />
         <SearchInput
           type="text"
           placeholder="검색어를 입력하세요..."
