@@ -133,6 +133,7 @@ const MyPageEdit = () => {
           onChange={handleConfirmPwdChange}
           placeholder="비밀번호 확인"
           maxLength={20}
+          visibilityButtonClass="my-textfield-icon"
         />
 
         {/* 취소, 저장버튼 */}

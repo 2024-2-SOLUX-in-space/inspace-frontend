@@ -42,6 +42,12 @@ export const DisabledTextField = styled.div`
   pointer-events: none;
   opacity: 0.8;
   cursor: default;
+
+  /* 비밀번호 표시 버튼만 클릭 가능 */
+  .my-textfield-icon {
+    pointer-events: auto;
+    cursor: pointer;
+  }
 `;
 
 /* Cancel 버튼 */
