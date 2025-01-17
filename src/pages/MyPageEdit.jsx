@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAlert } from '../context/AlertContext';
 import { useUser } from '../context/UserContext'; // 추가
+import SearchBar from '../components/SearchBar';
 import TextField from '../components/TextField';
 import ProfileLogo from '../assets/EditProfileLogo.png';
 import {
@@ -93,6 +94,21 @@ const MyPageEdit = () => {
 
   return (
     <MyPageEditContainer>
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '70px',
+          backgroundColor: 'white',
+          zIndex: 1000,
+          borderBottom: '1px solid #eee',
+          padding: '10px 0',
+        }}
+      >
+        <SearchBar iconInside />
+      </div>
       {/* 왼쪽 영역: 로고 */}
       <MyPageEditLeft>
         <MyPageEditLogo src={ProfileLogo} alt="Edit Profile Logo" />

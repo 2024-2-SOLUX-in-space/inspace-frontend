@@ -3,6 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAlert } from '../context/AlertContext';
 import { useUser } from '../context/UserContext'; // 추가
+import SearchBar from '../components/SearchBar';
 import TextField from '../components/TextField';
 import ProfileLogo from '../assets/ProfileLogo.png';
 import {
@@ -35,6 +36,21 @@ const MyPage = () => {
 
   return (
     <MyPageContainer>
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '70px',
+          backgroundColor: 'white',
+          zIndex: 1000,
+          borderBottom: '1px solid #eee',
+          padding: '10px 0',
+        }}
+      >
+        <SearchBar iconInside />
+      </div>
       {/* 로그아웃 버튼 */}
       <LogoutButton onClick={handleLogout}>Log Out</LogoutButton>
 
