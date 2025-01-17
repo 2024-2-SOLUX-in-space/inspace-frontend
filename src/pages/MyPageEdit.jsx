@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAlert } from '../context/AlertContext';
-import { useUser } from '../context/UserContext'; // 추가
+import { useUser } from '../context/UserContext';
 import SearchBar from '../components/SearchBar';
 import TextField from '../components/TextField';
 import ProfileLogo from '../assets/EditProfileLogo.png';
@@ -13,22 +13,23 @@ import {
   MyPageEditRight,
   CancelButton,
   SaveButton,
+  DisabledTextField,
 } from '../styles/MyPageEditStyle';
 
 const MyPageEdit = () => {
   const navigate = useNavigate();
   const { showAlert } = useAlert();
-  const { user, setUser } = useUser(); // 전역 user 상태를 가져옴
+  const { user, setUser } = useUser();
 
   // 기존 user 정보로 초기값 설정
   const [nickname, setNickname] = useState(user.nickname);
-  const [email, setEmail] = useState(user.email);
-  const [password, setPassword] = useState(user.password);
-  const [confirmPwd, setConfirmPwd] = useState('');
 
-  // 이메일/비밀번호 유효성 검사를 위한 정규식
-  const emailRegex = /^[A-Za-z0-9@._-]+$/;
-  const passwordRegex = /^[A-Za-z0-9!@#$%^&*]*$/;
+  // 이메일/비밀번호(읽기 전용, 수정 불가)
+  const [email] = useState(user.email);
+  const [password] = useState(user.password);
+
+  // 비밀번호 확인을 위한 필드(사용자 입력 가능)
+  const [confirmPwd, setConfirmPwd] = useState('');
 
   const handleNicknameChange = (e) => {
     const value = e.target.value;
@@ -37,25 +38,8 @@ const MyPageEdit = () => {
     }
   };
 
-  const handleEmailChange = (e) => {
-    const value = e.target.value;
-    if (emailRegex.test(value) || value === '') {
-      setEmail(value);
-    }
-  };
-
-  const handlePasswordChange = (e) => {
-    const value = e.target.value;
-    if (passwordRegex.test(value) || value === '') {
-      setPassword(value);
-    }
-  };
-
   const handleConfirmPwdChange = (e) => {
-    const value = e.target.value;
-    if (passwordRegex.test(value) || value === '') {
-      setConfirmPwd(value);
-    }
+    setConfirmPwd(e.target.value);
   };
 
   const handleCancel = () => {
@@ -63,22 +47,15 @@ const MyPageEdit = () => {
   };
 
   const handleSave = () => {
-    // 비밀번호 길이 체크 예시
-    if (password.length < 8 || password.length > 20) {
-      showAlert('비밀번호는 8자 이상 20자 이하여야 합니다.');
-      return;
-    }
-    // 비밀번호 확인 체크
-    if (password !== confirmPwd) {
+    if (password && password !== confirmPwd) {
       showAlert('비밀번호가 일치하지 않습니다.');
       return;
     }
 
-    //  전역 user 상태 업데이트
+    // 닉네임만 수정
     setUser({
+      ...user,
       nickname,
-      email,
-      password,
     });
 
     showAlert(
@@ -88,12 +65,12 @@ const MyPageEdit = () => {
     );
   };
 
-  // 모든 값이 입력되지 않았을 때 버튼 비활성화
-  const isSaveDisabled =
-    !nickname.trim() || !email.trim() || !password.trim() || !confirmPwd.trim();
+  // 닉네임과 비밀번호 확인 모두 입력 필요
+  const isSaveDisabled = !nickname.trim() || !confirmPwd.trim();
 
   return (
     <MyPageEditContainer>
+      {/* 상단 검색바 영역 */}
       <div
         style={{
           position: 'fixed',
@@ -109,6 +86,7 @@ const MyPageEdit = () => {
       >
         <SearchBar iconInside />
       </div>
+
       {/* 왼쪽 영역: 로고 */}
       <MyPageEditLeft>
         <MyPageEditLogo src={ProfileLogo} alt="Edit Profile Logo" />
@@ -116,6 +94,7 @@ const MyPageEdit = () => {
 
       {/* 오른쪽 영역: 입력 폼 */}
       <MyPageEditRight>
+        {/* 닉네임 (수정 가능) */}
         <TextField
           label="Nickname"
           value={nickname}
@@ -123,21 +102,30 @@ const MyPageEdit = () => {
           placeholder="10자 이내의 닉네임"
           maxLength={10}
         />
-        <TextField
-          label="Email"
-          value={email}
-          onChange={handleEmailChange}
-          placeholder="inspace@gmail.com"
-          maxLength={50}
-        />
-        <TextField
-          label="Password"
-          type="password"
-          value={password}
-          onChange={handlePasswordChange}
-          placeholder="8~20자 사이의 비밀번호"
-          maxLength={20}
-        />
+
+        {/* 이메일과 비밀번호 수정 불가 */}
+        <DisabledTextField>
+          {/* 이메일 (disabled) */}
+          <TextField
+            label="Email"
+            value={email}
+            placeholder="inspace@gmail.com"
+            maxLength={50}
+            disabled
+          />
+
+          {/* 비밀번호 (disabled) */}
+          <TextField
+            label="Password"
+            type="password"
+            value={password}
+            placeholder="현재 비밀번호(수정 불가)"
+            maxLength={20}
+            disabled
+          />
+        </DisabledTextField>
+
+        {/* 비밀번호 확인 (입력 가능) */}
         <TextField
           label="Confirm Password"
           type="password"
@@ -147,6 +135,7 @@ const MyPageEdit = () => {
           maxLength={20}
         />
 
+        {/* 취소, 저장버튼 */}
         <CancelButton onClick={handleCancel} aria-label="Cancel">
           Cancel
         </CancelButton>

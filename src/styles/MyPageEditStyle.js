@@ -34,6 +34,16 @@ export const MyPageEditRight = styled.div`
   gap: 1.5rem;
 `;
 
+/* 이메일/비밀번호를 감싸는 컨테이너 */
+export const DisabledTextField = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  pointer-events: none;
+  opacity: 0.8;
+  cursor: default;
+`;
+
 /* Cancel 버튼 */
 export const CancelButton = styled.button`
   background-color: transparent;
