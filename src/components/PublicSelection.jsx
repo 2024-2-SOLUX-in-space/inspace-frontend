@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import { FiBook, FiBookOpen } from "react-icons/fi"; // 아이콘 import
 import {
-  AlertContainer,
-  AlertHeader,
-  AlertBody,
+  PublicSelectionOverlay,
+  PublicSelectionBackground,
+  PublicSelectionContent,
+  PublicSelectionHeader,
+  PublicSelectionTitle,
+  CloseButton,
+  BackButton,
   IconContainer,
   IconWrapper,
-  AlertButton,
+  ConfirmButton,
 } from "../styles/PublicSelectionStyle";
 
-const PublicSelection = ({ onConfirm }) => {
+const PublicSelection = ({ onConfirm, onBack, onCancel }) => {
   const [selectedVisibility, setSelectedVisibility] = useState(null); // 공개 여부 상태
 
   // 아이콘 클릭 핸들러
@@ -27,28 +31,33 @@ const PublicSelection = ({ onConfirm }) => {
   };
 
   return (
-    <AlertContainer>
-      <AlertHeader>공간의 공개 여부를 선택해주세요</AlertHeader>
-      <AlertBody>
+    <PublicSelectionOverlay>
+      <PublicSelectionBackground />
+      <PublicSelectionContent>
+      <BackButton onClick={onBack}>←</BackButton>
+      <CloseButton onClick={onCancel}>✕</CloseButton>
+        <PublicSelectionHeader>
+          <PublicSelectionTitle>공간의 공개 여부를 선택해주세요</PublicSelectionTitle>
+        </PublicSelectionHeader>
         <IconContainer>
           <IconWrapper
             isSelected={selectedVisibility === "public"}
             onClick={() => handleVisibilityChange("public")}
           >
-            <FiBookOpen />
+            <FiBookOpen size = {25} />
             <span>공개</span>
           </IconWrapper>
           <IconWrapper
             isSelected={selectedVisibility === "private"}
             onClick={() => handleVisibilityChange("private")}
           >
-            <FiBook />
+            <FiBook size = {25} />
             <span>비공개</span>
           </IconWrapper>
         </IconContainer>
-      </AlertBody>
-      <AlertButton onClick={handleNextClick}>다음</AlertButton>
-    </AlertContainer>
+        <ConfirmButton onClick={handleNextClick}>다음</ConfirmButton>
+      </PublicSelectionContent>
+    </PublicSelectionOverlay>
   );
 };
 

@@ -34,15 +34,7 @@ const CoverSelection = ({ onClose, onSelectCover }) => {
 
   // "선택" 버튼 클릭 핸들러
   const handleConfirm = () => {
-    console.log("CoverSelection: 선택된 표지 정보:", covers[currentIndex]);
-    
       onSelectCover(covers[currentIndex]); // 선택한 표지 정보 전달
-      console.log("CoverSelection: onSelectCover 함수 호출 완료");
-
-    if (onClose) {
-      console.log("CoverSelection: onClose 호출");
-      onClose();
-    }
   };
 
   return (
