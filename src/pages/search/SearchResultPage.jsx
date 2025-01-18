@@ -29,6 +29,7 @@ const SearchResult = () => {
     username: 'Space',
     title: 'TitleExample',
   });
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const handleHashtagClick = (id) => {
     setHashtags((prev) =>
@@ -73,6 +74,11 @@ const SearchResult = () => {
   const closeDetailView = () => {
     setSelectedImage(null);
     setImageData({ username: 'Space', title: 'TitleExample' });
+    setIsFullscreen(false);
+  };
+
+  const toggleFullscreen = () => {
+    setIsFullscreen((prev) => !prev);
   };
 
   const filteredImages = [];
@@ -162,7 +168,7 @@ const SearchResult = () => {
         </MasonryGrid>
       </div>
 
-      <DetailView visible={!!selectedImage}>
+      <DetailView visible={!!selectedImage} fullscreen={isFullscreen}>
         <CloseButton size={30} onClick={closeDetailView} />
         {selectedImage && (
           <div className="image-container">
@@ -178,12 +184,17 @@ const SearchResult = () => {
             <div className="title">{imageData.title}</div>
             <img
               className="maximize-button"
-              src="/src/assets/img/button/MaximizeButton.png"
-              alt="Maximize"
+              src={
+                isFullscreen
+                  ? '/src/assets/img/button/MinimizeButton.png'
+                  : '/src/assets/img/button/MaximizeButton.png'
+              }
+              alt={isFullscreen ? 'Minimize' : 'Maximize'}
+              onClick={toggleFullscreen}
               style={{
                 position: 'absolute',
-                top: '800px',
-                right: '20px',
+                top: '820px',
+                right: '40px',
                 cursor: 'pointer',
                 width: '40px',
                 height: '40px',

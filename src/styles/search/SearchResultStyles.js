@@ -57,15 +57,18 @@ export const GridItem = styled.div`
 export const DetailView = styled.div`
   position: fixed;
   right: 0;
-  top: 120px;
-  height: 100vh;
-  width: 40%;
+  top: 90px;
+  height: ${(props) => (props.fullscreen ? '100%' : '100vh')};
+  width: ${(props) => (props.fullscreen ? '100%' : '40%')};
   background: white;
   padding: 20px;
   z-index: 100;
   transform: ${(props) =>
     props.visible ? 'translateX(0)' : 'translateX(100%)'};
-  transition: transform 0.3s ease-in-out;
+  transition:
+    transform 0.3s ease-in-out,
+    width 0.3s ease,
+    height 0.3s ease;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -82,7 +85,7 @@ export const DetailView = styled.div`
   .user-info {
     position: fixed;
     top: 50px;
-    left: 40px;
+    left: 80px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -119,6 +122,6 @@ export const DetailView = styled.div`
 export const CloseButton = styled(FaTimes)`
   position: absolute;
   top: 10px;
-  right: 20px;
+  right: 40px;
   cursor: pointer;
 `;
