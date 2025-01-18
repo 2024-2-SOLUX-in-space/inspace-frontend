@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FiSearch, FiBell, FiUser } from "react-icons/fi";
+import { FiSearch, FiBell, FiUser } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import Notification from './Notification';
 const SearchBarContainer = styled.div`
@@ -58,7 +58,8 @@ const IconButton = styled.button`
   border-radius: 20%;
   transition: background-color 0.3s;
   outline: none;
-  background-color: ${props => props.isSelected ? '#ececec' : 'transparent'};
+  background-color: ${(props) =>
+    props.isSelected ? '#ececec' : 'transparent'};
 
   &:hover {
     background-color: #ececec;
@@ -210,7 +211,7 @@ const SearchBar = () => {
   //마이페이지 이동 로직
   const handleUserClick = () => {
     setIsUserFilled(!isUserFilled);
-    //navigate('/mypage');
+    navigate('/mypage');
   };
 
   const handleMarkAsRead = () => {
@@ -224,7 +225,12 @@ const SearchBar = () => {
 
   return (
     <SearchBarContainer>
-      <Logo src="/src/img/Logo.png" alt="Logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }} />
+      <Logo
+        src="/src/img/Logo.png"
+        alt="Logo"
+        onClick={() => navigate('/')}
+        style={{ cursor: 'pointer' }}
+      />
       <SearchInputWrapper>
         <FiSearch size={24} style={{ marginRight: '10px' }} />
         <SearchInput
@@ -237,26 +243,14 @@ const SearchBar = () => {
       </SearchInputWrapper>
       <IconContainer>
         <IconButtonWrapper>
-          <IconButton 
-            onClick={handleBellClick}
-            isSelected={isBellFilled}
-          >
-            <FiBell 
-              size={32} 
-              fill={isBellFilled ? 'currentColor' : 'none'} 
-            />
+          <IconButton onClick={handleBellClick} isSelected={isBellFilled}>
+            <FiBell size={32} fill={isBellFilled ? 'currentColor' : 'none'} />
           </IconButton>
           {notifications.length > 0 && <NotificationBadge />}
         </IconButtonWrapper>
-        
-        <IconButton 
-          onClick={handleUserClick}
-          isSelected={isUserFilled}
-        >
-          <FiUser 
-            size={32} 
-            fill={isUserFilled ? 'currentColor' : 'none'} 
-          />
+
+        <IconButton onClick={handleUserClick} isSelected={isUserFilled}>
+          <FiUser size={32} fill={isUserFilled ? 'currentColor' : 'none'} />
         </IconButton>
       </IconContainer>
 
@@ -270,7 +264,7 @@ const SearchBar = () => {
                 모두 읽음으로 표시
               </MarkAsReadButton>
             </NotificationHeader>
-            
+
             <NotificationsContent>
               {notifications.length > 0 ? (
                 notifications.map((notification, index) => (
