@@ -38,7 +38,6 @@ const FixedSearchBar = styled.div`
   left: 0;
   width: 100%;
   background: white;
-  z-index: 1010;
   padding: 0.5% 1%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   height: 8vh;
