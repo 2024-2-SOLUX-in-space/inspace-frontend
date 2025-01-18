@@ -1,6 +1,11 @@
 import styled from 'styled-components';
 
 export const SearchResultContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
   padding: 0;
   margin: 0;
   display: flex;
@@ -15,7 +20,7 @@ export const FixedSearchBar = styled.div`
   width: 100%;
   z-index: 1000;
   background: white;
-  border-bottom: 1px solid #fffff;
+  border-bottom: 1px solid #ffffff;
   padding: 10px;
 `;
 
