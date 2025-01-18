@@ -1,7 +1,7 @@
 import React from "react";
 import { PinButton } from "../../styles/sidebar/FixModalStyle";
 
-const FixModel = ( {id, isPinned, onPinToggle } ) => {
+const FixModal = ( {id, isPinned, onPinToggle } ) => {
     return (
         <PinButton 
             src = "/src/assets/img/button/pinbutton.png"
@@ -12,4 +12,4 @@ const FixModel = ( {id, isPinned, onPinToggle } ) => {
     );
 };
 
-export default FixModel;
+export default FixModal;

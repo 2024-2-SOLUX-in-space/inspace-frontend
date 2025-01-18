@@ -3,7 +3,7 @@ import { FiTrash2 } from "react-icons/fi";
 import { TrashButton } from "../../styles/sidebar/TrashModalStyle"; 
 import TrashAlert from "../alert/TrashAlert";
 
-const TrashModel = ({ spaceId, onDelete }) => {
+const TrashModal = ({ spaceId, onDelete }) => {
   const [isAlertOpen, setIsAlertOpen] = useState(false); 
 
   const handleTrashClick = () => {
@@ -36,4 +36,4 @@ const TrashModel = ({ spaceId, onDelete }) => {
   );
 };
 
-export default TrashModel;
+export default TrashModal;
