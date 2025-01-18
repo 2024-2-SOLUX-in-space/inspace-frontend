@@ -61,9 +61,9 @@ const GridItem = styled.div`
 const DetailView = styled.div`
   position: fixed;
   right: 0;
-  top: 0;
+  top: 120px;
   height: 100vh;
-  width: 50%;
+  width: 40%;
   background: white;
   padding: 20px;
   z-index: 100;
@@ -223,9 +223,10 @@ const SearchResult = () => {
             <div className="user-info">
               <img
                 className="profile-image"
-                src="src/assets/img/ProfileImage.png"
+                src="/src/assets/img/ProfileImage.png"
                 alt="Profile"
               />
+              <div>{console.log(imageData.username)}</div>
               {imageData.username}
             </div>
             <img src={selectedImage} alt="Detailed view" />
