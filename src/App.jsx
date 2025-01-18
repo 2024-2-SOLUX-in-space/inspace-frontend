@@ -8,15 +8,20 @@ import Home from './pages/Home';
 import SearchResult from './pages/SearchResult';
 
 function App() {
+  const [isHomeOpen, setIsHomeOpen] = useState(false);
   const [isArchiveOpen, setIsArchiveOpen] = useState(false);
   const [isAddButtonOpen, setIsAddButtonOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isHeartOpen, setIsHeartOpen] = useState(false);
 
   return (
     <Router>
       <GlobalStyle />
       <div>
         <MenuSidebar 
+          isHomeOpen = {isHomeOpen}
+          toggleHome = {() => setIsHomeOpen( (prev) => !prev)}
+
           isArchiveOpen = {isArchiveOpen}
           toggleArchive={() => setIsArchiveOpen((prev) => !prev)}
 
@@ -25,6 +30,9 @@ function App() {
 
           isEditOpen = {isEditOpen}
           toggleEdit = { () => setIsEditOpen( (prev) => !prev)}
+        
+          isHeartOpen = {isHeartOpen} 
+          toggleHeart = { () => setIsHeartOpen( (prev) => !prev)}
         />
       </div>
       <Routes>

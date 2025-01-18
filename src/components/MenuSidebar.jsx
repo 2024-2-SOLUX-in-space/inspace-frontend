@@ -7,12 +7,14 @@ import { MenuSidebarContainer,
     MenuSidebarIcon, 
     InactiveButton, 
     ActiveButton} from '../styles/MenuSidebarStyle';
+import HomeButton from '../components/HomeButton';
 import ArchiveButton from '../components/ArchiveButton';
 import AddButton from '../components/AddButton';
 import EditButton from '../components/EditButton';
+import HeartButton from '../components/HeartButton';
 
-    const MenuSidebar = ( { isArchiveOpen, toggleArchive, isAddButtonOpen, toggleAddButton, 
-      isEditOpen, toggleEdit }) => {
+    const MenuSidebar = ( { isHomeOpen, toggleHome, isArchiveOpen, toggleArchive, isAddButtonOpen, toggleAddButton, 
+      isEditOpen, toggleEdit, isHeartOpen, toggleHeart }) => {
         const [isOpen, setIsOpen] = useState(true); // 사이드바 열림/닫힘 상태 관리
         const [activeIcon, setActiveIcon] = useState(null); // 활성화된 아이콘 상태 관리
 
@@ -26,11 +28,17 @@ import EditButton from '../components/EditButton';
           if (iconName === "archive") {
             toggleArchive();
           }
+          if (iconName === "home") {
+            toggleHome();
+          }
           if (iconName === "filePlus") {
             toggleAddButton();
           }
           if (iconName === "edit") {
             toggleEdit();
+          }
+          if (iconName === "heart") {
+            toggleHeart();
           }
           setActiveIcon(iconName); // 아이콘의 id 값을 activeIcon 상태에 저장 
         };
@@ -95,6 +103,20 @@ import EditButton from '../components/EditButton';
                         toggleEdit = {toggleEdit} 
                       />
                     )}  
+
+                    { activeIcon === "heart" && (
+                      <HeartButton
+                        isHeartOpen = {isHeartOpen}
+                        toggleHeart = {toggleHeart}
+                      />
+                    )}
+
+                    { activeIcon === "home" && (
+                      <HomeButton
+                        isHomeOpen = {isHomeOpen}
+                        toggleHome = {toggleHome}
+                      />
+                    )}
 
                   </MenuSidebarContent>
                 )}

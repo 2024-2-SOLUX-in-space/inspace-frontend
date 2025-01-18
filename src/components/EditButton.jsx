@@ -7,6 +7,9 @@ const EditButton = ( {isEditOpen, toggleEdit} ) => {
         { id: 1, title: "해리포터와 마법사의 돌", isPublic: false },
         { id: 2, title: "더 퍼스트 슬램덩크", isPublic: true }, 
         { id: 3, title: "지킬앤하이드", isPublic: true }, 
+        { id: 4, title: "해리포터", isPublic: false}, 
+        { id: 5, title: "헤르미온느", isPublic: false }, 
+        { id: 6, title: "우와앙아아아아아아아아아아ㅏ아앙", isPublic: true },
     ]);
 
     const [isScrollable, setIsScrollable] = useState(false);
