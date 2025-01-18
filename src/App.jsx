@@ -8,18 +8,17 @@ import {
 } from 'react-router-dom';
 import { useState } from 'react';
 import { AlertProvider } from './context/AlertContext';
-import { ThemeProvider } from 'styled-components';
 import { UserProvider } from './context/UserContext';
 import GlobalStyle from './styles/GlobalStyle';
-import LandingPage from './pages/LandingPage';
-import SignUpPage from './pages/SignUpPage';
-import LogInPage from './pages/LogInPage';
-import ForgotPasswordPage from './pages/ForgotPasswordPage';
-import MenuSidebar from './components/MenuSidebar';
-import Home from './pages/Home';
-import MyPage from './pages/MyPage';
-import MyPageEdit from './pages/MyPageEdit';
-import SearchResult from './pages/SearchResult';
+import StartPage from './pages/StartPage';
+import SignUpPage from './pages/user/SignUpPage';
+import LogInPage from './pages/user/LogInPage';
+import ForgotPasswordPage from './pages/user/ForgotPasswordPage';
+import MenuSidebar from './pages/MenuSidebar';
+import Home from './pages/home/HomePage';
+import MyPage from './pages/user/MyPage';
+import EditMyPage from './pages/user/EditMyPage';
+import SearchResult from './pages/SearchResultPage';
 
 function App() {
   const [isArchiveOpen, setIsArchiveOpen] = useState(false);
@@ -35,14 +34,14 @@ function App() {
             toggleArchive={setIsArchiveOpen}
           />
           <Routes>
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={<StartPage />} />
             <Route path="/signup" element={<SignUpPage />} />
             <Route path="/login" element={<LogInPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/home" element={<Home />} />
             <Route path="/search" element={<SearchResult />} />
             <Route path="/mypage" element={<MyPage />} />
-            <Route path="/mypage-edit" element={<MyPageEdit />} />
+            <Route path="/mypage-edit" element={<EditMyPage />} />
           </Routes>
         </Router>
       </AlertProvider>
