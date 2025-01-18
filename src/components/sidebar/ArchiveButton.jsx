@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { ArchiveList, ClickedArchive, ListBox, TitleContainer } from "../../styles/sidebar/ArchiveButtonStyle";
-import FixModel from "../sidebar/FixModal";
-import TrashModel from "../sidebar/TrashModal";
-import SwitchModel from "../sidebar/SwitchModal";
+import FixModal from "../sidebar/FixModal";
+import TrashModal from "../sidebar/TrashModal";
+import SwitchModal from "../sidebar/SwitchModal";
 
 const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
   const [spaces, setSpaces] = useState([
@@ -73,18 +73,18 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
                 onClick = { () => handleListBoxClick (space.id) }
               >
                 
-                  <FixModel
+                  <FixModal
                     id = {space.id}
                     isPinned = {space.isPinned}
                     onPinToggle={handlePinToggle}
                   />
                   <TitleContainer> {space.title} </TitleContainer>
-                  <SwitchModel
+                  <SwitchModal
                     spaceId={space.id}
                     isPublic={space.isPublic}
                     onSwitchToggle={handleSwitchToggle}
                   />
-                  <TrashModel spaceId={space.id} onDelete={handleDeleteSpace} />
+                  <TrashModal spaceId={space.id} onDelete={handleDeleteSpace} />
 
               </ListBox>
             ))}
