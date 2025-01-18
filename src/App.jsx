@@ -18,7 +18,7 @@ import MenuSidebar from './pages/MenuSidebar';
 import Home from './pages/home/HomePage';
 import MyPage from './pages/user/MyPage';
 import EditMyPage from './pages/user/EditMyPage';
-import SearchResult from './pages/SearchResultPage';
+import SearchResult from './pages/search/SearchResultPage';
 
 function App() {
   const [isArchiveOpen, setIsArchiveOpen] = useState(false);

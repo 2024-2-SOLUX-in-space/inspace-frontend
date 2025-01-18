@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaTimes, FaImage, FaMusic, FaYoutube } from 'react-icons/fa';
-import Header from '../components/Header';
+import Header from '../../components/Header';
 import styled from 'styled-components';
 
 const SearchResultContainer = styled.div`
