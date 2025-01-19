@@ -32,7 +32,7 @@ export const ClickedEdit = styled.div`
   transition: background-color 0.2s ease-in-out;
 
   position: absolute;
-  top: 370px; 
+  top: 410px; 
   left: 15px; 
   z-index: -1000; 
 `;

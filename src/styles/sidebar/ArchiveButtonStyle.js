@@ -33,7 +33,7 @@ export const ClickedArchive = styled.div`
   transition: background-color 0.2s ease-in-out;
 
   position: absolute;
-  top: 240px;
+  top: 280px;
   left: 15px;
   z-index: -1000;
 `;

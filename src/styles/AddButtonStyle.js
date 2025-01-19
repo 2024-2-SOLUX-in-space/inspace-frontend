@@ -14,7 +14,7 @@ export const ClickedAdd = styled.div`
   transition: background-color 0.2s ease-in-out;
 
   position: absolute;
-  top: 305px; 
+  top: 345px; 
   left: 15px; 
   z-index: -1000; 
 `;
