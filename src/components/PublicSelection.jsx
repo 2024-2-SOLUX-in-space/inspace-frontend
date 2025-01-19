@@ -13,8 +13,8 @@ import {
   ConfirmButton,
 } from "../styles/PublicSelectionStyle";
 
-const PublicSelection = ({ onConfirm, onBack, onCancel }) => {
-  const [selectedVisibility, setSelectedVisibility] = useState(null); // 공개 여부 상태
+const PublicSelection = ({ visibility, onConfirm, onBack, onCancel }) => {
+  const [selectedVisibility, setSelectedVisibility] = useState(visibility); // 공개 여부 상태
 
   // 아이콘 클릭 핸들러
   const handleVisibilityChange = (visibility) => {

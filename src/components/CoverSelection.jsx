@@ -14,14 +14,11 @@ import {
   SelectButton,
 } from "../styles/CoverSelectionStyle";
 
-const covers = [
-  "표지C.png",
-  "표지B.png",
-  "표지A.png",
-]; 
-
-const CoverSelection = ({ onClose, onSelectCover }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+const CoverSelection = ({ selectedCover, onClose, onSelectCover }) => {
+  const covers = ["표지C.png", "표지B.png", "표지A.png"];
+  const [currentIndex, setCurrentIndex] = useState(
+    selectedCover ? covers.indexOf(selectedCover) : 0
+  );
 
   // 좌우 화살표 클릭 핸들러
   const handlePrev = () => {

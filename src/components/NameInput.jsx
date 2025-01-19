@@ -14,10 +14,7 @@ import {
   DescriptionText,
 } from "../styles/NameInputStyle";
 
-const NameInput = ({ onProceed, onBack, onCancel }) => {
-  const [spaceName, setSpaceName] = useState("");
-  const [isMainSpace, setIsMainSpace] = useState(false);
-
+const NameInput = ({ spaceName, isMainSpace, setSpaceName, setIsMainSpace, onProceed, onBack, onCancel }) => {
   const handleNext = () => {
     if (spaceName.trim() === "") {
       alert("공간 이름을 입력해주세요.");

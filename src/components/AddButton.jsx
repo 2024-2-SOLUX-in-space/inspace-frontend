@@ -30,32 +30,35 @@ import AddAlert from "./AddAlert";
   
     return (
       <>
-        <ClickedAdd isActive = {isAddButtonOpen} onClick = {toggleAddButton} />
-
+        <ClickedAdd isActive={isAddButtonOpen} onClick={toggleAddButton} />
+  
         {isAddButtonOpen && (
           <div>
             {currentStep === 1 && (
               <CoverSelection
-                onSelectCover = {(cover) => {
+                selectedCover={selectedCover}
+                onSelectCover={(cover) => {
                   if (cover) {
                     setSelectedCover(cover);
                     handleNextStep(2);
-                  } 
+                  }
                 }}
-                onClose = { () => {
-                  toggleAddButton();
-                }}
+                onClose={toggleAddButton}
               />
             )}
             {currentStep === 2 && (
               <NameInput
-                onProceed={( { spaceName, isMainSpace }) => {
+                spaceName={spaceName}
+                isMainSpace={isMainSpace}
+                setSpaceName = {setSpaceName}
+                setIsMainSpace={setIsMainSpace} 
+                onProceed={({ spaceName, isMainSpace }) => {
                   setSpaceName(spaceName);
                   setIsMainSpace(isMainSpace);
                   handleNextStep(3);
                 }}
-                onBack = { () => setCurrentStep(1) }
-                onCancel = { () => {
+                onBack={() => setCurrentStep(1)}
+                onCancel={() => {
                   setCurrentStep(1);
                   setSelectedCover(null);
                   setSpaceName("");
@@ -67,12 +70,13 @@ import AddAlert from "./AddAlert";
             )}
             {currentStep === 3 && (
               <PublicSelection
+                visibility={visibility}
                 onConfirm={(isPublic) => {
                   setVisibility(isPublic);
                   handleCreateSpace();
                 }}
-                onBack = {() => setCurrentStep(2)}
-                onCancel = { () => {
+                onBack={() => setCurrentStep(2)}
+                onCancel={() => {
                   setCurrentStep(1);
                   setSelectedCover(null);
                   setSpaceName("");
@@ -84,24 +88,19 @@ import AddAlert from "./AddAlert";
             )}
             {currentStep === 5 && (
               <AddAlert
-              isOpen={true}
-              message="공간이 추가되었습니다!"
-              onClose={() => {
-                console.log("AddButton: Alert 창 닫기");
-  
-                setCurrentStep(1);
-                setSelectedCover(null);
-                setSpaceName("");
-                setIsMainSpace(false);
-                setVisibility(null);
-  
-                toggleAddButton(); // AddButton 닫기
-              }}
-              onConfirm={() => {
-                console.log("공간 편집 페이지로 이동"); // **백엔드 연동** 페이지 전환
-              }}
-              confirmText="확인"
-            />          
+                isOpen={true}
+                message="공간이 추가되었습니다!"
+                onClose={() => {
+                  setCurrentStep(1);
+                  setSelectedCover(null);
+                  setSpaceName("");
+                  setIsMainSpace(false);
+                  setVisibility(null);
+                  toggleAddButton();
+                }}
+                onConfirm={() => console.log("공간 편집 페이지로 이동")} // **백엔드 연동**
+                confirmText="확인"
+              />
             )}
           </div>
         )}
