@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FiBook, FiBookOpen } from "react-icons/fi"; // 아이콘 import
+import { FiBook, FiBookOpen } from "react-icons/fi"; 
 import {
   PublicSelectionOverlay,
   PublicSelectionBackground,
@@ -14,7 +14,7 @@ import {
 } from "../styles/PublicSelectionStyle";
 
 const PublicSelection = ({ visibility, onConfirm, onBack, onCancel }) => {
-  const [selectedVisibility, setSelectedVisibility] = useState(visibility); // 공개 여부 상태
+  const [selectedVisibility, setSelectedVisibility] = useState(visibility); 
 
   // 아이콘 클릭 핸들러
   const handleVisibilityChange = (visibility) => {
@@ -24,9 +24,9 @@ const PublicSelection = ({ visibility, onConfirm, onBack, onCancel }) => {
   // "다음" 버튼 클릭 핸들러
   const handleNextClick = () => {
     if (selectedVisibility) {
-      onConfirm(selectedVisibility); // AddButton.jsx로 선택 정보 전달
+      onConfirm(selectedVisibility); 
     } else {
-      alert("공개 여부를 선택해주세요."); // 선택되지 않은 경우 알림
+      alert("공개 여부를 선택해주세요."); 
     }
   };
 

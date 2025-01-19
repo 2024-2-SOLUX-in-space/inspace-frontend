@@ -109,7 +109,7 @@ export const CheckboxContainer = styled.div`
   margin-bottom: 0.5rem;
 
   input[type="checkbox"] {
-    appearance: none; /* 기본 브라우저 스타일 제거 */
+    appearance: none; 
     width: 17px;
     height: 17px;
     border-radius: 4px;

@@ -92,14 +92,14 @@ export const LeftIconContainer = styled.div`
 
 export const TabContainer = styled.div`
   display: flex;
-  justify-content: space-between; /* 버튼 간의 공간을 띄움 */
-  margin-bottom: 10px; /* 버튼 그룹 아래 여백 */
+  justify-content: space-between; 
+  margin-bottom: 10px; 
 `;
 
 export const TabButton = styled.button`
-  flex: 1; /* 버튼 크기를 동일하게 설정 */
-  margin: 0 5px; /* 버튼 사이 간격 추가 */
-  padding: 8px 12px; /* 버튼 내부 여백 */
+  flex: 1; 
+  margin: 0 5px; 
+  padding: 8px 12px; 
   border: none;
   border-radius: 5px;
   background-color: ${({ isActive }) => (isActive ? "#f0f0f0" : "#ffffff")};
