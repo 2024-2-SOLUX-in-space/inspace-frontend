@@ -85,7 +85,7 @@ export const DetailView = styled.div`
   .user-info {
     position: fixed;
     top: 50px;
-    left: 80px;
+    left: 20px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -104,6 +104,16 @@ export const DetailView = styled.div`
     border-radius: 10px;
   }
 
+  .button-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    position: fixed;
+    bottom: 100px;
+    padding: 0 20px;
+  }
+
   .add-button {
     padding: 10px 20px;
     background: black;
@@ -111,11 +121,13 @@ export const DetailView = styled.div`
     border: none;
     border-radius: 20px;
     cursor: pointer;
-    width: 15%;
     font-size: 1.2rem;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
+  }
+
+  .maximize-button {
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
   }
 `;
 

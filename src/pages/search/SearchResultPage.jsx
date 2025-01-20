@@ -182,25 +182,19 @@ const SearchResult = () => {
             </div>
             <img src={selectedImage} alt="Detailed view" />
             <div className="title">{imageData.title}</div>
-            <img
-              className="maximize-button"
-              src={
-                isFullscreen
-                  ? '/src/assets/img/button/MinimizeButton.png'
-                  : '/src/assets/img/button/MaximizeButton.png'
-              }
-              alt={isFullscreen ? 'Minimize' : 'Maximize'}
-              onClick={toggleFullscreen}
-              style={{
-                position: 'absolute',
-                top: '820px',
-                right: '40px',
-                cursor: 'pointer',
-                width: '40px',
-                height: '40px',
-              }}
-            />
-            <button className="add-button">+ add</button>
+            <div className="button-row">
+              <img
+                className="maximize-button"
+                src={
+                  isFullscreen
+                    ? '/src/assets/img/button/MinimizeButton.png'
+                    : '/src/assets/img/button/MaximizeButton.png'
+                }
+                alt={isFullscreen ? 'Minimize' : 'Maximize'}
+                onClick={toggleFullscreen}
+              />
+              <button className="add-button">+ add</button>
+            </div>
           </div>
         )}
       </DetailView>
