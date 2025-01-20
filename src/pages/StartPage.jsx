@@ -3,8 +3,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import SignUpButtonImg from '../assets/img/button/SignUpButton.png';
 import LogInButtonImg from '../assets/img/button/LogInButton.png';
-
-// styled-components로 만든 컴포넌트 import
 import {
   StartingContainer,
   ButtonContainer,
