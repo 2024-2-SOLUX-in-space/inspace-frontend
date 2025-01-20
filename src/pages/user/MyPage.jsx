@@ -18,7 +18,7 @@ import {
 const MyPage = () => {
   const navigate = useNavigate();
   const { showAlert } = useAlert();
-  const { user } = useUser(); //  전역 user 상태에서 nickname, email, password를 꺼냄
+  const { user } = useUser(); //  전역 user 상태에서 name, email, password를 꺼냄
 
   const handleEdit = () => {
     navigate('/mypage-edit');
@@ -63,7 +63,7 @@ const MyPage = () => {
       <MyPageRight>
         <TextField
           label="Nickname"
-          value={user.nickname}
+          value={user.name}
           onChange={() => {}}
           disabled
         />

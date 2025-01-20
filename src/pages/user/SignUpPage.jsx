@@ -7,7 +7,7 @@ import SignUpLogo from '../../assets/img/logo/signupLogo.png';
 import signUpPageStyles from '../../styles/user/SignUpPageStyle.js';
 
 function SignUpPage() {
-  const [nickname, setNickname] = useState('');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPwd, setConfirmPwd] = useState('');
@@ -16,7 +16,7 @@ function SignUpPage() {
   const { showAlert } = useAlert();
 
   const handleJoin = () => {
-    if (!nickname.trim()) {
+    if (!name.trim()) {
       showAlert('닉네임을 입력해주세요.');
       return;
     }
@@ -51,10 +51,10 @@ function SignUpPage() {
   const emailRegex = /^[A-Za-z0-9@._-]+$/;
   const passwordRegex = /^[A-Za-z0-9!@#$%^&*]*$/;
 
-  const handleNicknameChange = (e) => {
+  const handleNameChange = (e) => {
     const value = e.target.value;
     if (value.length <= 10) {
-      setNickname(value);
+      setName(value);
     }
   };
 
@@ -93,8 +93,8 @@ function SignUpPage() {
         <div className="signup-right">
           <TextField
             label="Nickname"
-            value={nickname}
-            onChange={handleNicknameChange}
+            value={name}
+            onChange={handleNameChange}
             placeholder="10자 이내의 닉네임"
             maxLength={10}
           />

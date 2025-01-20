@@ -22,7 +22,7 @@ const EditMyPage = () => {
   const { user, setUser } = useUser();
 
   // 기존 user 정보로 초기값 설정
-  const [nickname, setNickname] = useState(user.nickname);
+  const [name, setName] = useState(user.name);
 
   // 이메일/비밀번호(읽기 전용, 수정 불가)
   const [email] = useState(user.email);
@@ -31,10 +31,10 @@ const EditMyPage = () => {
   // 비밀번호 확인을 위한 필드(사용자 입력 가능)
   const [confirmPwd, setConfirmPwd] = useState('');
 
-  const handleNicknameChange = (e) => {
+  const handleNameChange = (e) => {
     const value = e.target.value;
     if (value.length <= 10) {
-      setNickname(value);
+      setName(value);
     }
   };
 
@@ -55,7 +55,7 @@ const EditMyPage = () => {
     // 닉네임만 수정
     setUser({
       ...user,
-      nickname,
+      name,
     });
 
     showAlert(
@@ -66,7 +66,7 @@ const EditMyPage = () => {
   };
 
   // 닉네임과 비밀번호 확인 모두 입력 필요
-  const isSaveDisabled = !nickname.trim() || !confirmPwd.trim();
+  const isSaveDisabled = !name.trim() || !confirmPwd.trim();
 
   return (
     <MyPageEditContainer>
@@ -97,8 +97,8 @@ const EditMyPage = () => {
         {/* 닉네임 (수정 가능) */}
         <TextField
           label="Nickname"
-          value={nickname}
-          onChange={handleNicknameChange}
+          value={name}
+          onChange={handleNameChange}
           placeholder="10자 이내의 닉네임"
           maxLength={10}
         />
