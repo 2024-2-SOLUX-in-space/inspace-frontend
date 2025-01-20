@@ -4,7 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { useAlert } from '../../context/AlertContext';
 import TextField from '../../components/user/TextField';
 import SignUpLogo from '../../assets/img/logo/signupLogo.png';
-import signUpPageStyles from '../../styles/user/SignUpPageStyle.js';
+import {
+  SignupContainer,
+  SignupLeft,
+  SignupLogo as StyledSignupLogo,
+  SignupRight,
+  JoinNowButton,
+} from '../../styles/user/SignUpPageStyle.js';
 
 function SignUpPage() {
   const [name, setName] = useState('');
@@ -80,57 +86,50 @@ function SignUpPage() {
   };
 
   return (
-    <>
-      <style>{signUpPageStyles}</style>
+    <SignupContainer>
+      {/* 왼쪽: Sign Up 로고 */}
+      <SignupLeft>
+        <StyledSignupLogo src={SignUpLogo} alt="Sign Up Logo" />
+      </SignupLeft>
 
-      <div className="signup-container">
-        {/* 왼쪽: Sign Up 로고 */}
-        <div className="signup-left">
-          <img src={SignUpLogo} alt="Sign Up Logo" className="signup-logo" />
-        </div>
+      {/* 오른쪽: 폼 영역 */}
+      <SignupRight>
+        <TextField
+          label="Nickname"
+          value={name}
+          onChange={handleNameChange}
+          placeholder="10자 이내의 닉네임"
+          maxLength={10}
+        />
+        <TextField
+          label="Email"
+          value={email}
+          onChange={handleEmailChange}
+          placeholder="inspace@gmail.com"
+          maxLength={50}
+        />
+        <TextField
+          label="Password"
+          type="password"
+          value={password}
+          onChange={handlePasswordChange}
+          placeholder="8~20자 사이의 비밀번호를 입력해주세요."
+          maxLength={20}
+        />
+        <TextField
+          label="Confirm Password"
+          type="password"
+          value={confirmPwd}
+          onChange={handleConfirmPwdChange}
+          placeholder="다시 한 번 입력해주세요."
+          maxLength={20}
+        />
 
-        {/* 오른쪽: 폼 영역 */}
-        <div className="signup-right">
-          <TextField
-            label="Nickname"
-            value={name}
-            onChange={handleNameChange}
-            placeholder="10자 이내의 닉네임"
-            maxLength={10}
-          />
-          <TextField
-            label="Email"
-            value={email}
-            onChange={handleEmailChange}
-            placeholder="inspace@gmail.com"
-            maxLength={50}
-          />
-          <TextField
-            label="Password"
-            type="password"
-            value={password}
-            onChange={handlePasswordChange}
-            placeholder="8~20자 사이의 비밀번호를 입력해주세요."
-            maxLength={20}
-          />
-          <TextField
-            label="Confirm Password"
-            type="password"
-            value={confirmPwd}
-            onChange={handleConfirmPwdChange}
-            placeholder="다시 한 번 입력해주세요."
-            maxLength={20}
-          />
-          <button
-            className="join-now-button"
-            onClick={handleJoin}
-            aria-label="Join Right Now"
-          >
-            Join Right Now
-          </button>
-        </div>
-      </div>
-    </>
+        <JoinNowButton onClick={handleJoin} aria-label="Join Right Now">
+          Join Right Now
+        </JoinNowButton>
+      </SignupRight>
+    </SignupContainer>
   );
 }
 

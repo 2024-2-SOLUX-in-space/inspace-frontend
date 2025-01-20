@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
 import LogInTextField from '../../components/user/LogInTextField';
 import SignUpButtonImg from '../../assets/img/button/SignUpButton.png';
+
+// styled-components로 만든 styled 컴포넌트들을 import
 import {
   LoginPageContainer,
   SignupButton,
@@ -17,7 +19,7 @@ function LogInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const { setUser } = useUser(); // 전역 user 상태를 업데이트할 수 있는 setUser
+  const { setUser } = useUser(); //  전역 user 상태를 업데이트할 수 있는 setUser
   const navigate = useNavigate();
 
   const goToSignUp = () => {
@@ -66,6 +68,7 @@ function LogInPage() {
 
   return (
     <LoginPageContainer>
+      {/* 페이지 우상단 회원가입 버튼 */}
       <SignupButton onClick={goToSignUp} aria-label="Sign Up">
         <img src={SignUpButtonImg} alt="Sign Up" />
       </SignupButton>
