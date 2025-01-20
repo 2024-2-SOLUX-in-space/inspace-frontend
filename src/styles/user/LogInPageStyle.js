@@ -1,8 +1,9 @@
 // LogInPageStyle.js
+import styled from 'styled-components';
 
-const logInPageStyles = `
-.login-page {
-  background: url('../../../public/background/LogInPage.png') no-repeat center center;
+export const LoginPageContainer = styled.div`
+  background: url('../../../public/background/LogInPage.png') no-repeat center
+    center;
   background-size: cover;
   width: 100vw;
   height: 100vh;
@@ -13,10 +14,10 @@ const logInPageStyles = `
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
+`;
 
 /* 회원가입 버튼 (페이지 우상단) */
-.signup-button {
+export const SignupButton = styled.button`
   position: absolute;
   top: 0.3rem;
   right: 1rem;
@@ -25,23 +26,23 @@ const logInPageStyles = `
   cursor: pointer;
   margin: 0;
   padding: 0;
-}
 
-.signup-button img {
-  width: 15rem;
-  height: auto;
-  display: block;
-}
+  img {
+    width: 15rem;
+    height: auto;
+    display: block;
+  }
 
-.signup-button:hover,
-.signup-button:focus,
-.signup-button:active {
-  border: none;
-  outline: none;
-}
+  &:hover,
+  &:focus,
+  &:active {
+    border: none;
+    outline: none;
+  }
+`;
 
 /* 아래쪽 중앙에 배치할 컨테이너 */
-.bottom-center-container {
+export const BottomCenterContainer = styled.div`
   position: absolute;
   bottom: 40px;
   left: 50%;
@@ -50,17 +51,17 @@ const logInPageStyles = `
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-}
+`;
 
 /* Forgot Password와 Log In 버튼을 같은 줄에서 양쪽 배치 */
-.login-actions {
+export const LoginActions = styled.div`
   width: 400px;
   display: flex;
   justify-content: space-between;
-}
+`;
 
 /* Forgot Password 버튼 */
-.forgot-password-button {
+export const ForgotPasswordButton = styled.button`
   background: transparent;
   border: none;
   color: #000000;
@@ -68,21 +69,21 @@ const logInPageStyles = `
   font-size: 1.1rem;
   margin: 0;
   padding: 0;
-}
 
-.forgot-password-button:hover {
-  opacity: 0.8;
-}
+  &:hover {
+    opacity: 0.8;
+  }
 
-.forgot-password-button:hover,
-.forgot-password-button:focus,
-.forgot-password-button:active {
-  border: none;
-  outline: none;
-}
+  &:hover,
+  &:focus,
+  &:active {
+    border: none;
+    outline: none;
+  }
+`;
 
 /* Log In 버튼 */
-.login-button {
+export const LoginButton = styled.button`
   background: black;
   color: white;
   border: none;
@@ -92,15 +93,12 @@ const logInPageStyles = `
   margin: 0;
   padding: 0.5rem;
   width: 90px;
-}
 
-.login-button:disabled {
-  opacity: 0.3;
-}
+  &:disabled {
+    opacity: 0.3;
+  }
 
-.login-button:hover:not(:disabled) {
-  opacity: 0.8;
-}
+  &:hover:not(:disabled) {
+    opacity: 0.8;
+  }
 `;
-
-export default logInPageStyles;
