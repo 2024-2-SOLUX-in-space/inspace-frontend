@@ -19,7 +19,7 @@ const ClickedAdd = styled.div`
   transition: background-color 0.2s ease-in-out;
 
   position: absolute;
-  top: 345px; 
+  top: 205px; 
   left: 15px; 
   z-index: -1000; 
 `;

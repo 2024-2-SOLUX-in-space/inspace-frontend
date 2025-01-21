@@ -15,7 +15,7 @@ export const ClickedHome = styled.div`
   transition: background-color 0.2s ease-in-out;
 
   position: absolute;
-  top: 215px;
+  top: 75px;
   left: 15px;
   z-index: -1000; 
 `

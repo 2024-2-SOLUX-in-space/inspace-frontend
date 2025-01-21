@@ -49,7 +49,7 @@ export const ClickedHeart = styled.div`
     isActive ? "#ECECEC" : "transparent"};
   transition: background-color 0.2s ease-in-out;
   position: absolute;
-  top: 475px;
+  top: 335px;
   left: 15px;
   z-index: -1000;
 `;

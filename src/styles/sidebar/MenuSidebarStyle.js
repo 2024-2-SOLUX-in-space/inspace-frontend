@@ -3,13 +3,13 @@ import styled from 'styled-components';
 // 사이드바 컨테이너 (이동)
 export const MenuSidebarContainer = styled.div`
   position: fixed;
-  top: 0px;
+  top: 9.9vh;
   left: ${({ isOpen }) => (isOpen ? '0' : '-250px')};
   width: 75px;
   height: 100%;
   background-color: white;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   transition: left 0.3s ease-in-out;
+  border-right: 1px solid #ECECEC;
   z-index: 1000; /* 사이드바가 토글 버튼 위에 배치 */
 `;
 
@@ -19,7 +19,7 @@ export const MenuSidebarContent = styled.div`
   flex-direction: column;
   gap: 20px;
   padding: 15px;
-  margin-top: 200px;
+  margin-top: 60px;
 `;
 
 // 개별 아이콘
@@ -71,13 +71,13 @@ export const MenuSidebarIcon = styled.div`
 // FiMenu 버튼 (ActiveButton)
 export const ActiveButton = styled.div`
   position: fixed;
-  top: 35px;
+  top: 0;
   left: 16px;
-  margin-top: 100px;
+  margin-top: 11vh;
   color: black;
   font-size: 30px;
   cursor: pointer;
-  z-index: 1; /* 사이드바보다 아래에 위치 */
+  z-index: 20; /* 사이드바보다 아래에 위치 */
 
   display: flex;
   align-items: center;
@@ -123,8 +123,9 @@ export const ActiveButton = styled.div`
 // FiChevronsLeft 버튼 (InactiveButton)
 export const InactiveButton = styled.div`
   position: fixed;
-  top: 100px;
+  top: 0;
   left: 16px;
+  margin-top: 11vh;
   font-size: 30px;
   color: black;
   cursor: pointer;
