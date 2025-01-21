@@ -123,7 +123,7 @@ export const ActiveButton = styled.div`
 // FiChevronsLeft 버튼 (InactiveButton)
 export const InactiveButton = styled.div`
   position: fixed;
-  top: 140px;
+  top: 100px;
   left: 16px;
   font-size: 30px;
   color: black;
