@@ -12,7 +12,7 @@ import {
   CheckboxLabel,
   NextButton,
   DescriptionText,
-} from "../styles/NameInputStyle";
+} from "../../styles/sidebar/NameInputStyle";
 
 const NameInput = ({ spaceName, isMainSpace, setSpaceName, setIsMainSpace, onProceed, onBack, onCancel }) => {
   const handleNext = () => {

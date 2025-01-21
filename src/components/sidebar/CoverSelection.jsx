@@ -12,7 +12,7 @@ import {
   ArrowButton,
   ButtonContainer, 
   SelectButton,
-} from "../styles/CoverSelectionStyle";
+} from "../../styles/sidebar/CoverSelectionStyle";
 
 const CoverSelection = ({ selectedCover, onClose, onSelectCover }) => {
   const covers = ["표지C.png", "표지B.png", "표지A.png"];

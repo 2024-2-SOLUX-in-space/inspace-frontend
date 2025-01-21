@@ -1,7 +1,29 @@
 import React, { useState } from "react";
+import styled from "styled-components";
 import { FiTrash2 } from "react-icons/fi"; 
-import { TrashButton } from "../../styles/sidebar/TrashModalStyle"; 
-import TrashAlert from "../alert/TrashAlert";
+import Alert from "../alert/AddTrashAlert";
+
+const TrashButton = styled.button`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  color: red;
+  font-size: 17px;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  margin-right: 5px;
+
+  &:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s ease-in-out;
+  }
+
+  &:focus {
+    outline: none;
+  }
+`;
 
 const TrashModal = ({ spaceId, onDelete }) => {
   const [isAlertOpen, setIsAlertOpen] = useState(false); 
@@ -25,7 +47,7 @@ const TrashModal = ({ spaceId, onDelete }) => {
         <FiTrash2 /> 
       </TrashButton>
 
-      <TrashAlert
+      <Alert
         isOpen={isAlertOpen}
         message="정말로 삭제하시겠습니까?"
         onClose={handleCloseAlert}

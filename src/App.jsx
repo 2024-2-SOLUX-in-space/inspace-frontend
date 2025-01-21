@@ -1,6 +1,5 @@
 // App.jsx
-// App.jsx
-import React, { useState } from "react";
+import React from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -9,6 +8,7 @@ import {
 } from "react-router-dom";
 import { AlertProvider } from "./context/AlertContext";
 import { UserProvider } from "./context/UserContext";
+import { SidebarProvider, useSidebar } from "./context/SidebarContext"; 
 import GlobalStyle from "./styles/GlobalStyle";
 import StartPage from "./pages/StartPage";
 import SignUpPage from "./pages/user/SignUpPage";
@@ -21,58 +21,44 @@ import EditMyPage from "./pages/user/EditMyPage";
 import SearchResult from "./pages/search/SearchResultPage";
 
 function App() {
-  const [isHomeOpen, setIsHomeOpen] = useState(false);
-  const [isArchiveOpen, setIsArchiveOpen] = useState(false);
-  const [isAddButtonOpen, setIsAddButtonOpen] = useState(false);
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  const [isHeartOpen, setIsHeartOpen] = useState(false);
-
   return (
     <UserProvider>
       <AlertProvider>
-        <Router>
-          <GlobalStyle />
-          <SidebarWrapper
-            isHomeOpen={isHomeOpen}
-            toggleHome={() => setIsHomeOpen((prev) => !prev)}
-            isArchiveOpen={isArchiveOpen}
-            toggleArchive={() => setIsArchiveOpen((prev) => !prev)}
-            isAddButtonOpen={isAddButtonOpen}
-            toggleAddButton={() => setIsAddButtonOpen((prev) => !prev)}
-            isEditOpen={isEditOpen}
-            toggleEdit={() => setIsEditOpen((prev) => !prev)}
-            isHeartOpen={isHeartOpen}
-            toggleHeart={() => setIsHeartOpen((prev) => !prev)}
-          />
-          <Routes>
-            <Route path="/" element={<StartPage />} />
-            <Route path="/signup" element={<SignUpPage />} />
-            <Route path="/login" element={<LogInPage />} />
-            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/search" element={<SearchResult />} />
-            <Route path="/mypage" element={<MyPage />} />
-            <Route path="/mypage-edit" element={<EditMyPage />} />
-          </Routes>
-        </Router>
+        <SidebarProvider> 
+          <Router>
+            <GlobalStyle />
+            <SidebarWrapper />
+            <Routes>
+              <Route path="/" element={<StartPage />} />
+              <Route path="/signup" element={<SignUpPage />} />
+              <Route path="/login" element={<LogInPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/search" element={<SearchResult />} />
+              <Route path="/mypage" element={<MyPage />} />
+              <Route path="/mypage-edit" element={<EditMyPage />} />
+            </Routes>
+          </Router>
+        </SidebarProvider>
       </AlertProvider>
     </UserProvider>
   );
 }
 
-function SidebarWrapper({
-  isHomeOpen,
-  toggleHome,
-  isArchiveOpen,
-  toggleArchive,
-  isAddButtonOpen,
-  toggleAddButton,
-  isEditOpen,
-  toggleEdit,
-  isHeartOpen,
-  toggleHeart,
-}) {
+function SidebarWrapper() {
   const location = useLocation();
+  const {
+    isHomeOpen,
+    toggleHome,
+    isArchiveOpen,
+    toggleArchive,
+    isAddButtonOpen,
+    toggleAddButton,
+    isEditOpen,
+    toggleEdit,
+    isHeartOpen,
+    toggleHeart,
+  } = useSidebar(); 
 
   const hideSidebarPaths = [
     "/",

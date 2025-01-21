@@ -9,10 +9,10 @@ import { MenuSidebarContainer,
     ActiveButton} from '../styles/sidebar/MenuSidebarStyle';
 import ArchiveButton from '../components/sidebar/ArchiveButton';
 
-import HomeButton from '../components/HomeButton';
-import AddButton from '../components/AddButton';
-import EditButton from '../components/EditButton';
-import HeartButton from '../components/HeartButton';
+import HomeButton from '../components/sidebar/HomeButton';
+import AddButton from "../components/sidebar/AddButton";
+import EditButton from '../components/sidebar/EditButton';
+import HeartButton from '../components/sidebar/HeartButton';
 
     const MenuSidebar = ( { isHomeOpen, toggleHome, isArchiveOpen, toggleArchive, isAddButtonOpen, toggleAddButton, 
       isEditOpen, toggleEdit, isHeartOpen, toggleHeart }) => {

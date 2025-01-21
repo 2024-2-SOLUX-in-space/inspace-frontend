@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { FiBook, FiBookOpen } from "react-icons/fi"; 
+import React from "react";
+import { FiBook, FiBookOpen } from "react-icons/fi";
 import {
   PublicSelectionOverlay,
   PublicSelectionBackground,
@@ -11,22 +11,15 @@ import {
   IconContainer,
   IconWrapper,
   ConfirmButton,
-} from "../styles/PublicSelectionStyle";
+} from "../../styles/sidebar/PublicSelectionStyle";
 
-const PublicSelection = ({ visibility, onConfirm, onBack, onCancel }) => {
-  const [selectedVisibility, setSelectedVisibility] = useState(visibility); 
-
-  // 아이콘 클릭 핸들러
-  const handleVisibilityChange = (visibility) => {
-    setSelectedVisibility(visibility);
-  };
-
+const PublicSelection = ({ visibility, setVisibility, onConfirm, onBack, onCancel }) => {
   // "다음" 버튼 클릭 핸들러
   const handleNextClick = () => {
-    if (selectedVisibility) {
-      onConfirm(selectedVisibility); 
+    if (visibility) {
+      onConfirm(visibility);
     } else {
-      alert("공개 여부를 선택해주세요."); 
+      alert("공개 여부를 선택해주세요.");
     }
   };
 
@@ -34,24 +27,24 @@ const PublicSelection = ({ visibility, onConfirm, onBack, onCancel }) => {
     <PublicSelectionOverlay>
       <PublicSelectionBackground />
       <PublicSelectionContent>
-      <BackButton onClick={onBack}>←</BackButton>
-      <CloseButton onClick={onCancel}>✕</CloseButton>
+        <BackButton onClick={onBack}>←</BackButton>
+        <CloseButton onClick={onCancel}>✕</CloseButton>
         <PublicSelectionHeader>
           <PublicSelectionTitle>공간의 공개 여부를 선택해주세요</PublicSelectionTitle>
         </PublicSelectionHeader>
         <IconContainer>
           <IconWrapper
-            isSelected={selectedVisibility === "public"}
-            onClick={() => handleVisibilityChange("public")}
+            isSelected={visibility === "public"}
+            onClick={() => setVisibility("public")}
           >
-            <FiBookOpen size = {25} />
+            <FiBookOpen size={25} />
             <span>공개</span>
           </IconWrapper>
           <IconWrapper
-            isSelected={selectedVisibility === "private"}
-            onClick={() => handleVisibilityChange("private")}
+            isSelected={visibility === "private"}
+            onClick={() => setVisibility("private")}
           >
-            <FiBook size = {25} />
+            <FiBook size={25} />
             <span>비공개</span>
           </IconWrapper>
         </IconContainer>

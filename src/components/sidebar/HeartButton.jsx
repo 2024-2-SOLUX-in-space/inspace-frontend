@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { HeartList, ClickedHeart, ListBox, TitleContainer, 
-  FollowIconContainer, LeftIconContainer, TabContainer, TabButton } from "../styles/HeartButtonStyle";
+  FollowIconContainer, LeftIconContainer, TabContainer, TabButton } from "../../styles/sidebar/HeartButtonStyle";
 import { FiUser, FiUserCheck, FiUserMinus } from "react-icons/fi"; 
-import HeartAlert from "./HeartAlert";
+import HeartAlert from "../alert/HeartAlert";
 
 const HeartButton = ({ isHeartOpen, toggleHeart }) => {
   const [tab, setTab] = useState("followers"); // 현재 활성화된 탭

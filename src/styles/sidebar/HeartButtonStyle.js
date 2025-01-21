@@ -16,6 +16,25 @@ export const HeartList = styled.div`
 
   max-height: 360px;
   overflow-y: ${({ isScrollable }) => (isScrollable ? "auto" : "hidden")};
+
+  /* 스크롤바 스타일 */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #e0e0e0;
+    border-radius: 50px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #bdbdbd;
+  }
 `;
 
 export const ClickedHeart = styled.div`

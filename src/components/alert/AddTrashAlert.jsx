@@ -77,7 +77,7 @@ const ConfirmButton = styled.button`
   }
 `;
 
-const AddAlert = ({ isOpen, message = "공간이 추가되었습니다!", onClose, onConfirm, confirmText = "확인" }) => {
+const Alert = ({ isOpen, message = "알림 메시지", onClose, onConfirm, confirmText = "확인" }) => {
   if (!isOpen) return null;
 
   const handleConfirm = () => {
@@ -104,5 +104,4 @@ const AddAlert = ({ isOpen, message = "공간이 추가되었습니다!", onClos
   );
 };
 
-export default AddAlert;
-
+export default Alert;
