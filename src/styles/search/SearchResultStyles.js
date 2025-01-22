@@ -6,15 +6,18 @@ export const SearchResultContainer = styled.div`
 `;
 
 export const HashtagContainer = styled.div`
+  position: fixed;
+  top: 0;
   width: 100%;
+  height: 3vh;
   display: flex;
   flex-wrap: wrap;
+  background: white;
+  margin-top: 8vh;
   gap: 10px;
   padding: 10px 20px;
-  background: white;
-  min-height: 60px;
-  margin-top: 9vh;
-  padding-left: 10vh;
+  padding-left: 6.5vw;
+  padding-top: 1vh;
 `;
 
 export const Hashtag = styled.div`
@@ -39,12 +42,13 @@ export const FixedSearchBar = styled.div`
   padding: 0.5% 1%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   height: 8vh;
+  z-index: 1000;
 `;
 
 export const MasonryGrid = styled.div`
   column-count: 5;
   column-gap: 10px;
-  margin-top: 7vh;
+  margin-top: 5vh;
   padding: 0 20px;
   width: 100%;
 `;
