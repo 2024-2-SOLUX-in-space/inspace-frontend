@@ -7,14 +7,14 @@ import Notification from './alert/Notification';
 const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 1%;
+  padding: 5px 1%;
   background-color: #fff;
-  height: 5vh;
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
+  height: 7.5vh;
   z-index: 2000;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  border-bottom: 1px solid #ececec;
 `;
 
 const Logo = styled.img`
@@ -55,14 +55,13 @@ const IconButton = styled.button`
   justify-content: center;
   border: none;
   background: none;
-  cursor: pointer;
   padding: 5px;
   border-radius: 20%;
   transition: background-color 0.3s;
   outline: none;
   background-color: ${(props) =>
     props.isSelected ? '#ececec' : 'transparent'};
-
+  cursor: pointer;
   &:hover {
     background-color: #ececec;
   }

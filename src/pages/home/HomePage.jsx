@@ -105,24 +105,11 @@ const Home = () => {
   };
 
   return (
-    <HomeContainer isEditOpen={isEditOpen}>
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '70px',
-          backgroundColor: 'white',
-          zIndex: 1000,
-          borderBottom: '1px solid #eee',
-          padding: '10px 0'
-        }}
-      >
-        <Header iconInside />
-      </div>
-      <ContentWrapper isEditOpen={isEditOpen}>
-        <HomeDiary 
+    <>
+      <Header iconInside />
+      <HomeContainer isEditOpen={isEditOpen}>
+        <ContentWrapper isEditOpen={isEditOpen}>
+          <HomeDiary
           diaryData={diaryData} 
           setDiaryData={setDiaryData}
           onImageDrop={handleImageDrop}
@@ -143,6 +130,7 @@ const Home = () => {
         images={draggableImages}
       />
     </HomeContainer>
+  </>
   );
 };
 

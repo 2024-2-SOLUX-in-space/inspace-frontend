@@ -5,7 +5,6 @@ import {
   SearchResultContainer,
   HashtagContainer,
   Hashtag,
-  FixedSearchBar,
   MasonryGrid,
   GridItem,
   DetailView,
@@ -110,23 +109,9 @@ const SearchResult = () => {
   const shuffledImages = filteredImages.sort(() => Math.random() - 0.5);
 
   return (
+    <>
+    <Header iconInside />
     <SearchResultContainer>
-      <FixedSearchBar>
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '70px',
-            backgroundColor: 'white',
-            zIndex: 1000,
-            borderBottom: '1px solid #eee',
-            padding: '10px 0',
-          }}
-        >
-          <Header iconInside />
-        </div>
         <HashtagContainer>
           {hashtags.map((tag) => (
             <Hashtag
@@ -138,7 +123,6 @@ const SearchResult = () => {
             </Hashtag>
           ))}
         </HashtagContainer>
-      </FixedSearchBar>
 
       <div
         style={{
@@ -199,6 +183,7 @@ const SearchResult = () => {
         )}
       </DetailView>
     </SearchResultContainer>
+    </>
   );
 };
 
