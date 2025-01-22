@@ -7,16 +7,18 @@ import { MenuSidebarContainer,
     InactiveButton, 
     ActiveButton} from '../styles/sidebar/MenuSidebarStyle';
 import ArchiveButton from '../components/sidebar/ArchiveButton';
-
 import HomeButton from '../components/sidebar/HomeButton';
 import AddButton from "../components/sidebar/AddButton";
 import EditButton from '../components/sidebar/EditButton';
 import HeartButton from '../components/sidebar/HeartButton';
+import { useNavigate } from 'react-router-dom';
 
     const MenuSidebar = ( { isHomeOpen, toggleHome, isArchiveOpen, toggleArchive, isAddButtonOpen, toggleAddButton, 
       isEditOpen, toggleEdit, isHeartOpen, toggleHeart }) => {
         const [isOpen, setIsOpen] = useState(true); // 사이드바 열림/닫힘 상태 관리
         const [activeIcon, setActiveIcon] = useState(null); // 활성화된 아이콘 상태 관리
+
+        const navigate = useNavigate();
 
         const toggleSidebar = () => {
           setIsOpen(!isOpen); 
@@ -29,6 +31,7 @@ import HeartButton from '../components/sidebar/HeartButton';
           }
           if (iconName === "home") {
             toggleHome();
+            navigate("/home");
           }
           if (iconName === "filePlus") {
             toggleAddButton();

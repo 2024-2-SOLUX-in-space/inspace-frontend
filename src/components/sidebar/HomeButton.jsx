@@ -19,9 +19,9 @@ export const ClickedHome = styled.div`
   left: 15px;
   z-index: -1000; 
 `
-const HomeButton = ({ isHomeOpen }) => {
+const HomeButton = ({ isHomeOpen, toggleHome }) => {
     return (
-      <ClickedHome isActive={isHomeOpen}>
+      <ClickedHome isActive={isHomeOpen} onClick={toggleHome}>
       </ClickedHome>
     );
   };

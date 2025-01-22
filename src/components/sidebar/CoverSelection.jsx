@@ -15,7 +15,7 @@ import {
 } from "../../styles/sidebar/CoverSelectionStyle";
 
 const CoverSelection = ({ selectedCover, onClose, onSelectCover }) => {
-  const covers = ["표지C.png", "표지B.png", "표지A.png"];
+  const covers = ["/sidebar/cover1.png", "/sidebar/cover2.png", "/sidebar/cover3.png"];
   const [currentIndex, setCurrentIndex] = useState(
     selectedCover ? covers.indexOf(selectedCover) : 0
   );
