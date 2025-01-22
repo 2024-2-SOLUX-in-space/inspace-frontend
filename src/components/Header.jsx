@@ -71,8 +71,8 @@ const IconButton = styled.button`
   }
 
   svg {
-    width: 4vh;
-    height: 4vh;
+    width: 28px;
+    height: 28px;
   }
 `;
 
