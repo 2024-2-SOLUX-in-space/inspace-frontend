@@ -7,7 +7,7 @@ import Notification from './alert/Notification';
 const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
-  padding: 5px 1%;
+  padding: 12px 1%;
   background-color: #fff;
   height: 7.5vh;
   z-index: 2000;
