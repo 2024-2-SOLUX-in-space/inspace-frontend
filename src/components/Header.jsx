@@ -4,7 +4,7 @@ import { FiSearch, FiBell, FiUser } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import Notification from './alert/Notification';
 
-const SearchBarContainer = styled.div`
+const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -14,6 +14,7 @@ const SearchBarContainer = styled.div`
   position: relative;
   top: 50%;
   transform: translateY(-50%);
+  z-index: 2000;
 `;
 
 const Logo = styled.img`
@@ -182,7 +183,7 @@ const NotificationsContent = styled.div`
   }
 `;
 
-const SearchBar = () => {
+const Header = () => {
   const [searchText, setSearchText] = useState('');
   const [isBellFilled, setIsBellFilled] = useState(false);
   const [isUserFilled, setIsUserFilled] = useState(false);
@@ -225,7 +226,7 @@ const SearchBar = () => {
   };
 
   return (
-    <SearchBarContainer>
+    <HeaderContainer>
       <Logo
         src="/public/Logo.png"
         alt="Logo"
@@ -284,8 +285,8 @@ const SearchBar = () => {
           </NotificationsContainer>
         </NotificationsWrapper>
       )}
-    </SearchBarContainer>
+    </HeaderContainer>
   );
 };
 
-export default SearchBar;
+export default Header;
