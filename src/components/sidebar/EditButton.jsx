@@ -4,7 +4,7 @@ import { FiBook, FiBookOpen } from "react-icons/fi";
 
 const EditList = styled.div`
   position: fixed;
-  top: 40%;
+  top: 28%;
   left: 7%;
   width: 260px;
   height: 300px;
