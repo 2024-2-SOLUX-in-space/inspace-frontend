@@ -54,8 +54,6 @@ const HeartButton = ({ isHeartOpen, toggleHeart }) => {
 
   return (
     <>
-      <ClickedHeart isActive={isHeartOpen} onClick={toggleHeart} />
-
       {isHeartOpen && !alertInfo.isOpen && (
         <HeartList isScrollable = {isScrollable}>
           <TabContainer>

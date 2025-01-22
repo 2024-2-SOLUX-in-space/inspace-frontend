@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ArchiveList, ClickedArchive, ListBox, TitleContainer } from "../../styles/sidebar/ArchiveButtonStyle";
+import { ArchiveList, ListBox, TitleContainer } from "../../styles/sidebar/ArchiveButtonStyle";
 import FixModal from "../sidebar/FixModal";
 import TrashModal from "../sidebar/TrashModal";
 import SwitchModal from "../sidebar/SwitchModal";
@@ -62,8 +62,6 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
 
   return (
     <>
-      <ClickedArchive isActive = {isArchiveOpen} onClick = {toggleArchive} />
-
       {isArchiveOpen && (
         <ArchiveList isScrollable = {isScrollable}>
             {spaces.map( (space) => (

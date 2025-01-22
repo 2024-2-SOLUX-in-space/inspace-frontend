@@ -48,8 +48,6 @@ const AddButton = ({ isAddButtonOpen, toggleAddButton }) => {
 
   return (
     <>
-      <ClickedAdd isActive={isAddButtonOpen} onClick={toggleAddButton} />
-
       {isAddButtonOpen && (
         <div>
           {currentStep === 1 && (

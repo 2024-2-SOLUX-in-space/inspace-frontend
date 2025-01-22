@@ -113,8 +113,6 @@ const EditButton = ({ isEditOpen, toggleEdit }) => {
 
   return (
     <>
-      <ClickedEdit isActive={isEditOpen} onClick={toggleEdit} />
-
       {isEditOpen && (
         <EditList isScrollable={isScrollable}>
           {spaces.map((space) => (
