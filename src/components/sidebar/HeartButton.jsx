@@ -5,7 +5,7 @@ import { FiUser, FiUserCheck, FiUserMinus } from "react-icons/fi";
 import HeartAlert from "../alert/HeartAlert";
 
 const HeartButton = ({ isHeartOpen, toggleHeart }) => {
-  const [tab, setTab] = useState("followers"); // 현재 활성화된 탭
+  const [tab, setTab] = useState("followers");
   const [alertInfo, setAlertInfo] = useState( {isOpen: false, message: "" });
   
   const [followers, setFollowers] = useState([
@@ -73,7 +73,6 @@ const HeartButton = ({ isHeartOpen, toggleHeart }) => {
             </TabButton>
           </TabContainer>
 
-          {/* 팔로워/팔로잉 리스트 */}
           <div>
             {(tab === "followers" ? followers : following).map((user) => (
               <ListBox key={user.id}>

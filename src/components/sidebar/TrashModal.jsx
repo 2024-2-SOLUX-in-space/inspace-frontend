@@ -36,7 +36,7 @@ const TrashModal = ({ spaceId, onDelete }) => {
   };
 
   const handleConfirmDelete = () => {
-    onDelete(spaceId); // ArchiveButton으로 삭제 요청 전달
+    onDelete(spaceId); 
     // **추후 연동 필요 ** 삭제 API 요청, 서버와 동기화
     handleCloseAlert(); 
   };

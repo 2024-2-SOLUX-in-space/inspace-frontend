@@ -19,7 +19,6 @@ const EditList = styled.div`
   max-height: ${({ isScrollable }) => (isScrollable ? "300px" : "auto")};
   overflow-y: ${({ isScrollable }) => (isScrollable ? "auto" : "hidden")};
 
-  /* 스크롤바 스타일 */
   &::-webkit-scrollbar {
     width: 6px;
   }
@@ -84,13 +83,12 @@ const TitleContainer = styled.span`
 
 const PublicIconContainer = styled.div`
   margin-left: 10px;
-  color: #555; // 아이콘 색상
-  font-size: 18px; // 아이콘 크기
+  color: #555; 
+  font-size: 18px; 
   display: flex;
   align-items: center;
 `;
 
-// 컴포넌트 정의
 const EditButton = ({ isEditOpen, toggleEdit }) => {
   const [spaces, setSpaces] = useState([
     { id: 1, title: "해리포터와 마법사의 돌", isPublic: false },

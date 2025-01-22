@@ -17,7 +17,6 @@ export const HeartList = styled.div`
   max-height: 360px;
   overflow-y: ${({ isScrollable }) => (isScrollable ? "auto" : "hidden")};
 
-  /* 스크롤바 스타일 */
   &::-webkit-scrollbar {
     width: 6px;
   }

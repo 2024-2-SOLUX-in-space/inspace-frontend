@@ -20,7 +20,6 @@ const SwitchButton = styled.div`
 const SwitchModal = ({ spaceId, isPublic, onSwitchToggle }) => {
   const handleClick = () => {
     onSwitchToggle(spaceId);
-    // **추후 연동 필요**  
   };
 
   return (

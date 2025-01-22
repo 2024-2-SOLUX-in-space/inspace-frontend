@@ -43,7 +43,7 @@ const AddButton = ({ isAddButtonOpen, toggleAddButton }) => {
       visibility,
     };
     // **백엔드 연동** 공간 생성 요청
-    setCurrentStep(5); // 최종 단계로 이동
+    setCurrentStep(5); 
   };
 
   return (
@@ -117,7 +117,7 @@ const AddButton = ({ isAddButtonOpen, toggleAddButton }) => {
                 setVisibility(null);
                 toggleAddButton();
               }}
-              onConfirm={() => console.log("공간 편집 페이지로 이동")} // **백엔드 연동**
+              onConfirm={() => console.log("공간 편집 페이지로 이동")} 
               confirmText="확인"
             />
           )}

@@ -14,7 +14,6 @@ import {
 } from "../../styles/sidebar/PublicSelectionStyle";
 
 const PublicSelection = ({ visibility, setVisibility, onConfirm, onBack, onCancel }) => {
-  // "다음" 버튼 클릭 핸들러
   const handleNextClick = () => {
     if (visibility) {
       onConfirm(visibility);

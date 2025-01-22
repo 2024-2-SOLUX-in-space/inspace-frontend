@@ -18,7 +18,6 @@ export const ArchiveList = styled.div`
   max-height: ${({ isScrollable }) => (isScrollable ? '300px' : 'auto')};
   overflow-y: ${({ isScrollable }) => (isScrollable ? 'auto' : 'hidden')};
 
-  /* 스크롤바 스타일 추가 */
   &::-webkit-scrollbar {
     width: 6px;
   }
