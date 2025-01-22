@@ -17,6 +17,24 @@ export const ArchiveList = styled.div`
   /* 스크롤 */
   max-height: ${({ isScrollable }) => (isScrollable ? '300px' : 'auto')};
   overflow-y: ${({ isScrollable }) => (isScrollable ? 'auto' : 'hidden')};
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #e0e0e0;
+    border-radius: 50px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #bdbdbd;
+  }
 `;
 
 /* 클릭 시 회색 배경 */
@@ -33,7 +51,7 @@ export const ClickedArchive = styled.div`
   transition: background-color 0.2s ease-in-out;
 
   position: absolute;
-  top: 240px;
+  top: 140px;
   left: 15px;
   z-index: -1000;
 `;
@@ -43,7 +61,7 @@ export const ListBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 15px 3px 15px 1px;
+  padding: 15px 1px;
   margin: 0px;
   cursor: pointer;
   border-bottom: 1px solid #ececec;

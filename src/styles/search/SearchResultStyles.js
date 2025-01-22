@@ -13,7 +13,8 @@ export const HashtagContainer = styled.div`
   padding: 10px 20px;
   background: white;
   min-height: 60px;
-  margin-top: 8vh;
+  margin-top: 9vh;
+  padding-left: 10vh;
 `;
 
 export const Hashtag = styled.div`

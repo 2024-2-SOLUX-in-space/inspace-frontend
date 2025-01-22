@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const AlertOverlay = styled.div`
+const HeartAlertOverlay = styled.div`
   position: fixed;
   inset: 0;
   display: flex;
@@ -11,17 +11,17 @@ const AlertOverlay = styled.div`
   padding-top: 10vh;
 `;
 
-const AlertBackground = styled.div`
+const HeartAlertBackground = styled.div`
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.7);
   top: 0;
   left: 75px;
   right: 0;
-  bottom: 0; 
+  bottom: 0;
 `;
 
-const AlertContent = styled.div`
+const HeartAlertContent = styled.div`
   background-color: white;
   border-radius: 0.5rem;
   padding: 1.5rem;
@@ -33,37 +33,36 @@ const AlertContent = styled.div`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
-const AlertHeader = styled.div`
+const HeartAlertHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
 `;
 
-const AlertTitle = styled.h3`
+const HeartAlertTitle = styled.h3`
   font-size: 1.125rem;
   font-weight: 500;
 `;
 
-const CloseButton = styled.button`
+const HeartAlertCloseButton = styled.button`
   position: absolute;
   background: none;
   border: none;
   top: 0.75rem;
   right: 0.75rem;
   outline: none;
-  color: black;
   &:focus {
     outline: none;
   }
 `;
 
-const AlertMessage = styled.p`
+const HeartAlertMessage = styled.p`
   color: rgb(0, 0, 0);
   margin-bottom: 2rem;
 `;
 
-const ConfirmButton = styled.button`
+const HeartAlertConfirmButton = styled.button`
   width: auto;
   min-width: 80px;
   background-color: #111827;
@@ -77,7 +76,7 @@ const ConfirmButton = styled.button`
   }
 `;
 
-const Alert = ({ isOpen, message, onClose, onConfirm, confirmText = "확인" }) => {
+const HeartAlert = ({ isOpen, message, onClose, onConfirm, confirmText = "확인" }) => {
   if (!isOpen) return null;
 
   const handleConfirm = () => {
@@ -88,20 +87,20 @@ const Alert = ({ isOpen, message, onClose, onConfirm, confirmText = "확인" }) 
   };
 
   return (
-    <AlertOverlay>
-      <AlertBackground />
-      <AlertContent>
-        <AlertHeader>
-          <AlertTitle>알림</AlertTitle>
-          <CloseButton onClick={onClose}>✕</CloseButton>
-        </AlertHeader>
-        <AlertMessage>{message}</AlertMessage>
-        <ConfirmButton onClick={handleConfirm}>
+    <HeartAlertOverlay>
+      <HeartAlertBackground />
+      <HeartAlertContent>
+        <HeartAlertHeader>
+          <HeartAlertTitle>알림</HeartAlertTitle>
+          <HeartAlertCloseButton onClick={onClose}>✕</HeartAlertCloseButton>
+        </HeartAlertHeader>
+        <HeartAlertMessage>{message}</HeartAlertMessage>
+        <HeartAlertConfirmButton onClick={handleConfirm}>
           {confirmText}
-        </ConfirmButton>
-      </AlertContent>
-    </AlertOverlay>
+        </HeartAlertConfirmButton>
+      </HeartAlertContent>
+    </HeartAlertOverlay>
   );
 };
 
-export default Alert;
+export default HeartAlert;
