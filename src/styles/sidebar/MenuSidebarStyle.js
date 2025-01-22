@@ -92,32 +92,6 @@ export const ActiveButton = styled.div`
   &:hover {
     background-color: #ececec;
   }
-
-  .tooltip {
-    position: absolute;
-    top: 50%;
-    left: 180%;
-    transform: translateY(-50%);
-    background-color: white;
-    color: black;
-    padding: 5px 10px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    font-size: 16px;
-    white-space: nowrap;
-    text-align: center;
-    z-index: 2000;
-    opacity: 0;
-    visibility: hidden;
-    transition:
-      opacity 0.2s ease-in-out,
-      visibility 0.2s ease-in-out;
-  }
-
-  &:hover .tooltip {
-    opacity: 1;
-    visibility: visible;
-  }
 `;
 
 // FiChevronsLeft 버튼 (InactiveButton)
@@ -143,31 +117,5 @@ export const InactiveButton = styled.div`
 
   &:hover {
     background-color: #ececec;
-  }
-
-  .tooltip {
-    position: absolute;
-    top: 50%;
-    left: 180%;
-    transform: translateY(-50%);
-    background-color: white;
-    color: black;
-    padding: 5px 10px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    font-size: 16px;
-    text-align: center;
-    white-space: nowrap;
-    z-index: 2000;
-    opacity: 0;
-    visibility: hidden;
-    transition:
-      opacity 0.2s ease-in-out,
-      visibility 0.2s ease-in-out;
-  }
-
-  svg:hover + .tooltip {
-    opacity: 1;
-    visibility: visible;
   }
 `;

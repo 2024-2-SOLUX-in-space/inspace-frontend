@@ -59,7 +59,6 @@ import HeartButton from '../components/sidebar/HeartButton';
               {/* ActiveButton 항상 렌더링 */}
               <ActiveButton isOpen={isOpen} onClick={toggleSidebar}>
                 <FiMenu />
-                <span className="tooltip">메뉴바 열기</span>
               </ActiveButton>
           
               <MenuSidebarContainer isOpen={isOpen}>
@@ -67,7 +66,6 @@ import HeartButton from '../components/sidebar/HeartButton';
                   {isOpen && (
                     <InactiveButton>
                       <FiChevronsLeft />
-                      <span className="tooltip">메뉴바 닫기</span>
                     </InactiveButton>
                   )}
                 </div>
