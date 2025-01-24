@@ -3,13 +3,13 @@ import styled from 'styled-components';
 // 사이드바 컨테이너 (이동)
 export const MenuSidebarContainer = styled.div`
   position: fixed;
-  top: 9.9vh;
+  top: 7.5vh;
   left: ${({ isOpen }) => (isOpen ? '0' : '-250px')};
   width: 75px;
   height: 100%;
   background-color: white;
   transition: left 0.3s ease-in-out;
-  border-right: 1px solid #ECECEC;
+  border-right: 1px solid #ececec;
   z-index: 1000; /* 사이드바가 토글 버튼 위에 배치 */
 `;
 
@@ -19,7 +19,7 @@ export const MenuSidebarContent = styled.div`
   flex-direction: column;
   gap: 20px;
   padding: 15px;
-  margin-top: 60px;
+  margin-top: 7vh;
 `;
 
 // 개별 아이콘
@@ -36,6 +36,8 @@ export const MenuSidebarIcon = styled.div`
   width: 45px;
   height: 45px;
   border-radius: 5px;
+
+  background-color: ${({ isActive }) => (isActive ? '#ececec' : 'transparent')};
 
   &:hover {
     background-color: #ececec;
@@ -73,7 +75,7 @@ export const ActiveButton = styled.div`
   position: fixed;
   top: 0;
   left: 16px;
-  margin-top: 11vh;
+  margin-top: 8.5vh;
   color: black;
   font-size: 30px;
   cursor: pointer;
@@ -99,7 +101,7 @@ export const InactiveButton = styled.div`
   position: fixed;
   top: 0;
   left: 16px;
-  margin-top: 11vh;
+  margin-top: 8.5vh;
   font-size: 30px;
   color: black;
   cursor: pointer;

@@ -3,9 +3,9 @@ import styled from 'styled-components';
 export const SidebarContainer = styled.div`
   position: absolute;
   right: 0;
-  top: 70px;
-  width: 400px;
-  height: 93vh;
+  top: 7.3vh;
+  width: 23%;
+  height: 92.7vh;
   background-color: white;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
   transform: translateX(${(props) => (props.isOpen ? '0' : '100%')});
@@ -20,7 +20,6 @@ export const SidebarContent = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 20px;
 `;
 
 export const DraggableContainer = styled.div`
@@ -59,39 +58,34 @@ export const StyledImage = styled.img`
 
 export const IconContainer = styled.div`
   display: flex;
-  justify-content: space-around;
-  padding: 15px 10px;
+  justify-content: space-between;
+  align-items: center;
   border-top: 1px solid #eee;
-
+  padding: 20px 30px;
   div {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 50px;
-    height: 50px;
-    border-radius: 20%;
     transition: background-color 0.2s ease-in-out;
-
+    color: #000000;
     &:hover {
-      background-color: #f5f5f5;
+      background-color: #ececec;
+      border-radius: 5px;
     }
   }
 
   svg {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     cursor: pointer;
-    color: #b3b3b3;
-    transition: color 0.2s ease-in-out;
-
-    &:hover {
-      color: #000000;
-    }
+    color: #000000;
+    padding: 7px;
 
     ${(props) =>
       props.selected &&
       `
-      color: #000000;
+      background-color: #ececec;
+      border-radius: 5px;
     `}
   }
 `;

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 /* 공간 목록 창 */
 export const ArchiveList = styled.div`
   position: fixed;
-  top: 20%;
+  top: 15%;
   left: 7%;
   width: 280px;
   height: 300px;
@@ -35,25 +35,6 @@ export const ArchiveList = styled.div`
   &::-webkit-scrollbar-thumb:hover {
     background: #bdbdbd;
   }
-`;
-
-/* 클릭 시 회색 배경 */
-export const ClickedArchive = styled.div`
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  justify-content: center;
-  width: 45px;
-  height: 45px;
-  border-radius: 5px;
-
-  background-color: ${({ isActive }) => (isActive ? '#ECECEC' : 'transparent')};
-  transition: background-color 0.2s ease-in-out;
-
-  position: absolute;
-  top: 140px;
-  left: 15px;
-  z-index: -1000;
 `;
 
 /* 목록 속 개별 공간 */

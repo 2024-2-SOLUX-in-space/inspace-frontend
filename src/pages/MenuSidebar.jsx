@@ -26,12 +26,12 @@ import { useNavigate } from 'react-router-dom';
       
         // 아이콘 클릭 시 실행되는 함수 
         const handleIconClick = (iconName) => {
-          if (iconName === "archive") {
-            toggleArchive();
-          }
           if (iconName === "home") {
             toggleHome();
             navigate("/home");
+          }
+          if (iconName === "archive") {
+            toggleArchive();
           }
           if (iconName === "filePlus") {
             toggleAddButton();
@@ -81,6 +81,12 @@ import { useNavigate } from 'react-router-dom';
                         <span className="tooltip">{item.tooltip}</span>
                       </MenuSidebarIcon>
                     ))}
+                    { activeIcon === "home" && (
+                      <HomeButton
+                        isHomeOpen = {isHomeOpen}
+                        toggleHome = {toggleHome}
+                      />
+                    )}
 
                     { activeIcon === "archive" && (
                       < ArchiveButton 
@@ -108,12 +114,6 @@ import { useNavigate } from 'react-router-dom';
                       />
                     )}
 
-                    { activeIcon === "home" && (
-                      <HomeButton
-                        isHomeOpen = {isHomeOpen}
-                        toggleHome = {toggleHome}
-                      />
-                    )}
 
                   </MenuSidebarContent>
                 )}
