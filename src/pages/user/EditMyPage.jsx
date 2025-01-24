@@ -1,4 +1,4 @@
-// MyPageEdit.jsx
+// EditMyPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAlert } from '../../context/AlertContext';
@@ -29,7 +29,7 @@ const EditMyPage = () => {
   const [password] = useState(user.password);
 
   // 비밀번호 확인을 위한 필드(사용자 입력 가능)
-  const [confirmPwd, setConfirmPwd] = useState('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
 
   const handleNameChange = (e) => {
     const value = e.target.value;
@@ -38,8 +38,8 @@ const EditMyPage = () => {
     }
   };
 
-  const handleConfirmPwdChange = (e) => {
-    setConfirmPwd(e.target.value);
+  const handlePasswordConfirmationChange = (e) => {
+    setPasswordConfirmation(e.target.value);
   };
 
   const handleCancel = () => {
@@ -47,7 +47,7 @@ const EditMyPage = () => {
   };
 
   const handleSave = () => {
-    if (password && password !== confirmPwd) {
+    if (password && password !== passwordConfirmation) {
       showAlert('비밀번호가 일치하지 않습니다.');
       return;
     }
@@ -66,7 +66,7 @@ const EditMyPage = () => {
   };
 
   // 닉네임과 비밀번호 확인 모두 입력 필요
-  const isSaveDisabled = !name.trim() || !confirmPwd.trim();
+  const isSaveDisabled = !name.trim() || !passwordConfirmation.trim();
 
   return (
     <MyPageEditContainer>
@@ -113,25 +113,24 @@ const EditMyPage = () => {
             maxLength={50}
             disabled
           />
-
-          {/* 비밀번호 (disabled) */}
-          <TextField
-            label="Password"
-            type="password"
-            value={password}
-            placeholder="현재 비밀번호(수정 불가)"
-            maxLength={20}
-            disabled
-          />
         </DisabledTextField>
+
+        {/* 비밀번호 (입력 가능) */}
+        <TextField
+          label="Password"
+          type="password"
+          value={password}
+          placeholder="8~20자 사이의 비밀번호를 입력해주세요."
+          maxLength={20}
+        />
 
         {/* 비밀번호 확인 (입력 가능) */}
         <TextField
           label="Confirm Password"
           type="password"
-          value={confirmPwd}
-          onChange={handleConfirmPwdChange}
-          placeholder="비밀번호 확인"
+          value={passwordConfirmation}
+          onChange={handlePasswordConfirmationChange}
+          placeholder="다시 한 번 입력해주세요."
           maxLength={20}
           visibilityButtonClass="my-textfield-icon"
         />
