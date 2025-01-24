@@ -18,7 +18,7 @@ import {
 const MyPage = () => {
   const navigate = useNavigate();
   const { showAlert } = useAlert();
-  const { user } = useUser(); //  전역 user 상태에서 name, email, password를 꺼냄
+  const { user } = useUser(); //  전역 user 상태에서 name, email 꺼냄
 
   const handleEdit = () => {
     navigate('/mypage-edit');
@@ -27,12 +27,6 @@ const MyPage = () => {
   const handleLogout = () => {
     showAlert('로그아웃 하시겠습니까?', () => navigate('/'), '확인');
   };
-
-  // password를 UI에서만 마스킹
-  const maskedPassword =
-    user.password && user.password.length > 0
-      ? '⦁'.repeat(user.password.length)
-      : '';
 
   return (
     <MyPageContainer>
@@ -70,12 +64,6 @@ const MyPage = () => {
         <TextField
           label="Email"
           value={user.email}
-          onChange={() => {}}
-          disabled
-        />
-        <TextField
-          label="Password"
-          value={maskedPassword}
           onChange={() => {}}
           disabled
         />
