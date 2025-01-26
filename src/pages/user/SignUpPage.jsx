@@ -32,6 +32,11 @@ function SignUpPage() {
       showAlert('이메일을 입력해주세요.');
       return;
     }
+    const emailRegex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      showAlert('올바른 이메일을 입력해주세요.');
+      return;
+    }
     if (!password.trim()) {
       showAlert('비밀번호를 입력해주세요.');
       return;

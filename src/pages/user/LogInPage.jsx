@@ -13,7 +13,6 @@ import {
   ForgotPasswordButton,
   LoginButton,
 } from '../../styles/user/LogInPageStyle';
-import axios from 'axios';
 
 function LogInPage() {
   const [email, setEmail] = useState('');
@@ -55,14 +54,25 @@ function LogInPage() {
   };
 
   const handleLogin = async () => {
-    if (!email.trim() || !password.trim()) return;
+    if (!email.trim()) {
+      showAlert('이메일을 입력해주세요.');
+      return;
+    }
+    if (!password.trim()) {
+      showAlert('비밀번호를 입력해주세요.');
+      return;
+    }
+    const emailRegex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      showAlert('올바른 이메일을 입력해주세요.');
+      return;
+    }
 
     try {
       const response = await api.post('/api/auth/login', {
         email,
         password,
       });
-
       console.log(response);
 
       if (response.data.success) {
