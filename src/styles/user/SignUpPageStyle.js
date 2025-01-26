@@ -1,7 +1,7 @@
-// SignUpPage.js
+// SignUpPageStyle.js
+import styled from 'styled-components';
 
-const signUpPageStyles = `
-.signup-container {
+export const SignupContainer = styled.div`
   display: flex;
   width: 100vw;
   height: 100vh;
@@ -9,39 +9,35 @@ const signUpPageStyles = `
   background-size: cover;
   background-position: center;
   font-family: 'SejongGeulggot', sans-serif;
-}
+`;
 
 /* 왼쪽 영역: 로고 */
-.signup-left {
+export const SignupLeft = styled.div`
   flex: 5.5;
   display: flex;
   align-items: center;
   justify-content: center;
-}
+`;
 
-.signup-logo {
+/* 로고 이미지 */
+export const SignupLogo = styled.img`
   max-width: 60%;
   height: auto;
-}
+`;
 
 /* 오른쪽 영역: 입력 폼 */
-.signup-right {
+export const SignupRight = styled.div`
   flex: 4.5;
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: 2rem;
   gap: 1.5rem;
-}
-
-/* 각 입력 영역 */
-.input-box {
-  display: flex;
-  flex-direction: column;
-}
+  position: relative; /* 절대 위치 버튼을 위해 상대 위치 지정 */
+`;
 
 /* Join Now 버튼 */
-.join-now-button {
+export const JoinNowButton = styled.button`
   background-color: transparent;
   padding: 1rem 2rem;
   font-size: 2rem;
@@ -52,24 +48,21 @@ const signUpPageStyles = `
   right: 3rem;
   margin-top: 0;
   outline: none;
-}
 
-.join-now-button:hover,
-.join-now-button:focus,
-.join-now-button:active {
-  border: none;
-  outline: none;
-}
+  &:hover,
+  &:focus,
+  &:active {
+    border: none;
+    outline: none;
+  }
 
-.join-now-button:hover:not(:disabled) {
-  opacity: 0.8;
-}
+  &:hover:not(:disabled) {
+    opacity: 0.8;
+  }
 
-.join-now-button:disabled {
-  background-color: transparent;
-  opacity: 0.5;
-  color: black;
-}
+  &:disabled {
+    background-color: transparent;
+    opacity: 0.5;
+    color: black;
+  }
 `;
-
-export default signUpPageStyles;
