@@ -3,24 +3,32 @@ import { ArchiveList, ListBox, TitleContainer } from "../../styles/sidebar/Archi
 import FixModal from "../sidebar/FixModal";
 import TrashModal from "../sidebar/TrashModal";
 import SwitchModal from "../sidebar/SwitchModal";
+import axios from 'axios';
 
 const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
-  const [spaces, setSpaces] = useState([
-    { id: 1, title: "해리포터와 마법사의 돌", isPinned: true, isPublic: false }, 
-    { id: 2, title: "더 퍼스트 슬램덩크", isPinned: false, isPublic: true }, 
-    { id: 3, title: "에브리씽 에브리웨어 올 앳 원스", isPinned: false, isPublic: false }, 
-    { id: 4, title: "대도시의 사랑법", isPinned: false, isPublic: true }, 
-    { id: 5, title: "위키드", isPinned: false, isPublic: false },
-    { id: 6, title: "지킬앤하이드", isPinned: false, isPublic: true }, 
-    { id: 7, title: "시라노", isPinned: false, isPublic: false }, 
-    { id: 8, title: "명성황후", isPinned: false, isPublic: false }, 
-  ]); 
-
+  const [spaces, setSpaces] = useState([]);
   const [isScrollable, setIsScrollable] = useState(false);
+  useEffect(() => {
+    const fetchSpaces = async () => {
+      try {
+        const response = await axios.get('/api/spaces', {
+          headers: {
+            'Authorization': 'Bearer access_token'
+          }
+        });
+        setSpaces(Array.isArray(response.data) ? response.data : []);
+      } catch (error) {
+        console.error('Error fetching spaces:', error);
+        setSpaces([]);
+      }
+    };
+
+    fetchSpaces();
+  }, []);
+
   useEffect( () => {
     setIsScrollable(spaces.length > 5);
   }, [spaces]);
-
 
   // 선택된 공간 (회색 배경)
   const [ selectedBox, setSelectedBox ] = useState(null); 
