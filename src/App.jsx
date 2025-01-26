@@ -9,6 +9,7 @@ import {
 import { AlertProvider } from "./context/AlertContext";
 import { UserProvider } from "./context/UserContext";
 import { SidebarProvider, useSidebar } from "./context/SidebarContext"; 
+import { SpaceProvider } from "./context/SpaceContext";
 import GlobalStyle from "./styles/GlobalStyle";
 import StartPage from "./pages/StartPage";
 import SignUpPage from "./pages/user/SignUpPage";
@@ -25,6 +26,7 @@ function App() {
     <UserProvider>
       <AlertProvider>
         <SidebarProvider> 
+          <SpaceProvider>
           <Router>
             <GlobalStyle />
             <SidebarWrapper />
@@ -39,6 +41,7 @@ function App() {
               <Route path="/mypage-edit" element={<EditMyPage />} />
             </Routes>
           </Router>
+          </SpaceProvider>
         </SidebarProvider>
       </AlertProvider>
     </UserProvider>

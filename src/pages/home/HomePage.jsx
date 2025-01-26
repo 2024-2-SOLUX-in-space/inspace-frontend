@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import HomeDiary from '../../pages/home/HomeDiary';
 import EditSidebar from '../../components/home/EditSidebar';
 import Header from '../../components/Header';
 import { HomeContainer, ContentWrapper, EditButton } from '../../styles/home/HomeStyle';
+import api from '../../api/api';
 
 const initialDraggableImages = [
   { id: 'bear1', src: '/public/home/bear1.png', alt: '곰1' },
@@ -13,10 +14,27 @@ const Home = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [draggableImages, setDraggableImages] = useState(initialDraggableImages);
   const [selectedImageId, setSelectedImageId] = useState(null);
-  const [diaryData, setDiaryData] = useState({
-    images: []
-  });
+  const [diaryData, setDiaryData] = useState([]);
   const [diaryImages, setDiaryImages] = useState([]);
+  const [selectedSpaceId, setSelectedSpaceId] = useState(null);
+
+  useEffect(() => {
+    if (selectedSpaceId) {
+      const fetchDiaryData = async () => {
+        try {
+          const response = await api.get(`/api/diary`, {
+            params: { space_id: selectedSpaceId, pageNum: 1 }
+          });
+          setDiaryData(response.data);
+        } catch (error) {
+          console.error('Error fetching diary data:', error);
+          setDiaryData([]);
+        }
+      };
+
+      fetchDiaryData();
+    }
+  }, [selectedSpaceId]);
 
   const handleEdit = () => {
     setIsEditOpen(!isEditOpen);
@@ -110,27 +128,27 @@ const Home = () => {
       <HomeContainer isEditOpen={isEditOpen}>
         <ContentWrapper isEditOpen={isEditOpen}>
           <HomeDiary
-          diaryData={diaryData} 
-          setDiaryData={setDiaryData}
-          onImageDrop={handleImageDrop}
-          onImageResize={handleImageResize}
-          onImageMove={handleImageMove}
-          isEditMode={isEditOpen}
-          selectedImageId={selectedImageId}
-          onImageSelect={handleImageSelect}
-          onImageRotate={handleImageRotate}
+            diaryData={diaryData}
+            onImageDrop={handleImageDrop}
+            onImageResize={handleImageResize}
+            onImageMove={handleImageMove}
+            isEditMode={isEditOpen}
+            selectedImageId={selectedImageId}
+            onImageSelect={handleImageSelect}
+            onImageRotate={handleImageRotate}
+            spaceId={selectedSpaceId}
+          />
+          <EditButton onClick={handleEdit}>
+            {isEditOpen ? '공간 저장' : '공간 편집'}
+          </EditButton>
+        </ContentWrapper>
+        <EditSidebar
+          isOpen={isEditOpen}
+          onClose={handleCloseSidebar}
+          images={draggableImages}
         />
-        <EditButton onClick={handleEdit}>
-          {isEditOpen ? '공간 저장' : '공간 편집'}
-        </EditButton>
-      </ContentWrapper>
-      <EditSidebar
-        isOpen={isEditOpen}
-        onClose={handleCloseSidebar}
-        images={draggableImages}
-      />
-    </HomeContainer>
-  </>
+      </HomeContainer>
+    </>
   );
 };
 

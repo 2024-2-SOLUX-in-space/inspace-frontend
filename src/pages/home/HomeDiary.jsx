@@ -1,5 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import HTMLFlipBook from 'react-pageflip';
+import { SpaceContext } from '../../context/SpaceContext';
 import { 
   DiaryWrapper, 
   BookWrapper, 
@@ -8,6 +9,7 @@ import {
   DiaryContent
 } from '../../styles/home/HomeDiaryStyle';
 import PageItem from '../../components/home/PageItem';
+import api from '../../api/api';
 
 const PageCover = React.forwardRef((props, ref) => {
   const getCoverImage = (position, coverType = 1) => {
@@ -30,7 +32,7 @@ const PageCover = React.forwardRef((props, ref) => {
 
   const imageUrl = getCoverImage(props.position, props.coverType);
   
-  const getTitleStyle = (coverType) => {
+  const getTitleStyle = (coverType, title) => {
     switch(coverType) {
       case 1:
         return {
@@ -72,7 +74,7 @@ const PageCover = React.forwardRef((props, ref) => {
     }
   };
 
-  const titleStyle = getTitleStyle(props.coverType);
+  const titleStyle = getTitleStyle(props.coverType, props.title);
 
   return (
     <div 
@@ -106,7 +108,7 @@ const PageCover = React.forwardRef((props, ref) => {
           fontWeight: 'bold',
           fontFamily: "'Bodoni MT', 'Times New Roman', serif"
         }}>
-          {props.children}
+          {props.title}
         </h2>
       </div>
     </div>
@@ -177,14 +179,32 @@ const Page = React.forwardRef((props, ref) => {
 });
 
 const HomeDiary = ({ 
-  diaryData = { images: [], coverType: 1 }, 
   onImageDrop, 
   isModalOpen, 
-  setDiaryData, 
-  isEditMode 
+  isEditMode,
 }) => {
   const flipBook = useRef();
   const [isItemSelected, setIsItemSelected] = useState(false);
+  const [diaryData, setDiaryData] = useState({ images: [] });
+  const { selectedSpace } = useContext(SpaceContext);
+
+  useEffect(() => {
+    if (selectedSpace.spaceId) {
+      const fetchPageData = async () => {
+        try {
+          const response = await api.get(`http://3.35.10.158:8080/api/pages`, {
+            params: { space_id: selectedSpace.spaceId }
+          });
+          setDiaryData(response.data);
+        } catch (error) {
+          console.error('Error fetching page data:', error);
+          setDiaryData({ images: [] });
+        }
+      };
+
+      fetchPageData();
+    }
+  }, [selectedSpace.spaceId]);
 
   const handleDeleteImage = (id) => {
     setDiaryData(prev => ({
@@ -203,7 +223,7 @@ const HomeDiary = ({
   };
 
   const getImagesForPage = (pageNumber) => {
-    return diaryData.images.filter(img => img.pageNumber === pageNumber);
+    return diaryData.images ? diaryData.images.filter(img => img.pageNumber === pageNumber) : [];
   };
 
   return (
@@ -234,8 +254,8 @@ const HomeDiary = ({
           swipeDistance={isItemSelected ? 0 : 30}
           cornerCursor={isItemSelected ? 'default' : 'pointer'}
         >
-          <PageCover position="top" coverType={1} textColor="#000">
-            BOOK TITLE
+          <PageCover position="top" coverType={selectedSpace.sthumb} textColor="#000" title={selectedSpace.title}>
+            {selectedSpace.title}
           </PageCover>
           {[...Array(10)].map((_, i) => (
             <Page 
@@ -249,7 +269,7 @@ const HomeDiary = ({
               onItemSelectChange={setIsItemSelected}
             />
           ))}
-          <PageCover position="bottom" coverType={1} textColor="#000">
+          <PageCover position="bottom" coverType={selectedSpace.sthumb} textColor="#000">
           </PageCover>
         </HTMLFlipBook>
       </BookWrapper>

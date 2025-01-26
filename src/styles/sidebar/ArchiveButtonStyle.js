@@ -4,7 +4,7 @@ import styled from 'styled-components';
 export const ArchiveList = styled.div`
   position: fixed;
   top: 15%;
-  left: 7%;
+  left: 100px;
   width: 280px;
   height: 300px;
   background-color: white;
