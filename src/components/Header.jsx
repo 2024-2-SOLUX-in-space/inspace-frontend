@@ -4,16 +4,17 @@ import { FiSearch, FiBell, FiUser } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import Notification from './alert/Notification';
 
-const SearchBarContainer = styled.div`
+const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 1%;
+  padding: 12px 1%;
   background-color: #fff;
-  height: 5vh;
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
+  height: 7.5vh;
+  z-index: 2000;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  border-bottom: 1px solid #ececec;
 `;
 
 const Logo = styled.img`
@@ -54,14 +55,13 @@ const IconButton = styled.button`
   justify-content: center;
   border: none;
   background: none;
-  cursor: pointer;
   padding: 5px;
   border-radius: 20%;
   transition: background-color 0.3s;
   outline: none;
   background-color: ${(props) =>
     props.isSelected ? '#ececec' : 'transparent'};
-
+  cursor: pointer;
   &:hover {
     background-color: #ececec;
   }
@@ -71,8 +71,8 @@ const IconButton = styled.button`
   }
 
   svg {
-    width: 4vh;
-    height: 4vh;
+    width: 28px;
+    height: 28px;
   }
 `;
 
@@ -182,7 +182,7 @@ const NotificationsContent = styled.div`
   }
 `;
 
-const SearchBar = () => {
+const Header = () => {
   const [searchText, setSearchText] = useState('');
   const [isBellFilled, setIsBellFilled] = useState(false);
   const [isUserFilled, setIsUserFilled] = useState(false);
@@ -225,7 +225,7 @@ const SearchBar = () => {
   };
 
   return (
-    <SearchBarContainer>
+    <HeaderContainer>
       <Logo
         src="/public/Logo.png"
         alt="Logo"
@@ -284,8 +284,8 @@ const SearchBar = () => {
           </NotificationsContainer>
         </NotificationsWrapper>
       )}
-    </SearchBarContainer>
+    </HeaderContainer>
   );
 };
 
-export default SearchBar;
+export default Header;

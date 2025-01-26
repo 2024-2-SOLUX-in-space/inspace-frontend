@@ -77,7 +77,7 @@ const EditMyPage = () => {
           top: 0,
           left: 0,
           width: '100%',
-          height: '70px',
+          height: '50px',
           backgroundColor: 'white',
           zIndex: 1000,
           borderBottom: '1px solid #eee',

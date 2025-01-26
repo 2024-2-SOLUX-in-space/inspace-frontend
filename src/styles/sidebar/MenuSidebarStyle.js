@@ -3,13 +3,13 @@ import styled from 'styled-components';
 // 사이드바 컨테이너 (이동)
 export const MenuSidebarContainer = styled.div`
   position: fixed;
-  top: 0px;
+  top: 7.5vh;
   left: ${({ isOpen }) => (isOpen ? '0' : '-250px')};
   width: 75px;
   height: 100%;
   background-color: white;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   transition: left 0.3s ease-in-out;
+  border-right: 1px solid #ececec;
   z-index: 1000; /* 사이드바가 토글 버튼 위에 배치 */
 `;
 
@@ -19,7 +19,7 @@ export const MenuSidebarContent = styled.div`
   flex-direction: column;
   gap: 20px;
   padding: 15px;
-  margin-top: 200px;
+  margin-top: 7vh;
 `;
 
 // 개별 아이콘
@@ -36,6 +36,8 @@ export const MenuSidebarIcon = styled.div`
   width: 45px;
   height: 45px;
   border-radius: 5px;
+
+  background-color: ${({ isActive }) => (isActive ? '#ececec' : 'transparent')};
 
   &:hover {
     background-color: #ececec;
@@ -71,13 +73,13 @@ export const MenuSidebarIcon = styled.div`
 // FiMenu 버튼 (ActiveButton)
 export const ActiveButton = styled.div`
   position: fixed;
-  top: 35px;
+  top: 0;
   left: 16px;
-  margin-top: 100px;
+  margin-top: 8.5vh;
   color: black;
   font-size: 30px;
   cursor: pointer;
-  z-index: 999; /* 사이드바보다 아래에 위치 */
+  z-index: 20; /* 사이드바보다 아래에 위치 */
 
   display: flex;
   align-items: center;
@@ -92,39 +94,14 @@ export const ActiveButton = styled.div`
   &:hover {
     background-color: #ececec;
   }
-
-  .tooltip {
-    position: absolute;
-    top: 50%;
-    left: 180%;
-    transform: translateY(-50%);
-    background-color: white;
-    color: black;
-    padding: 5px 10px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    font-size: 16px;
-    white-space: nowrap;
-    text-align: center;
-    z-index: 2000;
-    opacity: 0;
-    visibility: hidden;
-    transition:
-      opacity 0.2s ease-in-out,
-      visibility 0.2s ease-in-out;
-  }
-
-  &:hover .tooltip {
-    opacity: 1;
-    visibility: visible;
-  }
 `;
 
 // FiChevronsLeft 버튼 (InactiveButton)
 export const InactiveButton = styled.div`
   position: fixed;
-  top: 140px;
+  top: 0;
   left: 16px;
+  margin-top: 8.5vh;
   font-size: 30px;
   color: black;
   cursor: pointer;
@@ -142,31 +119,5 @@ export const InactiveButton = styled.div`
 
   &:hover {
     background-color: #ececec;
-  }
-
-  .tooltip {
-    position: absolute;
-    top: 50%;
-    left: 180%;
-    transform: translateY(-50%);
-    background-color: white;
-    color: black;
-    padding: 5px 10px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    font-size: 16px;
-    text-align: center;
-    white-space: nowrap;
-    z-index: 2000;
-    opacity: 0;
-    visibility: hidden;
-    transition:
-      opacity 0.2s ease-in-out,
-      visibility 0.2s ease-in-out;
-  }
-
-  svg:hover + .tooltip {
-    opacity: 1;
-    visibility: visible;
   }
 `;

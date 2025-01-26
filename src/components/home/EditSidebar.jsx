@@ -168,7 +168,7 @@ const EditSidebar = ({ isOpen, onClose }) => {
                 <icon.Icon 
                   onClick={() => setSelectedIcon(icon.id)}
                   style={{ 
-                    color: selectedIcon === icon.id ? '#000000' : undefined 
+                    color: selectedIcon === icon.id ? '#000000' : 'rgb(182, 182, 182)'
                   }}
                 />
               </div>

@@ -1,4 +1,3 @@
-// useState 를 사용하여 열림 상태(isOpen) 관리 
 import React, { useState } from 'react'; 
 import { FiMenu, FiChevronsLeft, FiHome, FiArchive, 
     FiFilePlus, FiEdit, FiHeart } from "react-icons/fi"; 
@@ -8,26 +7,44 @@ import { MenuSidebarContainer,
     InactiveButton, 
     ActiveButton} from '../styles/sidebar/MenuSidebarStyle';
 import ArchiveButton from '../components/sidebar/ArchiveButton';
+import HomeButton from '../components/sidebar/HomeButton';
+import AddButton from "../components/sidebar/AddButton";
+import EditButton from '../components/sidebar/EditButton';
+import HeartButton from '../components/sidebar/HeartButton';
+import { useNavigate } from 'react-router-dom';
 
-    const MenuSidebar = ( { isArchiveOpen, toggleArchive }) => {
+    const MenuSidebar = ( { isHomeOpen, toggleHome, isArchiveOpen, toggleArchive, isAddButtonOpen, toggleAddButton, 
+      isEditOpen, toggleEdit, isHeartOpen, toggleHeart }) => {
         const [isOpen, setIsOpen] = useState(true); // 사이드바 열림/닫힘 상태 관리
         const [activeIcon, setActiveIcon] = useState(null); // 활성화된 아이콘 상태 관리
 
-        // 사이드바 열림/닫힘 상태 토글 함수 
+        const navigate = useNavigate();
+
         const toggleSidebar = () => {
           setIsOpen(!isOpen); 
         };
       
         // 아이콘 클릭 시 실행되는 함수 
         const handleIconClick = (iconName) => {
+          if (iconName === "home") {
+            toggleHome();
+            navigate("/home");
+          }
           if (iconName === "archive") {
             toggleArchive();
+          }
+          if (iconName === "filePlus") {
+            toggleAddButton();
+          }
+          if (iconName === "edit") {
+            toggleEdit();
+          }
+          if (iconName === "heart") {
+            toggleHeart();
           }
           setActiveIcon(iconName); // 아이콘의 id 값을 activeIcon 상태에 저장 
         };
       
-        // 아이콘을 배열로 저장하는 상수 
-        // map 메서드 사용해 메뉴 렌더링
         const menuItems = [
           { icon: <FiHome />, id: "home", tooltip: "홈" },
           { icon: <FiArchive />, id: "archive", tooltip: "공간 목록" },
@@ -38,10 +55,8 @@ import ArchiveButton from '../components/sidebar/ArchiveButton';
       
         return (
             <>
-              {/* ActiveButton 항상 렌더링 */}
               <ActiveButton isOpen={isOpen} onClick={toggleSidebar}>
                 <FiMenu />
-                <span className="tooltip">메뉴바 열기</span>
               </ActiveButton>
           
               <MenuSidebarContainer isOpen={isOpen}>
@@ -49,7 +64,6 @@ import ArchiveButton from '../components/sidebar/ArchiveButton';
                   {isOpen && (
                     <InactiveButton>
                       <FiChevronsLeft />
-                      <span className="tooltip">메뉴바 닫기</span>
                     </InactiveButton>
                   )}
                 </div>
@@ -67,6 +81,12 @@ import ArchiveButton from '../components/sidebar/ArchiveButton';
                         <span className="tooltip">{item.tooltip}</span>
                       </MenuSidebarIcon>
                     ))}
+                    { activeIcon === "home" && (
+                      <HomeButton
+                        isHomeOpen = {isHomeOpen}
+                        toggleHome = {toggleHome}
+                      />
+                    )}
 
                     { activeIcon === "archive" && (
                       < ArchiveButton 
@@ -74,6 +94,26 @@ import ArchiveButton from '../components/sidebar/ArchiveButton';
                         toggleArchive = {toggleArchive}
                       />
                     )}
+
+                    { activeIcon === "filePlus" && (
+                      <AddButton isAddButtonOpen = {isAddButtonOpen} 
+                      toggleAddButton = {toggleAddButton} />
+                    )}
+
+                    { activeIcon === "edit" && (
+                      <EditButton
+                        isEditOpen = {isEditOpen}
+                        toggleEdit = {toggleEdit} 
+                      />
+                    )}  
+
+                    { activeIcon === "heart" && (
+                      <HeartButton
+                        isHeartOpen = {isHeartOpen}
+                        toggleHeart = {toggleHeart}
+                      />
+                    )}
+
 
                   </MenuSidebarContent>
                 )}
