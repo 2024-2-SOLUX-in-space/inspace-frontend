@@ -1,11 +1,10 @@
-// LogInPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
+import { useAlert } from '../../context/AlertContext';
+import api from '../../api/api.js';
 import LogInTextField from '../../components/user/LogInTextField';
 import SignUpButtonImg from '../../assets/img/button/SignUpButton.png';
-
-// styled-components로 만든 styled 컴포넌트들을 import
 import {
   LoginPageContainer,
   SignupButton,
@@ -14,12 +13,14 @@ import {
   ForgotPasswordButton,
   LoginButton,
 } from '../../styles/user/LogInPageStyle';
+import axios from 'axios';
 
 function LogInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const { setUser } = useUser(); //  전역 user 상태를 업데이트할 수 있는 setUser
+  const { setUser } = useUser(); // 전역 user 상태를 업데이트할 수 있는 setUser
+  const { showAlert } = useAlert();
   const navigate = useNavigate();
 
   const goToSignUp = () => {
@@ -53,17 +54,36 @@ function LogInPage() {
     }
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email.trim() || !password.trim()) return;
 
-    // 전역 상태에 이메일, 비밀번호 저장
-    setUser((prev) => ({
-      ...prev,
-      email,
-      password,
-    }));
+    try {
+      const response = await api.post('/api/auth/login', {
+        email,
+        password,
+      });
 
-    navigate('/home');
+      console.log(response);
+
+      if (response.data.success) {
+        const { access_token, refresh_token, email } = response.data.data;
+        localStorage.setItem('access_token', access_token);
+        localStorage.setItem('refresh_token', refresh_token);
+
+        // 전역 상태 업데이트
+        setUser((prev) => ({
+          email: email,
+          ...prev,
+        }));
+
+        navigate('/home');
+      } else {
+        showAlert(response.data.message);
+      }
+    } catch (error) {
+      console.log('error: ', error);
+      showAlert('로그인에 실패했습니다. 다시 시도해주세요.');
+    }
   };
 
   return (
@@ -95,12 +115,7 @@ function LogInPage() {
           <ForgotPasswordButton onClick={goToForgotPassword}>
             Forgot Password?
           </ForgotPasswordButton>
-          <LoginButton
-            onClick={handleLogin}
-            disabled={!email.trim() || !password.trim()}
-          >
-            Log In
-          </LoginButton>
+          <LoginButton onClick={handleLogin}>Log In</LoginButton>
         </LoginActions>
       </BottomCenterContainer>
     </LoginPageContainer>
