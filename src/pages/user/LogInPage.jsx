@@ -1,16 +1,25 @@
-// LogInPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
+import { useAlert } from '../../context/AlertContext';
+import api from '../../api/api.js';
 import LogInTextField from '../../components/user/LogInTextField';
 import SignUpButtonImg from '../../assets/img/button/SignUpButton.png';
-import logInPageStyles from '../../styles/user/LogInPageStyle.js';
+import {
+  LoginPageContainer,
+  SignupButton,
+  BottomCenterContainer,
+  LoginActions,
+  ForgotPasswordButton,
+  LoginButton,
+} from '../../styles/user/LogInPageStyle';
 
 function LogInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const { setUser } = useUser(); //  전역 user 상태를 업데이트할 수 있는 setUser
+  const { setUser } = useUser(); // 전역 user 상태를 업데이트할 수 있는 setUser
+  const { showAlert } = useAlert();
   const navigate = useNavigate();
 
   const goToSignUp = () => {
@@ -44,71 +53,82 @@ function LogInPage() {
     }
   };
 
-  const handleLogin = () => {
-    if (!email.trim() || !password.trim()) return;
+  const handleLogin = async () => {
+    if (!email.trim()) {
+      showAlert('이메일을 입력해주세요.');
+      return;
+    }
+    if (!password.trim()) {
+      showAlert('비밀번호를 입력해주세요.');
+      return;
+    }
+    const emailRegex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      showAlert('올바른 이메일을 입력해주세요.');
+      return;
+    }
 
-    // 전역 상태에 이메일, 비밀번호 저장 (닉네임은 아직 모르는 상태이므로 빈값이거나 추후 설정)
-    setUser((prev) => ({
-      ...prev,
-      email,
-      password,
-      // nickname: '' // 필요하다면
-    }));
+    try {
+      const response = await api.post('/api/auth/login', {
+        email,
+        password,
+      });
+      console.log(response);
 
-    navigate('/home');
+      if (response.data.success) {
+        const { access_token, refresh_token, email } = response.data.data;
+        localStorage.setItem('access_token', access_token);
+        localStorage.setItem('refresh_token', refresh_token);
+
+        // 전역 상태 업데이트
+        setUser((prev) => ({
+          email: email,
+          ...prev,
+        }));
+
+        navigate('/home');
+      } else {
+        showAlert(response.data.message);
+      }
+    } catch (error) {
+      console.log('error: ', error);
+      showAlert('로그인에 실패했습니다. 다시 시도해주세요.');
+    }
   };
 
   return (
-    <>
-      <style>{logInPageStyles}</style>
+    <LoginPageContainer>
+      {/* 페이지 우상단 회원가입 버튼 */}
+      <SignupButton onClick={goToSignUp} aria-label="Sign Up">
+        <img src={SignUpButtonImg} alt="Sign Up" />
+      </SignupButton>
 
-      <div className="login-page">
-        {/* 페이지 우상단 회원가입 버튼 */}
-        <button
-          className="signup-button"
-          onClick={goToSignUp}
-          aria-label="Sign Up"
-        >
-          <img src={SignUpButtonImg} alt="Sign Up" />
-        </button>
+      <BottomCenterContainer>
+        <LogInTextField
+          label="Email"
+          value={email}
+          onChange={handleEmailChange}
+          placeholder="inspace@gmail.com"
+          type="text"
+          onKeyPress={handleKeyPress}
+        />
+        <LogInTextField
+          label="Password"
+          value={password}
+          onChange={handlePasswordChange}
+          placeholder="비밀번호를 입력해주세요."
+          type="password"
+          onKeyPress={handleKeyPress}
+        />
 
-        <div className="bottom-center-container">
-          <LogInTextField
-            label="Email"
-            value={email}
-            onChange={handleEmailChange}
-            placeholder="inspace@gmail.com"
-            type="text"
-            onKeyPress={handleKeyPress}
-          />
-
-          <LogInTextField
-            label="Password"
-            value={password}
-            onChange={handlePasswordChange}
-            placeholder="비밀번호를 입력해주세요."
-            type="password"
-            onKeyPress={handleKeyPress}
-          />
-
-          <div className="login-actions">
-            <button
-              className="forgot-password-button"
-              onClick={goToForgotPassword}
-            >
-              Forgot Password?
-            </button>
-            <button
-              className="login-button"
-              onClick={handleLogin}
-              disabled={!email.trim() || !password.trim()}
-            >
-              Log In
-            </button>
-          </div>
-        </div>
-      </div>
-    </>
+        <LoginActions>
+          <ForgotPasswordButton onClick={goToForgotPassword}>
+            Forgot Password?
+          </ForgotPasswordButton>
+          <LoginButton onClick={handleLogin}>Log In</LoginButton>
+        </LoginActions>
+      </BottomCenterContainer>
+    </LoginPageContainer>
   );
 }
 

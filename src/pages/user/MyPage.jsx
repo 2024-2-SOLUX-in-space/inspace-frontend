@@ -1,11 +1,12 @@
 // MyPage.jsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAlert } from '../../context/AlertContext';
 import { useUser } from '../../context/UserContext'; // 추가
 import Header from '../../components/Header';
 import TextField from '../../components/user/TextField';
 import ProfileLogo from '../../assets/img/logo/ProfileLogo.png';
+import api from '../../api/api.js';
 import {
   MyPageContainer,
   LogoutButton,
@@ -18,21 +19,58 @@ import {
 const MyPage = () => {
   const navigate = useNavigate();
   const { showAlert } = useAlert();
-  const { user } = useUser(); //  전역 user 상태에서 nickname, email, password를 꺼냄
+  const { user, setUser } = useUser(); // 전역 user 상태에서 name, email, password를 꺼냄
+
+  useEffect(() => {
+    console.log('user: ', user);
+    const getMyInfo = async () => {
+      try {
+        const res = await api.get('/api/user-info');
+
+        if (res.data.success) {
+          const { email, name } = res.data.data;
+          user.name = name;
+          user.email = email;
+
+          setUser((prev) => ({
+            name: name,
+            email: email,
+            ...prev,
+          }));
+        } else {
+          showAlert('회원 정보 조회에 실패하였습니다.1');
+        }
+      } catch (error) {
+        console.log('error: ', error);
+        showAlert('회원 정보 조회에 실패하였습니다.2');
+      }
+    };
+
+    getMyInfo();
+  }, []);
+
+  const handleLogout = () => {
+    showAlert(
+      '로그아웃 하시겠습니까?',
+      () => {
+        try {
+          const res = api.post('/api/auth/logout');
+          if (res.data.success) {
+            showAlert('성공적으로 로그아웃 되었습니다.');
+            localStorage.clear;
+          }
+        } catch (error) {
+          showAlert('로그아웃에 실패했습니다. 다시 시도해주세요.');
+        }
+        navigate('/mypage');
+      },
+      '확인',
+    );
+  };
 
   const handleEdit = () => {
     navigate('/mypage-edit');
   };
-
-  const handleLogout = () => {
-    showAlert('로그아웃 하시겠습니까?', () => navigate('/'), '확인');
-  };
-
-  // password를 UI에서만 마스킹
-  const maskedPassword =
-    user.password && user.password.length > 0
-      ? '⦁'.repeat(user.password.length)
-      : '';
 
   return (
     <MyPageContainer>
@@ -63,19 +101,13 @@ const MyPage = () => {
       <MyPageRight>
         <TextField
           label="Nickname"
-          value={user.nickname}
+          value={user.name}
           onChange={() => {}}
           disabled
         />
         <TextField
           label="Email"
           value={user.email}
-          onChange={() => {}}
-          disabled
-        />
-        <TextField
-          label="Password"
-          value={maskedPassword}
           onChange={() => {}}
           disabled
         />
