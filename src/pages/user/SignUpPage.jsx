@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAlert } from '../../context/AlertContext';
 import TextField from '../../components/user/TextField';
 import SignUpLogo from '../../assets/img/logo/signupLogo.png';
+import api from '../../api/api.js';
+
 import {
   SignupContainer,
   SignupLeft,
@@ -16,12 +18,12 @@ function SignUpPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPwd, setConfirmPwd] = useState('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
 
   const navigate = useNavigate();
   const { showAlert } = useAlert();
 
-  const handleJoin = () => {
+  const handleJoin = async () => {
     if (!name.trim()) {
       showAlert('닉네임을 입력해주세요.');
       return;
@@ -38,20 +40,35 @@ function SignUpPage() {
       showAlert('비밀번호는 8자 이상 20자 이하여야 합니다.');
       return;
     }
-    if (!confirmPwd.trim()) {
+    if (!passwordConfirmation.trim()) {
       showAlert('비밀번호를 확인해주세요.');
       return;
     }
-    if (password !== confirmPwd) {
+    if (password !== passwordConfirmation) {
       showAlert('비밀번호가 일치하지 않습니다.');
       return;
     }
-    showAlert(
-      '가입되었습니다! 로그인을 진행해 주세요.',
-      () => navigate('/login'),
-      '로그인하러 가기',
-    );
-    // 실제 회원가입 로직을 추가하려면 여기에 구현
+
+    try {
+      const response = await api.post('/api/auth/signup', {
+        name,
+        email,
+        password,
+        passwordConfirmation,
+      });
+
+      if (response.data.success) {
+        showAlert(
+          response.data.message,
+          () => navigate('/login'),
+          '로그인하러 가기',
+        );
+      } else {
+        showAlert(response.data.message);
+      }
+    } catch (error) {
+      showAlert('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+    }
   };
 
   const emailRegex = /^[A-Za-z0-9@._-]+$/;
@@ -78,10 +95,10 @@ function SignUpPage() {
     }
   };
 
-  const handleConfirmPwdChange = (e) => {
+  const handlePasswordConfirmationChange = (e) => {
     const value = e.target.value;
     if (passwordRegex.test(value) || value === '') {
-      setConfirmPwd(value);
+      setPasswordConfirmation(value);
     }
   };
 
@@ -119,8 +136,8 @@ function SignUpPage() {
         <TextField
           label="Confirm Password"
           type="password"
-          value={confirmPwd}
-          onChange={handleConfirmPwdChange}
+          value={passwordConfirmation}
+          onChange={handlePasswordConfirmationChange}
           placeholder="다시 한 번 입력해주세요."
           maxLength={20}
         />
