@@ -13,6 +13,7 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    //console.log('access_token: ', token);
 
     return config;
   },

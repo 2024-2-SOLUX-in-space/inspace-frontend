@@ -29,11 +29,6 @@ const MyPage = () => {
 
         if (res.data.success) {
           const { email, name } = res.data.data;
-
-          // console.log('res: ', res);
-          // console.log('name: ', name);
-          // console.log('email: ', email);
-
           user.name = name;
           user.email = email;
 
@@ -67,7 +62,7 @@ const MyPage = () => {
         } catch (error) {
           showAlert('로그아웃에 실패했습니다. 다시 시도해주세요.');
         }
-        navigate('/');
+        navigate('/mypage');
       },
       '확인',
     );
