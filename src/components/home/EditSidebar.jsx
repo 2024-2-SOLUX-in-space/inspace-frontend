@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FiFolderPlus, FiImage, FiYoutube, FiMusic, FiPlus, FiX } from "react-icons/fi";
 import { BiSticker } from "react-icons/bi";
 import {
@@ -14,33 +14,30 @@ import {
 } from '../../styles/home/EditSidebarStyle';
 import stickerData from '../../data/stickers.json';
 import ImageAddModal from '../../pages/home/ImageAddModal';
-
-const initialCategoryData = {
-  image: [
-    { id: 'bear1', src: '/public/home/bear1.png', alt: '곰1' },
-    { id: 'bear2', src: '/public/home/bear2.png', alt: '곰2' },
-    { id: 'bear3', src: '/public/home/bear3.png', alt: '곰3' }
-  ],
-  youtube: [
-    { id: 'youtube1', src: '/public/home/youtube1.png', alt: '유튜브1' },
-    { id: 'youtube2', src: '/public/home/youtube2.png', alt: '유튜브2' },
-      { id: 'youtube3', src: '/public/home/youtube3.png', alt: '유튜브3' }
-  ],
-  music: [
-    { id: 'music1', src: '/public/home/music1.png', alt: '음악1' },
-    { id: 'music2', src: '/public/home/music2.png', alt: '음악2' },
-    { id: 'music3', src: '/public/home/music3.png', alt: '음악3' }
-  ],
-  sticker: stickerData.stickers,
-  file: []
-};
+import axios from 'axios';
 
 const EditSidebar = ({ isOpen, onClose }) => {
   const [selectedIcon, setSelectedIcon] = useState('image');
-  const [categoryData, setCategoryData] = useState(initialCategoryData);
+  const [categoryData, setCategoryData] = useState({ image: [], youtube: [], music: [], sticker: [stickerData.stickers,], file: [] });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    const fetchCategoryData = async () => {
+      try {
+        const response = await axios.get(`/api/category/space/{space_id}?category=${selectedIcon.toUpperCase()}`);
+        setCategoryData(prev => ({
+          ...prev,
+          [selectedIcon]: response.data
+        }));
+      } catch (error) {
+        console.error('Error fetching category data:', error);
+      }
+    };
+
+    fetchCategoryData();
+  }, [selectedIcon]);
 
   const icons = [
     { id: 'image', Icon: FiImage, alt: '이미지' },
@@ -70,7 +67,8 @@ const EditSidebar = ({ isOpen, onClose }) => {
   };
 
   const getCurrentData = () => {
-    return categoryData[selectedIcon] || [];
+    const data = categoryData[selectedIcon];
+    return Array.isArray(data) ? data : [];
   };
 
   const isStickersSelected = () => selectedIcon === 'sticker';
