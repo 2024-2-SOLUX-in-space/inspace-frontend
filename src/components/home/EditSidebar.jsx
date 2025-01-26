@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { FiFolderPlus, FiImage, FiYoutube, FiMusic, FiPlus, FiX } from "react-icons/fi";
 import { BiSticker } from "react-icons/bi";
+import { SpaceContext } from '../../context/SpaceContext';
 import {
   SidebarContainer,
   SidebarContent,
@@ -17,6 +18,7 @@ import ImageAddModal from '../../pages/home/ImageAddModal';
 import axios from 'axios';
 
 const EditSidebar = ({ isOpen, onClose }) => {
+  const { selectedSpace } = useContext(SpaceContext);
   const [selectedIcon, setSelectedIcon] = useState('image');
   const [categoryData, setCategoryData] = useState({ image: [], youtube: [], music: [], sticker: [stickerData.stickers,], file: [] });
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,7 +28,10 @@ const EditSidebar = ({ isOpen, onClose }) => {
   useEffect(() => {
     const fetchCategoryData = async () => {
       try {
-        const response = await axios.get(`/api/category/space/{space_id}?category=${selectedIcon.toUpperCase()}`);
+        const category = selectedIcon === 'file' ? 'USERIMAGE' : selectedIcon.toUpperCase();
+        console.log(`Fetching data for category: ${category}`);
+        const response = await axios.get(`/api/category/space/${selectedSpace.spaceId}?category=${category}`);
+        console.log(`Data fetched for category: ${category}`);
         setCategoryData(prev => ({
           ...prev,
           [selectedIcon]: response.data
@@ -37,7 +42,7 @@ const EditSidebar = ({ isOpen, onClose }) => {
     };
 
     fetchCategoryData();
-  }, [selectedIcon]);
+  }, [selectedIcon, selectedSpace]);
 
   const icons = [
     { id: 'image', Icon: FiImage, alt: '이미지' },
@@ -141,7 +146,7 @@ const EditSidebar = ({ isOpen, onClose }) => {
                     height={item.height}
                     style={item.style}
                   />
-                  {!isStickersSelected() && (
+                  {['image', 'youtube', 'music'].includes(selectedIcon) && (
                     <DeleteButton onClick={() => handleDeleteItem(item.id)}>
                       <FiX />
                     </DeleteButton>
