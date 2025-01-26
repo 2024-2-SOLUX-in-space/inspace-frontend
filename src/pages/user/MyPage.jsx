@@ -49,23 +49,56 @@ const MyPage = () => {
     getMyInfo();
   }, []);
 
+  // const handleLogout = () => {
+  //   showAlert(
+  //     '로그아웃 하시겠습니까?',
+  //     () => {
+  //       try {
+  //         const res = api.post('/api/auth/logout');
+  //         if (res.data.success) {
+  //           showAlert('성공적으로 로그아웃 되었습니다.');
+  //           localStorage.clear;
+  //         }
+  //       } catch (error) {
+  //         showAlert('로그아웃에 실패했습니다. 다시 시도해주세요.');
+  //       }
+  //       navigate('/mypage');
+  //     },
+  //     '확인',
+  //   );
+  // };
+
   const handleLogout = () => {
-    showAlert(
-      '로그아웃 하시겠습니까?',
-      () => {
-        try {
-          const res = api.post('/api/auth/logout');
-          if (res.data.success) {
-            showAlert('성공적으로 로그아웃 되었습니다.');
-            localStorage.clear;
-          }
-        } catch (error) {
-          showAlert('로그아웃에 실패했습니다. 다시 시도해주세요.');
+    showAlert('로그아웃 하시겠습니까?', async () => {
+      try {
+        // 토큰 가져오기 (예: localStorage에서)
+        const token = localStorage.getItem('access_token');
+        // Authorization 헤더 설정
+        const config = {
+          headers: {
+            Authorization: token,
+          },
+        };
+
+        // POST 요청 시 config 전달
+        const response = await api.post('/api/auth/logout', {}, config);
+        if (response.data.success) {
+          showAlert('성공적으로 로그아웃 되었습니다.', () =>
+            navigate('/login'),
+          );
+          // 로컬 스토리지 및 전역 상태 정리
+          localStorage.clear();
+          setUser({
+            name: '',
+            email: '',
+          });
         }
-        navigate('/mypage');
-      },
-      '확인',
-    );
+      } catch (error) {
+        showAlert('로그아웃에 실패했습니다. 다시 시도해주세요.', () =>
+          navigate('/mypage'),
+        );
+      }
+    });
   };
 
   const handleEdit = () => {
