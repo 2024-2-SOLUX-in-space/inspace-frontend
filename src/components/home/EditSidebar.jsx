@@ -31,6 +31,7 @@ const EditSidebar = ({ isOpen, onClose }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
   const [renderKey, setRenderKey] = useState(0);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   useEffect(() => {
     const fetchCategoryData = async () => {
@@ -41,9 +42,10 @@ const EditSidebar = ({ isOpen, onClose }) => {
           ...prev,
           [selectedIcon]: response.data
         }));
-        console.log(response.data);
+        setIsDataLoaded(true);
       } catch (error) {
         console.error('Error fetching category data:', error);
+        setIsDataLoaded(false);
       }
     };
 
@@ -97,47 +99,14 @@ const EditSidebar = ({ isOpen, onClose }) => {
     }
   };
 
-  const handleSaveImage = (title, croppedImageUrl, dimensions) => {
-    if (selectedFile) {
-      const img = new Image();
-      img.onload = async () => {
-        try {
-          const formData = new FormData();
-          formData.append('file', selectedFile, 'cropped-image.png');
-
-          const response = await api.post(`/api/image?spaceId=${selectedSpace.spaceId}&title=${title}`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          });
-
-          const newImageId = response.data.id;
-
-          // 추가된 이미지의 ID로 API 호출
-          const newImageResponse = await api.get(`/api/image/${newImageId}`);
-          const newImage = newImageResponse.data;
-
-          setCategoryData(prev => ({
-            ...prev,
-            [selectedIcon]: [...prev[selectedIcon], newImage]
-          }));
-
-          setRenderKey(prevKey => prevKey + 1);
-
-          setSelectedFile(null);
-          setIsModalOpen(false);
-        } catch (error) {
-          console.error('Error uploading image:', error);
-        }
-      };
-      img.src = croppedImageUrl;
-    }
-  };
-
   const handleDeleteItem = async (itemId) => {
     try {
+      const apiUrl = selectedIcon === 'file'
+        ? `/api/items/${itemId}`
+        : `/api/delete/item?itemId=${itemId}`;
+
       // API 호출
-      await api.delete(`/api/delete/item?itemId=${itemId}`);
+      await api.delete(apiUrl);
       console.log(`Item ${itemId} deleted successfully`);
 
       // 로컬 상태에서 항목 삭제
@@ -155,32 +124,32 @@ const EditSidebar = ({ isOpen, onClose }) => {
     <div key={renderKey}>
       <SidebarContainer isOpen={isOpen}>
         <SidebarContent>
-          <DraggableContainer isStickers={isStickersSelected()}>
-            {getCurrentData().map((item, index) => (
-              <DraggableItem key={index}>
-                <div style={{ position: 'relative' }}>
-                  <StyledImage 
-                    src={item.imageUrl}
-                    alt={item.title}
-                    draggable="true"
-                    onDragStart={handleDragStart({
-                      ...item,
-                      isSticker: isStickersSelected()
-                    })}
-                    isSticker={isStickersSelected()}
-                    width={item.width || 'auto'}
-                    height={item.height || 'auto'}
-                    style={item.style}
-                  />
-                  {['image', 'youtube', 'music', 'file'].includes(selectedIcon) && (
+          {isDataLoaded && (
+            <DraggableContainer isStickers={isStickersSelected()}>
+              {getCurrentData().map((item, index) => (
+                <DraggableItem key={index}>
+                  <div style={{ position: 'relative' }}>
+                    <StyledImage 
+                      src={item.imageUrl}
+                      alt={item.title}
+                      draggable="true"
+                      onDragStart={handleDragStart({
+                        ...item,
+                        isSticker: isStickersSelected()
+                      })}
+                      isSticker={isStickersSelected()}
+                      width={item.width || 'auto'}
+                      height={item.height || 'auto'}
+                      style={item.style}
+                    />
                     <DeleteButton onClick={() => handleDeleteItem(item.id)}>
                       <FiX />
                     </DeleteButton>
-                  )}
-                </div>
-              </DraggableItem>
-            ))}
-          </DraggableContainer>
+                  </div>
+                </DraggableItem>
+              ))}
+            </DraggableContainer>
+          )}
 
           {selectedIcon === 'file' && (
             <AddButtonContainer>
@@ -217,7 +186,6 @@ const EditSidebar = ({ isOpen, onClose }) => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         imageFile={selectedFile}
-        onSave={handleSaveImage}
       />
     </div>
   );
