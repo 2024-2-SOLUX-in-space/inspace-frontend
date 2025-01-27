@@ -16,7 +16,7 @@ import SignUpPage from "./pages/user/SignUpPage";
 import LogInPage from "./pages/user/LogInPage";
 import ForgotPasswordPage from "./pages/user/ForgotPasswordPage";
 import MenuSidebar from "./pages/MenuSidebar";
-import Home from "./pages/home/HomePage";
+import Home from "./pages/home/Home";
 import MyPage from "./pages/user/MyPage";
 import EditMyPage from "./pages/user/EditMyPage";
 import SearchResult from "./pages/search/SearchResultPage";

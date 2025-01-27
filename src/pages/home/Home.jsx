@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import HomeDiary from '../../pages/home/HomeDiary';
+import HomeDiary from './HomeDiary';
 import EditSidebar from '../../components/home/EditSidebar';
 import Header from '../../components/Header';
 import { HomeContainer, ContentWrapper, EditButton } from '../../styles/home/HomeStyle';
