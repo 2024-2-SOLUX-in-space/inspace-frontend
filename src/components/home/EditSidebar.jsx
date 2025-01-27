@@ -1,3 +1,4 @@
+// src/components/sidebar/EditSidebar.js
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { FiFolderPlus, FiImage, FiYoutube, FiMusic, FiPlus, FiX } from "react-icons/fi";
 import { BiSticker } from "react-icons/bi";
@@ -18,13 +19,13 @@ import ImageAddModal from '../../pages/home/ImageAddModal';
 import api from '../../api/api';
 
 const EditSidebar = ({ isOpen, onClose }) => {
-  const { selectedSpace } = useContext(SpaceContext);
+  const { activeSpace } = useContext(SpaceContext); // Updated to use activeSpace
   const [selectedIcon, setSelectedIcon] = useState('image');
   const [categoryData, setCategoryData] = useState({
     image: [],
     youtube: [],
     music: [],
-    sticker: [stickerData.stickers],
+    sticker: [...stickerData.stickers], // Fixed to spread the stickers array
     file: []
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,9 +36,22 @@ const EditSidebar = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     const fetchCategoryData = async () => {
+      if (!activeSpace || !activeSpace.id) {
+        console.warn('No activeSpace selected.');
+        setCategoryData({
+          image: [],
+          youtube: [],
+          music: [],
+          sticker: [...stickerData.stickers],
+          file: []
+        });
+        setIsDataLoaded(false);
+        return;
+      }
+
       try {
         const category = selectedIcon === 'file' ? 'USERIMAGE' : selectedIcon.toUpperCase();
-        const response = await api.get(`/api/category/space/${selectedSpace.spaceId}?category=${category}`);
+        const response = await api.get(`/api/category/space/${activeSpace.id}?category=${category}`);
         setCategoryData(prev => ({
           ...prev,
           [selectedIcon]: response.data
@@ -50,7 +64,7 @@ const EditSidebar = ({ isOpen, onClose }) => {
     };
 
     fetchCategoryData();
-  }, [selectedIcon, selectedSpace]);
+  }, [selectedIcon, activeSpace]); // Updated dependency to activeSpace
 
   const icons = [
     { id: 'image', Icon: FiImage, alt: '이미지' },
@@ -166,7 +180,10 @@ const EditSidebar = ({ isOpen, onClose }) => {
                 <icon.Icon 
                   onClick={() => setSelectedIcon(icon.id)}
                   style={{ 
-                    color: selectedIcon === icon.id ? '#000000' : 'rgb(182, 182, 182)'
+                    color: selectedIcon === icon.id ? '#000000' : 'rgb(182, 182, 182)',
+                    cursor: 'pointer',
+                    fontSize: '24px',
+                    margin: '0 8px'
                   }}
                 />
               </div>

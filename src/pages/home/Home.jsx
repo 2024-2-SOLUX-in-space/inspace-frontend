@@ -20,11 +20,12 @@ const Home = () => {
   const [selectedSpaceId, setSelectedSpaceId] = useState(null);
   const { selectedSpace } = useContext(SpaceContext);
 
+  /* 페이지 출력 api
   useEffect(() => {
     if (selectedSpace.spaceId) {
       const fetchDiaryData = async () => {
         try {
-          const response = await api.get(`/api/diary`, {
+          const response = await api.get(`/api/page`, {
             params: { space_id: selectedSpace.spaceId, pageNum: 1 }
           });
           setDiaryData(response.data);
@@ -37,7 +38,7 @@ const Home = () => {
       fetchDiaryData();
     }
   }, [selectedSpace.spaceId]);
-
+*/
   const handleEdit = () => {
     setIsEditOpen(!isEditOpen);
   };

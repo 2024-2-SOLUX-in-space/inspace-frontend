@@ -1,3 +1,4 @@
+// src/components/home/HomeDiary.js
 import React, { useRef, useState, useEffect, useContext } from 'react';
 import HTMLFlipBook from 'react-pageflip';
 import { SpaceContext } from '../../context/SpaceContext';
@@ -186,15 +187,13 @@ const HomeDiary = ({
   const flipBook = useRef();
   const [isItemSelected, setIsItemSelected] = useState(false);
   const [diaryData, setDiaryData] = useState({ images: [] });
-  const { selectedSpace } = useContext(SpaceContext);
-
+  const { activeSpace, spaces } = useContext(SpaceContext);
+  
   useEffect(() => {
-    if (selectedSpace.spaceId) {
+    if (activeSpace?.id) {
       const fetchPageData = async () => {
         try {
-          const response = await api.get(`http://3.35.10.158:8080/api/pages`, {
-            params: { space_id: selectedSpace.spaceId }
-          });
+          const response = await api.get(`/api/page?space_id=${activeSpace.id}&pageNum=${pageNum}`);
           setDiaryData(response.data);
         } catch (error) {
           console.error('Error fetching page data:', error);
@@ -203,8 +202,10 @@ const HomeDiary = ({
       };
 
       fetchPageData();
+    } else {
+      setDiaryData({ images: [] });
     }
-  }, [selectedSpace.spaceId]);
+  }, [activeSpace]);
 
   const handleDeleteImage = (id) => {
     setDiaryData(prev => ({
@@ -225,6 +226,22 @@ const HomeDiary = ({
   const getImagesForPage = (pageNumber) => {
     return diaryData.images ? diaryData.images.filter(img => img.pageNumber === pageNumber) : [];
   };
+
+  if (!activeSpace) {
+    if (spaces.length === 0) {
+      return (
+        <DiaryWrapper>
+          <p>공간을 추가해주세요!</p>
+        </DiaryWrapper>
+      );
+    } else {
+      return (
+        <DiaryWrapper>
+          <p>공간을 선택해주세요.</p>
+        </DiaryWrapper>
+      );
+    }
+  }
 
   return (
     <DiaryWrapper style={{ pointerEvents: isModalOpen ? 'none' : 'auto' }}>
@@ -254,8 +271,12 @@ const HomeDiary = ({
           swipeDistance={isItemSelected ? 0 : 30}
           cornerCursor={isItemSelected ? 'default' : 'pointer'}
         >
-          <PageCover position="top" coverType={selectedSpace.sthumb} textColor="#000" title={selectedSpace.title}>
-            {selectedSpace.title}
+          <PageCover 
+            position="top" 
+            coverType={activeSpace.coverType} 
+            title={activeSpace.title}
+          >
+            {activeSpace.title}
           </PageCover>
           {[...Array(10)].map((_, i) => (
             <Page 
@@ -269,8 +290,11 @@ const HomeDiary = ({
               onItemSelectChange={setIsItemSelected}
             />
           ))}
-          <PageCover position="bottom" coverType={selectedSpace.sthumb} textColor="#000">
-          </PageCover>
+          <PageCover 
+            position="bottom" 
+            coverType={activeSpace.coverType} 
+            title="" // 하단 커버에 제목이 없다고 가정
+          />
         </HTMLFlipBook>
       </BookWrapper>
     </DiaryWrapper>

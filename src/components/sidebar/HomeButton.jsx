@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import { SpaceContext } from '../../context/SpaceContext';
+
 
 export const ClickedHome = styled.div`
   display: flex;
@@ -13,5 +16,10 @@ const HomeButton = ({ isHomeOpen, toggleHome }) => {
       </ClickedHome>
     );
   };
+
+HomeButton.propTypes = {
+  isHomeOpen: PropTypes.bool.isRequired,
+  toggleHome: PropTypes.func.isRequired,
+};
 
 export default HomeButton;
