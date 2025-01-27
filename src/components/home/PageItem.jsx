@@ -3,6 +3,7 @@ import Moveable from "react-moveable";
 import { FiX } from "react-icons/fi";
 import { DeleteButton } from '../../styles/home/EditSidebarStyle';
 import { DraggableImage } from '../../styles/home/HomeDiaryStyle';
+import api from '../../api/api';
 
 const PageItem = ({ image, onUpdate, onDelete, isEditMode, pagePair, onSelectChange }) => {
   const [isSelected, setIsSelected] = useState(false);
@@ -25,10 +26,15 @@ const PageItem = ({ image, onUpdate, onDelete, isEditMode, pagePair, onSelectCha
     return { x: offsetX, y: offsetY };
   };
 
-  const handleDelete = (e) => {
+  const handleDelete = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    onDelete(image.id);
+    try {
+      await api.delete(`/api/page/${item.id}`);
+      console.log(`Item ${image.id} deleted successfully`);
+    } catch (error) {
+      console.error('Error deleting item:', error.message);
+    }
   };
 
   const handleSelect = (e) => {
