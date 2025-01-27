@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArchiveList, ListBox, TitleContainer } from "../../styles/sidebar/ArchiveButtonStyle";
 import { FiTrash2 } from "react-icons/fi";
@@ -17,6 +17,7 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const { selectedSpace, setSelectedSpace } = useContext(SpaceContext);
   const navigate = useNavigate();
+  const archiveRef = useRef(null);
 
   useEffect(() => {
     const fetchSpaces = async () => {
@@ -42,6 +43,25 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
   useEffect(() => {
     setIsScrollable(spaces.length > 5);
   }, [spaces]);
+
+  // 외부 클릭 시 아카이브 닫기 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (archiveRef.current && !archiveRef.current.contains(event.target)) {
+        toggleArchive();
+      }
+    };
+
+    if (isArchiveOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isArchiveOpen, toggleArchive]);
 
   // 클릭 시 공간 이동 
   const handleListBoxClick = (spaceId, title, sthumb) => {
@@ -103,7 +123,7 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
   return (
     <>
       {isArchiveOpen && (
-        <ArchiveList isScrollable={isScrollable}>
+        <ArchiveList ref={archiveRef} isScrollable={isScrollable}>
             {spaces.map((space) => (
               <ListBox 
                 key={space.id}

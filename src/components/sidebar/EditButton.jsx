@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { FiBook, FiBookOpen } from "react-icons/fi";
 
@@ -111,10 +111,31 @@ const EditButton = ({ isEditOpen, toggleEdit }) => {
     // 추후 연동 필요 - 개별 공간 목록 클릭 시 공간 이동
   };
 
+  const editRef = useRef(null);
+
+  // 외부 클릭 시 편집 닫기 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (editRef.current && !editRef.current.contains(event.target)) {
+        toggleEdit();
+      }
+    };
+
+    if (isEditOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isEditOpen, toggleEdit]);
+
   return (
     <>
       {isEditOpen && (
-        <EditList isScrollable={isScrollable}>
+        <EditList ref={editRef} isScrollable={isScrollable}>
           {spaces.map((space) => (
             <ListBox
               key={space.id}

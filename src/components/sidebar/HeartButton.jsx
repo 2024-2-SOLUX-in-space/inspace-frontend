@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { HeartList, ClickedHeart, ListBox, TitleContainer, 
   FollowIconContainer, LeftIconContainer, TabContainer, TabButton } from "../../styles/sidebar/HeartButtonStyle";
 import { FiUser, FiUserCheck, FiUserMinus } from "react-icons/fi"; 
@@ -21,6 +21,8 @@ const HeartButton = ({ isHeartOpen, toggleHeart }) => {
   ]);
 
   const [isScrollable, setIsScrollable] = useState(false);
+  const heartRef = useRef(null);
+
   useEffect(() => {
     if (tab === "followers") {
       setIsScrollable(followers.length > 4); 
@@ -29,6 +31,24 @@ const HeartButton = ({ isHeartOpen, toggleHeart }) => {
     }
   }, [tab, followers, following]);
 
+  // 외부 클릭 시 하트 닫기 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (heartRef.current && !heartRef.current.contains(event.target)) {
+        toggleHeart();
+      }
+    };
+
+    if (isHeartOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isHeartOpen, toggleHeart]);
 
   // 팔로워 탭 -> 팔로잉 리스트에 추가
   const handleFollow = (id) => {
@@ -55,7 +75,7 @@ const HeartButton = ({ isHeartOpen, toggleHeart }) => {
   return (
     <>
       {isHeartOpen && !alertInfo.isOpen && (
-        <HeartList isScrollable = {isScrollable}>
+        <HeartList ref={heartRef} isScrollable={isScrollable}>
           <TabContainer>
             <TabButton
               isActive={tab === "followers"}
