@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import HomeDiary from '../../pages/home/HomeDiary';
 import EditSidebar from '../../components/home/EditSidebar';
 import Header from '../../components/Header';
 import { HomeContainer, ContentWrapper, EditButton } from '../../styles/home/HomeStyle';
 import api from '../../api/api';
+import { SpaceContext } from '../../context/SpaceContext';
 
 const initialDraggableImages = [
   { id: 'bear1', src: '/public/home/bear1.png', alt: '곰1' },
@@ -17,13 +18,14 @@ const Home = () => {
   const [diaryData, setDiaryData] = useState([]);
   const [diaryImages, setDiaryImages] = useState([]);
   const [selectedSpaceId, setSelectedSpaceId] = useState(null);
+  const { selectedSpace } = useContext(SpaceContext);
 
   useEffect(() => {
-    if (selectedSpaceId) {
+    if (selectedSpace.spaceId) {
       const fetchDiaryData = async () => {
         try {
           const response = await api.get(`/api/diary`, {
-            params: { space_id: selectedSpaceId, pageNum: 1 }
+            params: { space_id: selectedSpace.spaceId, pageNum: 1 }
           });
           setDiaryData(response.data);
         } catch (error) {
@@ -34,7 +36,7 @@ const Home = () => {
 
       fetchDiaryData();
     }
-  }, [selectedSpaceId]);
+  }, [selectedSpace.spaceId]);
 
   const handleEdit = () => {
     setIsEditOpen(!isEditOpen);

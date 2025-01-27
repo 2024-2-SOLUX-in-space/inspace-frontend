@@ -1,7 +1,9 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useContext } from 'react';
 import styled from 'styled-components';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
+import { SpaceContext } from '../../context/SpaceContext';
+import api from '../../api/api';
 
 // Styled Components
 const ModalOverlay = styled.div`
@@ -120,6 +122,7 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
     height: 300
   });
   const [completedCrop, setCompletedCrop] = useState(null);
+  const { selectedSpace } = useContext(SpaceContext);
 
   const onLoad = useCallback((img) => {
     imgRef.current = img;
@@ -189,22 +192,41 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
     createCroppedImage();
 
     canvasRef.current.toBlob(
-      (blob) => {
+      async (blob) => {
         if (!blob) {
           console.error('Canvas is empty');
           return;
         }
         const croppedImageUrl = URL.createObjectURL(blob);
-        onSave(title, croppedImageUrl, {
-          width: completedCrop.width,
-          height: completedCrop.height
-        });
-        handleClose();
+        
+        // API 호출 추가
+        try {
+          const formData = new FormData();
+          formData.append('file', blob, 'cropped-image.png');
+
+          const response = await api.post(`/api/image?spaceId=${selectedSpace.spaceId}&title=${title}`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+
+          console.log('Upload successful:', response.data);
+
+          // onSave 콜백을 통해 부모 컴포넌트에 알림
+          onSave(title, croppedImageUrl, {
+            width: completedCrop.width,
+            height: completedCrop.height
+          });
+
+          handleClose();
+        } catch (error) {
+          console.error('Error uploading image:', error);
+        }
       },
       'image/png',
       1
     );
-  }, [completedCrop, createCroppedImage, onSave, title, handleClose]);
+  }, [completedCrop, createCroppedImage, onSave, title, handleClose, selectedSpace]);
 
   const handleTitleChange = useCallback((e) => {
     const value = e.target.value;

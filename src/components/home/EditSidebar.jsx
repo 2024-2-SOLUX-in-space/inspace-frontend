@@ -15,27 +15,33 @@ import {
 } from '../../styles/home/EditSidebarStyle';
 import stickerData from '../../data/stickers.json';
 import ImageAddModal from '../../pages/home/ImageAddModal';
-import axios from 'axios';
+import api from '../../api/api';
 
 const EditSidebar = ({ isOpen, onClose }) => {
   const { selectedSpace } = useContext(SpaceContext);
   const [selectedIcon, setSelectedIcon] = useState('image');
-  const [categoryData, setCategoryData] = useState({ image: [], youtube: [], music: [], sticker: [stickerData.stickers,], file: [] });
+  const [categoryData, setCategoryData] = useState({
+    image: [],
+    youtube: [],
+    music: [],
+    sticker: [stickerData.stickers],
+    file: []
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
+  const [renderKey, setRenderKey] = useState(0);
 
   useEffect(() => {
     const fetchCategoryData = async () => {
       try {
         const category = selectedIcon === 'file' ? 'USERIMAGE' : selectedIcon.toUpperCase();
-        console.log(`Fetching data for category: ${category}`);
-        const response = await axios.get(`/api/category/space/${selectedSpace.spaceId}?category=${category}`);
-        console.log(`Data fetched for category: ${category}`);
+        const response = await api.get(`/api/category/space/${selectedSpace.spaceId}?category=${category}`);
         setCategoryData(prev => ({
           ...prev,
           [selectedIcon]: response.data
         }));
+        console.log(response.data);
       } catch (error) {
         console.error('Error fetching category data:', error);
       }
@@ -94,59 +100,79 @@ const EditSidebar = ({ isOpen, onClose }) => {
   const handleSaveImage = (title, croppedImageUrl, dimensions) => {
     if (selectedFile) {
       const img = new Image();
-      img.onload = () => {
-        const newImage = {
-          id: `file-${Date.now()}`,
-          src: croppedImageUrl,
-          alt: title || selectedFile.name,
-          width: dimensions?.width || img.width,
-          height: dimensions?.height || img.height,
-          style: {
-            width: dimensions?.width ? `${dimensions.width}px` : 'auto',
-            height: dimensions?.height ? `${dimensions.height}px` : 'auto'
-          }
-        };
+      img.onload = async () => {
+        try {
+          const formData = new FormData();
+          formData.append('file', selectedFile, 'cropped-image.png');
 
-        setCategoryData(prev => ({
-          ...prev,
-          file: [...prev.file, newImage]
-        }));
-        
-        setSelectedFile(null);
+          const response = await api.post(`/api/image?spaceId=${selectedSpace.spaceId}&title=${title}`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+
+          const newImageId = response.data.id;
+
+          // 추가된 이미지의 ID로 API 호출
+          const newImageResponse = await api.get(`/api/image/${newImageId}`);
+          const newImage = newImageResponse.data;
+
+          setCategoryData(prev => ({
+            ...prev,
+            [selectedIcon]: [...prev[selectedIcon], newImage]
+          }));
+
+          setRenderKey(prevKey => prevKey + 1);
+
+          setSelectedFile(null);
+          setIsModalOpen(false);
+        } catch (error) {
+          console.error('Error uploading image:', error);
+        }
       };
       img.src = croppedImageUrl;
     }
   };
 
-  const handleDeleteItem = (itemId) => {
-    setCategoryData(prev => ({
-      ...prev,
-      [selectedIcon]: prev[selectedIcon].filter(item => item.id !== itemId)
-    }));
+  const handleDeleteItem = async (itemId) => {
+    try {
+      // API 호출
+      await api.delete(`/api/delete/item?itemId=${itemId}`);
+      console.log(`Item ${itemId} deleted successfully`);
+
+      // 로컬 상태에서 항목 삭제
+      setCategoryData(prev => ({
+        ...prev,
+        [selectedIcon]: prev[selectedIcon].filter(item => item.id !== itemId)
+      }));
+    } catch (error) {
+      console.error('Error deleting item:', error.message);
+      console.error('Error details:', error.response?.data || error);
+    }
   };
 
   return (
-    <>
+    <div key={renderKey}>
       <SidebarContainer isOpen={isOpen}>
         <SidebarContent>
           <DraggableContainer isStickers={isStickersSelected()}>
-            {getCurrentData().map((item) => (
-              <DraggableItem key={item.id}>
+            {getCurrentData().map((item, index) => (
+              <DraggableItem key={index}>
                 <div style={{ position: 'relative' }}>
                   <StyledImage 
-                    src={item.src} 
-                    alt={item.alt} 
+                    src={item.imageUrl}
+                    alt={item.title}
                     draggable="true"
                     onDragStart={handleDragStart({
                       ...item,
                       isSticker: isStickersSelected()
                     })}
                     isSticker={isStickersSelected()}
-                    width={item.width}
-                    height={item.height}
+                    width={item.width || 'auto'}
+                    height={item.height || 'auto'}
                     style={item.style}
                   />
-                  {['image', 'youtube', 'music'].includes(selectedIcon) && (
+                  {['image', 'youtube', 'music', 'file'].includes(selectedIcon) && (
                     <DeleteButton onClick={() => handleDeleteItem(item.id)}>
                       <FiX />
                     </DeleteButton>
@@ -193,7 +219,7 @@ const EditSidebar = ({ isOpen, onClose }) => {
         imageFile={selectedFile}
         onSave={handleSaveImage}
       />
-    </>
+    </div>
   );
 };
 
