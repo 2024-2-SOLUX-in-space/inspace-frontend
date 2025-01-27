@@ -49,7 +49,7 @@ export const ListBox = styled.div`
   background-color: ${({ isSelected }) => (isSelected ? '#ECECEC' : 'white')};
 
   &:hover {
-    background-color: #ececec;
+    background-color: #f5f5f5;
   }
 `;
 
