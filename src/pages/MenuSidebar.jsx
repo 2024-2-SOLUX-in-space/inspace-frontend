@@ -12,11 +12,9 @@ import HomeButton from '../components/sidebar/HomeButton';
 import AddButton from "../components/sidebar/AddButton";
 import EditButton from '../components/sidebar/EditButton';
 import HeartButton from '../components/sidebar/HeartButton';
-import { useNavigate } from 'react-router-dom';
 import { SpaceContext } from '../context/SpaceContext';
 
-const MenuSidebar = ({ 
-  // Removed isHomeOpen and toggleHome from props
+const MenuSidebar = ({
   isArchiveOpen, toggleArchive, 
   isAddButtonOpen, toggleAddButton, 
   isEditOpen, toggleEdit, 
@@ -24,8 +22,6 @@ const MenuSidebar = ({
 }) => {
     const [isOpen, setIsOpen] = useState(true); // Sidebar open/close state
     const [activeIcon, setActiveIcon] = useState("home"); // Active icon state
-
-    const navigate = useNavigate();
     const { spaces, resetToPrimarySpace } = useContext(SpaceContext); // Consume resetToPrimarySpace
 
     const toggleSidebar = () => {
@@ -81,8 +77,8 @@ const MenuSidebar = ({
                   <MenuSidebarIcon
                     key={item.id}
                     className={activeIcon === item.id ? "active" : ""}
-                    isActive={activeIcon === item.id} // Pass active state
-                    onClick={() => handleIconClick(item.id)} // Handle click
+                    isActive={activeIcon === item.id}
+                    onClick={() => handleIconClick(item.id)}
                   >
                     {item.icon}
                     <span className="tooltip">{item.tooltip}</span>
