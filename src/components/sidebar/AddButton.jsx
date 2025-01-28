@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import axios from "axios"; // axios 추가 
 import CoverSelection from "./CoverSelection";
 import NameInput from "./NameInput";
 import PublicSelection from "./PublicSelection";
@@ -30,20 +31,43 @@ const AddButton = ({ isAddButtonOpen, toggleAddButton }) => {
   const [spaceName, setSpaceName] = useState(""); 
   const [isMainSpace, setIsMainSpace] = useState(false); 
   const [visibility, setVisibility] = useState(null); 
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가 
   
   const handleNextStep = (step) => {
     setCurrentStep(step);
   };
 
-  const handleCreateSpace = () => {
+  const handleCreateSpace = async () => { // async 
     const requestData = {
       cover: selectedCover,
       name: spaceName,
       isMain: isMainSpace,
       visibility,
     };
+
+    console.log("전송 데이터:", requestData);
+
+    const accessToken = localStorage.getItem("accessToken");
+
     // **백엔드 연동** 공간 생성 요청
-    setCurrentStep(5); 
+    setIsLoading(true); // 로딩 시작
+    try {
+      const response = await axios.post("http://3.35.10.158:8080/api/spaces",  
+        requestData, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log('공간 생성 성공:', response.data);
+      setCurrentStep(5); // 성공
+    } catch (error) {
+      console.error('공간 생성 실패:', error);
+      alert('공간 생성에 실패했어요. 다시 시도해주세요.');
+    } finally {
+      setIsLoading(false); // 로딩 종료
+    }
+
   };
 
   return (
@@ -90,7 +114,7 @@ const AddButton = ({ isAddButtonOpen, toggleAddButton }) => {
               setVisibility = {setVisibility}
               onConfirm={(isPublic) => {
                 setVisibility(isPublic);
-                handleCreateSpace();
+                handleCreateSpace(); 
               }}
               onBack={() => setCurrentStep(2)}
               onCancel={() => {

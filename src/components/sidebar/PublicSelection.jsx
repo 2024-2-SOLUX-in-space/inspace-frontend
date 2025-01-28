@@ -34,7 +34,10 @@ const PublicSelection = ({ visibility, setVisibility, onConfirm, onBack, onCance
         <IconContainer>
           <IconWrapper
             isSelected={visibility === "public"}
-            onClick={() => setVisibility("public")}
+            onClick={() => {
+              setVisibility("public");
+              console.log("Visibility 설정:", "public"); // 디버깅 코드
+            }}
           >
             <FiBookOpen size={25} />
             <span>공개</span>
