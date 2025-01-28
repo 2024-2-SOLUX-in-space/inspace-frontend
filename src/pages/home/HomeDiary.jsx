@@ -1,5 +1,6 @@
 // src/components/home/HomeDiary.js
 import React, { useRef, useState, useEffect, useContext } from 'react';
+import PropTypes from 'prop-types';
 import HTMLFlipBook from 'react-pageflip';
 import { SpaceContext } from '../../context/SpaceContext';
 import { 
@@ -193,8 +194,14 @@ const HomeDiary = ({
     if (activeSpace?.id) {
       const fetchPageData = async () => {
         try {
-          const response = await api.get(`/api/page?space_id=${activeSpace.id}&pageNum=${pageNum}`);
+          const response = await api.get(`/api/page?spaceId=${activeSpace.id}&pageNum=${pageNum}`);
           setDiaryData(response.data);
+
+          setTimeout(() => {
+            if (flipBook.current) {
+              flipBook.current.pageFlip().flip(0);
+            }
+          }, 100);
         } catch (error) {
           console.error('Error fetching page data:', error);
           setDiaryData({ images: [] });
@@ -215,6 +222,7 @@ const HomeDiary = ({
   };
 
   const handleImageUpdate = (imageId, updates) => {
+
     setDiaryData(prev => ({
       ...prev,
       images: prev.images.map(img => 
@@ -242,7 +250,7 @@ const HomeDiary = ({
       );
     }
   }
-
+  
   return (
     <DiaryWrapper style={{ pointerEvents: isModalOpen ? 'none' : 'auto' }}>
       <BookWrapper>
@@ -275,9 +283,7 @@ const HomeDiary = ({
             position="top" 
             coverType={activeSpace.coverType} 
             title={activeSpace.title}
-          >
-            {activeSpace.title}
-          </PageCover>
+          />
           {[...Array(10)].map((_, i) => (
             <Page 
               key={i + 1} 
@@ -299,6 +305,12 @@ const HomeDiary = ({
       </BookWrapper>
     </DiaryWrapper>
   );
+};
+
+HomeDiary.propTypes = {
+  onImageDrop: PropTypes.func.isRequired,
+  isModalOpen: PropTypes.bool.isRequired,
+  isEditMode: PropTypes.bool.isRequired,
 };
 
 export default HomeDiary;
