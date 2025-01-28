@@ -189,29 +189,18 @@ const Header = () => {
   const [isSearchFilled, setIsSearchFilled] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const navigate = useNavigate();
-  //가상 데이터 예시
   const [notifications, setNotifications] = useState([
     { username: 'space', action: '나를 팔로우합니다' },
-    { username: '웹프핑', action: '나를 팔로잉합니다' },
-    { username: '차은우', action: '나를 팔로우합니다' },
-    { username: '에스파', action: '나를 팔로우합니다' },
-    { username: 'nct', action: '나를 팔로우합니다' },
-    { username: '아이유', action: '나를 팔로우합니다' },
-    { username: '블랙핑크', action: '나를 팔로우합니다' },
-    { username: '뉴진스', action: '나를 팔로우합니다' },
-    { username: '트와이스', action: '나를 팔로우합니다' },
+    // 기타 가상 데이터
   ]);
 
   const handleSearch = () => {
-    setIsSearchFilled(!isSearchFilled);
     if (searchText.trim()) {
-      navigate('/search');
+      navigate('/search', { state: { query: searchText.trim() } }); // 검색어 전달
     }
   };
 
-  //마이페이지 이동 로직
   const handleUserClick = () => {
-    //etIsUserFilled(!isUserFilled);
     navigate('/mypage');
   };
 
@@ -239,7 +228,7 @@ const Header = () => {
           placeholder="검색어를 입력하세요..."
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+          onKeyPress={(e) => e.key === 'Enter' && handleSearch()} // Enter로 검색
         />
       </SearchInputWrapper>
       <IconContainer>
