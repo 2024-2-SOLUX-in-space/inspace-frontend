@@ -100,11 +100,64 @@ const SearchResult = () => {
     }
   };
 
+  const handleImageClick = async (src, category) => {
+    try {
+      let response;
+      if (category === 'image') {
+        response = await axios.get('/api/image-data');
+      } else if (category === 'music') {
+        response = await axios.get('/api/music-data');
+      } else if (category === 'youtube') {
+        response = await axios.get('/api/youtube-data');
+      }
+
+      const { username = 'Space', title = 'TitleExample' } =
+        response?.data || {};
+      setImageData({ username, title });
+    } catch (error) {
+      console.error('Failed to fetch data from backend:', error);
+      setImageData({ username: 'Space', title: 'TitleExample' });
+    }
+    setSelectedImage(src);
+  };
+
   const closeDetailView = () => {
     setSelectedImage(null);
     setImageData({ username: 'Space', title: 'TitleExample' });
     setIsFullscreen(false);
   };
+
+  const toggleFullscreen = () => {
+    setIsFullscreen((prev) => !prev);
+  };
+
+  const filteredImages = [];
+  if (selectedTags.includes('image')) {
+    filteredImages.push(
+      ...Array.from({ length: 30 }, (_, i) => ({
+        id: i + 1,
+        category: 'image',
+      })),
+    );
+  }
+  if (selectedTags.includes('music')) {
+    filteredImages.push(
+      ...Array.from({ length: 10 }, (_, i) => ({
+        id: i + 31,
+        category: 'music',
+      })),
+    );
+  }
+  if (selectedTags.includes('youtube')) {
+    filteredImages.push(
+      ...Array.from({ length: 10 }, (_, i) => ({
+        id: i + 41,
+        category: 'youtube',
+      })),
+    );
+  }
+
+  const shuffledImages = filteredImages.sort(() => Math.random() - 0.5);
 
   return (
     <>
@@ -122,7 +175,13 @@ const SearchResult = () => {
           ))}
         </HashtagContainer>
 
-        <div style={{ overflowY: 'auto', height: 'calc(150vh - 100px)' }}>
+        <div
+          style={{
+            overflowY: 'auto',
+            height: 'calc(150vh - 100px)',
+            marginTop: '58vh',
+          }}
+        >
           <MasonryGrid>
             {Array.isArray(results) && results.length > 0 ? (
               results.map(({ id, title, imageUrl }) => (
@@ -154,6 +213,19 @@ const SearchResult = () => {
               </div>
               <img src={selectedImage} alt="Detailed view" />
               <div className="title">{imageData.title}</div>
+              <div className="button-row">
+                <img
+                  className="maximize-button"
+                  src={
+                    isFullscreen
+                      ? '/src/assets/img/button/MinimizeButton.png'
+                      : '/src/assets/img/button/MaximizeButton.png'
+                  }
+                  alt={isFullscreen ? 'Minimize' : 'Maximize'}
+                  onClick={toggleFullscreen}
+                />
+                <button className="add-button">+ add</button>
+              </div>
             </div>
           )}
         </DetailView>
