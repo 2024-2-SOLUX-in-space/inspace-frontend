@@ -122,7 +122,7 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
     height: 300
   });
   const [completedCrop, setCompletedCrop] = useState(null);
-  const { selectedSpace } = useContext(SpaceContext);
+  const { activeSpace } = useContext(SpaceContext); // 변경된 부분
 
   const onLoad = useCallback((img) => {
     imgRef.current = img;
@@ -204,7 +204,7 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
           const formData = new FormData();
           formData.append('file', blob, 'cropped-image.png');
 
-          const response = await api.post(`/api/image?spaceId=${selectedSpace.spaceId}&title=${title}`, formData, {
+          const response = await api.post(`/api/image?spaceId=${activeSpace.id}&title=${title}`, formData, { // 변경된 부분
             headers: {
               'Content-Type': 'multipart/form-data',
             },
@@ -213,7 +213,7 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
           console.log('Upload successful:', response.data);
 
           // onSave 콜백을 통해 부모 컴포넌트에 알림
-          onSave(title, croppedImageUrl, {
+          onSave(title, response.data.imageUrl, { // 변경된 부분: 서버에서 받은 이미지 URL 사용
             width: completedCrop.width,
             height: completedCrop.height
           });
@@ -226,7 +226,7 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
       'image/png',
       1
     );
-  }, [completedCrop, createCroppedImage, onSave, title, handleClose, selectedSpace]);
+  }, [completedCrop, createCroppedImage, onSave, title, handleClose, activeSpace]);
 
   const handleTitleChange = useCallback((e) => {
     const value = e.target.value;
