@@ -12,7 +12,7 @@ export const ArchiveList = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 900;
   color: black;
-  padding: 8px;
+  padding: 10px;
 
   /* 스크롤 */
   max-height: ${({ isScrollable }) => (isScrollable ? '300px' : 'auto')};
@@ -42,7 +42,7 @@ export const ListBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 15px 1px;
+  padding: 15px 7px;
   margin: 0px;
   cursor: pointer;
   border-bottom: 1px solid #ececec;
