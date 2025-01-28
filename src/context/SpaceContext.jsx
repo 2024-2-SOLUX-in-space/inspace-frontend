@@ -19,7 +19,6 @@ export const SpaceProvider = ({ children }) => {
       try {
         const fetchedSpaces = await fetchSpaces(); // API 호출하여 spaces 데이터 가져오기
         setSpaces(fetchedSpaces);
-        console.log('Fetched Spaces:', fetchedSpaces);
 
         // isPrimary: true인 공간 찾기
         const primary = fetchedSpaces.find(space => space.isPrimary);
