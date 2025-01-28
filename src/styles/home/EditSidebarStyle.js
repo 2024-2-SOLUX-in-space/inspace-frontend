@@ -4,7 +4,7 @@ export const SidebarContainer = styled.div`
   position: absolute;
   right: 0;
   top: 7.3vh;
-  width: 23%;
+  width: 300px;
   height: 92.7vh;
   background-color: white;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
@@ -58,10 +58,11 @@ export const StyledImage = styled.img`
 
 export const IconContainer = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   border-top: 1px solid #eee;
-  padding: 20px 30px;
+  padding: 20px 10px;
+  overflow-x: hidden;
   div {
     display: flex;
     align-items: center;
@@ -75,11 +76,11 @@ export const IconContainer = styled.div`
   }
 
   svg {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     cursor: pointer;
     color: #000000;
-    padding: 7px;
+    padding: 5px;
 
     ${(props) =>
       props.selected &&
