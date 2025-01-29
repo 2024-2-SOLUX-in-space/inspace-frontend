@@ -170,6 +170,8 @@ const EditSidebar = ({ isOpen, onClose, images }) => {
         ...prev,
         [selectedIcon]: [...prev[selectedIcon], response.data]
       }));
+
+      setIsModalOpen(false);
       
     } catch (error) {
       console.error('Error adding item:', error.message);
@@ -177,6 +179,49 @@ const EditSidebar = ({ isOpen, onClose, images }) => {
       alert('항목 추가에 실패했습니다. 다시 시도해주세요.');
     }
   };
+
+  // useEffect를 추가하여 모달이 닫힐 때 categoryData를 재로딩
+  useEffect(() => {
+    if (!isModalOpen) {
+      const fetchCategoryData = async () => {
+        if (!activeSpace || !activeSpace.id) {
+          console.warn('No activeSpace selected.');
+          setCategoryData({
+            image: [],
+            youtube: [],
+            music: [],
+            sticker: [...stickerData.stickers],
+            file: []
+          });
+          setIsDataLoaded(false);
+          return;
+        }
+
+        try {
+          const category = selectedIcon === 'file' ? 'USERIMAGE' : selectedIcon.toUpperCase();
+          const response = await api.get(`/api/category/space/${activeSpace.id}?category=${category}`);
+
+          const dataWithId = response.data.map(item => {
+            if (!item.itemId) {
+              console.warn('Item without id found:', item);
+              return { ...item, itemId: `temp-id-${Date.now()}` };
+            }
+            return { ...item, id: item.itemId };
+          });
+
+          setCategoryData(prev => ({
+            ...prev,
+            [selectedIcon]: dataWithId
+          }));
+          setIsDataLoaded(true);
+        } catch (error) {
+          console.error('Error fetching category data:', error);
+          setIsDataLoaded(false);
+        }
+      };
+      fetchCategoryData();
+    }
+  }, [isModalOpen]);
 
   return (
     <div>
