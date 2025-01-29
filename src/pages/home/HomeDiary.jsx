@@ -8,10 +8,11 @@ import {
   BookWrapper, 
   PageContent, 
   PageNumber, 
-  DiaryContent
+  DiaryContent 
 } from '../../styles/home/HomeDiaryStyle';
 import PageItem from '../../components/home/PageItem';
 import api from '../../api/api';
+import { useItemContext } from '../../context/ItemContext';
 
 const PageCover = React.forwardRef((props, ref) => {
   const getCoverImage = (position, coverType = 1) => {
@@ -34,7 +35,7 @@ const PageCover = React.forwardRef((props, ref) => {
 
   const imageUrl = getCoverImage(props.position, props.coverType);
   
-  const getTitleStyle = (coverType, title) => {
+  const getTitleStyle = (coverType) => {
     switch(coverType) {
       case 1:
         return {
@@ -76,7 +77,7 @@ const PageCover = React.forwardRef((props, ref) => {
     }
   };
 
-  const titleStyle = getTitleStyle(props.coverType, props.title);
+  const titleStyle = getTitleStyle(props.coverType);
 
   return (
     <div 
@@ -136,25 +137,6 @@ const Page = React.forwardRef((props, ref) => {
     }
   };
 
-  const handleImageUpdate = (imageId, updates) => {
-    if (props.onImageUpdate) {
-      props.onImageUpdate(imageId, {
-        ...updates,
-        pageNumber: props.number
-      });
-    }
-  };
-
-  const getSpreadNumber = (pageNumber) => Math.ceil(pageNumber / 2);
-
-  const getPagePair = (pageNumber) => {
-    if (pageNumber % 2 === 0) {
-      return [pageNumber - 1, pageNumber];
-    } else {
-      return [pageNumber, pageNumber + 1];
-    }
-  };
-
   return (
     <div className="page" ref={ref}>
       <PageContent className="page-content">
@@ -167,10 +149,12 @@ const Page = React.forwardRef((props, ref) => {
             <PageItem
               key={image.id}
               image={image}
-              onUpdate={handleImageUpdate}
+              onUpdate={props.onImageUpdate}
               onDelete={props.onDeleteImage}
               isEditMode={props.isEditMode}
-              pagePair={getPagePair(props.number)}
+              pagePair={props.pagePair}
+              selectedImageId={props.selectedImageId}
+              onImageSelect={props.onImageSelect}
               onSelectChange={props.onItemSelectChange}
             />
           ))}
@@ -181,58 +165,85 @@ const Page = React.forwardRef((props, ref) => {
 });
 
 const HomeDiary = ({ 
+  diaryData, 
   onImageDrop, 
-  isModalOpen, 
+  onImageResize, 
+  onImageMove, 
   isEditMode,
+  selectedImageId,
+  onImageSelect,
+  onImageRotate,
+  spaceId,
 }) => {
   const flipBook = useRef();
   const [isItemSelected, setIsItemSelected] = useState(false);
-  const [diaryData, setDiaryData] = useState({ images: [] });
+  const [pagesData, setPagesData] = useState({});
   const { activeSpace, spaces } = useContext(SpaceContext);
-  
+  const { selectedItem, setSelectedItem } = useItemContext();
+
+  const fetchPageData = async (pageNum) => {
+    try {
+      const response = await api.get(`/api/page`, {
+        params: { space_id: activeSpace.id, pageNum: pageNum }
+      });
+      setPagesData(prev => ({
+        ...prev,
+        [pageNum]: response.data.images
+      }));
+    } catch (error) {
+      console.error(`Error fetching data for page ${pageNum}:`, error);
+      setPagesData(prev => ({
+        ...prev,
+        [pageNum]: []
+      }));
+    }
+  };
+
   useEffect(() => {
     if (activeSpace?.id) {
-      const fetchPageData = async () => {
-        try {
-          const response = await api.get(`/api/page?spaceId=${activeSpace.id}&pageNum=${pageNum}`);
-          setDiaryData(response.data);
-
-          setTimeout(() => {
-            if (flipBook.current) {
-              flipBook.current.pageFlip().flip(0);
-            }
-          }, 100);
-        } catch (error) {
-          console.error('Error fetching page data:', error);
-          setDiaryData({ images: [] });
-        }
-      };
-
-      fetchPageData();
+      fetchPageData(1);
+      fetchPageData(2);
     } else {
-      setDiaryData({ images: [] });
+      setPagesData({});
     }
   }, [activeSpace]);
 
   const handleDeleteImage = (id) => {
-    setDiaryData(prev => ({
-      ...prev,
-      images: prev.images.filter(img => img.id !== id)
-    }));
+    setPagesData(prev => {
+      const updated = { ...prev };
+      Object.keys(updated).forEach(pageNum => {
+        updated[pageNum] = updated[pageNum].filter(img => img.id !== id);
+      });
+      return updated;
+    });
+    if (selectedItem === id) {
+      setSelectedItem(null); // 선택된 아이템이 삭제되면 초기화
+    }
   };
 
   const handleImageUpdate = (imageId, updates) => {
+    setPagesData(prev => {
+      const updated = { ...prev };
+      Object.keys(updated).forEach(pageNum => {
+        updated[pageNum] = updated[pageNum].map(img => 
+          img.id === imageId ? { ...img, ...updates } : img
+        );
+      });
+      return updated;
+    });
+  };
 
-    setDiaryData(prev => ({
-      ...prev,
-      images: prev.images.map(img => 
-        img.id === imageId ? { ...img, ...updates } : img
-      )
-    }));
+  const handleFlip = (e) => {
+    const currentPage = e.data;
+    const spreadNum = Math.ceil((currentPage + 1) / 2);
+    if (!pagesData[spreadNum]) {
+      fetchPageData(spreadNum);
+    }
   };
 
   const getImagesForPage = (pageNumber) => {
-    return diaryData.images ? diaryData.images.filter(img => img.pageNumber === pageNumber) : [];
+    const spreadNum = Math.ceil(pageNumber / 2);
+    return pagesData[spreadNum] || [];
   };
 
   if (!activeSpace) {
@@ -252,7 +263,7 @@ const HomeDiary = ({
   }
   
   return (
-    <DiaryWrapper style={{ pointerEvents: isModalOpen ? 'none' : 'auto' }}>
+    <DiaryWrapper style={{ pointerEvents: isEditMode ? 'auto' : 'auto' }}>
       <BookWrapper>
         <HTMLFlipBook
           width={400}
@@ -278,6 +289,7 @@ const HomeDiary = ({
           clickEventForward={false}
           swipeDistance={isItemSelected ? 0 : 30}
           cornerCursor={isItemSelected ? 'default' : 'pointer'}
+          onFlip={handleFlip}
         >
           <PageCover 
             position="top" 
@@ -293,6 +305,8 @@ const HomeDiary = ({
               onDeleteImage={handleDeleteImage}
               onImageUpdate={handleImageUpdate}
               isEditMode={isEditMode}
+              selectedImageId={selectedImageId}
+              onImageSelect={onImageSelect}
               onItemSelectChange={setIsItemSelected}
             />
           ))}
@@ -308,9 +322,15 @@ const HomeDiary = ({
 };
 
 HomeDiary.propTypes = {
+  diaryData: PropTypes.object.isRequired,
   onImageDrop: PropTypes.func.isRequired,
-  isModalOpen: PropTypes.bool.isRequired,
+  onImageResize: PropTypes.func.isRequired,
+  onImageMove: PropTypes.func.isRequired,
   isEditMode: PropTypes.bool.isRequired,
+  selectedImageId: PropTypes.string,
+  onImageSelect: PropTypes.func.isRequired,
+  onImageRotate: PropTypes.func.isRequired,
+  spaceId: PropTypes.number,
 };
 
 export default HomeDiary;

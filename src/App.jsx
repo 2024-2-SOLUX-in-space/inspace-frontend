@@ -10,6 +10,7 @@ import { AlertProvider } from "./context/AlertContext";
 import { UserProvider } from "./context/UserContext";
 import { SidebarProvider, useSidebar } from "./context/SidebarContext"; 
 import { SpaceProvider } from "./context/SpaceContext";
+import { ItemProvider } from "./context/ItemContext";
 import GlobalStyle from "./styles/GlobalStyle";
 import StartPage from "./pages/StartPage";
 import SignUpPage from "./pages/user/SignUpPage";
@@ -27,6 +28,7 @@ function App() {
       <AlertProvider>
         <SidebarProvider> 
           <SpaceProvider>
+            <ItemProvider>
           <Router>
             <GlobalStyle />
             <SidebarWrapper />
@@ -40,7 +42,8 @@ function App() {
               <Route path="/mypage" element={<MyPage />} />
               <Route path="/mypage-edit" element={<EditMyPage />} />
             </Routes>
-          </Router>
+            </Router>
+            </ItemProvider>
           </SpaceProvider>
         </SidebarProvider>
       </AlertProvider>

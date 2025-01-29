@@ -1,44 +1,19 @@
-import React, { useState, useEffect, useContext } from 'react';
-import HomeDiary from './HomeDiary';
+// src/pages/home/Home.js
+import React, { useState, useContext } from 'react';
+import HomeDiary from '../home/HomeDiary';
 import EditSidebar from '../../components/home/EditSidebar';
 import Header from '../../components/Header';
 import { HomeContainer, ContentWrapper, EditButton } from '../../styles/home/HomeStyle';
-import api from '../../api/api';
 import { SpaceContext } from '../../context/SpaceContext';
-
-const initialDraggableImages = [
-  { id: 'bear1', src: '/public/home/bear1.png', alt: '곰1' },
-  { id: 'bear2', src: '/public/home/bear2.png', alt: '곰2' },
-];
+import { useItemContext } from '../../context/ItemContext';
 
 const Home = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [draggableImages, setDraggableImages] = useState(initialDraggableImages);
-  const [selectedImageId, setSelectedImageId] = useState(null);
-  const [diaryData, setDiaryData] = useState([]);
-  const [diaryImages, setDiaryImages] = useState([]);
-  const [selectedSpaceId, setSelectedSpaceId] = useState(null);
+  const [draggableImages, setDraggableImages] = useState([]);
+  const [diaryData, setDiaryData] = useState({});
   const { selectedSpace } = useContext(SpaceContext);
+  const { selectedItem, setSelectedItem } = useItemContext();
 
-  /* 페이지 출력 api
-  useEffect(() => {
-    if (selectedSpace.spaceId) {
-      const fetchDiaryData = async () => {
-        try {
-          const response = await api.get(`/api/page`, {
-            params: { space_id: selectedSpace.spaceId, pageNum: 1 }
-          });
-          setDiaryData(response.data);
-        } catch (error) {
-          console.error('Error fetching diary data:', error);
-          setDiaryData([]);
-        }
-      };
-
-      fetchDiaryData();
-    }
-  }, [selectedSpace.spaceId]);
-*/
   const handleEdit = () => {
     setIsEditOpen(!isEditOpen);
   };
@@ -67,62 +42,71 @@ const Home = () => {
 
     setDiaryData(prev => ({
       ...prev,
-      images: [...prev.images, newImage]
+      [pageNumber]: [...(prev[pageNumber] || []), newImage],
     }));
 
-    setDraggableImages((prev) =>
-      prev.filter((img) => img.id !== draggedImage.id),
+    setDraggableImages(prev =>
+      prev.filter(img => img.id !== draggedImage.id)
     );
 
     window.draggedImage = null;
   };
 
   const handleImageResize = (imageId, newSize) => {
-    setDiaryData(prev => ({
-      ...prev,
-      images: prev.images.map(img => 
-        img.id === imageId 
-          ? { 
-              ...img, 
-              style: { 
-                ...img.style, 
-                width: `${newSize.width}px`, 
-                height: `${newSize.height}px` 
-              } 
-            }
-          : img
-      )
-    }));
+    setDiaryData(prev => {
+      const updated = { ...prev };
+      Object.keys(updated).forEach(pageNum => {
+        updated[pageNum] = updated[pageNum].map(img =>
+          img.id === imageId
+            ? {
+                ...img,
+                style: {
+                  ...img.style,
+                  width: `${newSize.width}px`,
+                  height: `${newSize.height}px`,
+                },
+              }
+            : img
+        );
+      });
+      return updated;
+    });
   };
 
   const handleImageSelect = (imageId) => {
-    setSelectedImageId(imageId);
+    setSelectedItem(imageId);
   };
 
   const handleImageRotate = (imageId, angle) => {
-    setDiaryData(prev => ({
-      ...prev,
-      images: prev.images.map(img => 
-        img.id === imageId 
-          ? { ...img, rotation: angle }
-          : img
-      )
-    }));
+    setDiaryData(prev => {
+      const updated = { ...prev };
+      Object.keys(updated).forEach(pageNum => {
+        updated[pageNum] = updated[pageNum].map(img =>
+          img.id === imageId
+            ? { ...img, rotation: angle }
+            : img
+        );
+      });
+      return updated;
+    });
   };
 
   const handleImageMove = (imageId, newPageNumber, newPosition) => {
-    setDiaryData(prev => ({
-      ...prev,
-      images: prev.images.map(img => 
-        img.id === imageId 
-          ? { 
-              ...img, 
-              pageNumber: newPageNumber,
-              position: newPosition
-            }
-          : img
-      )
-    }));
+    setDiaryData(prev => {
+      const updated = { ...prev };
+      Object.keys(updated).forEach(pageNum => {
+        updated[pageNum] = updated[pageNum].map(img =>
+          img.id === imageId
+            ? {
+                ...img,
+                pageNumber: newPageNumber,
+                position: newPosition,
+              }
+            : img
+        );
+      });
+      return updated;
+    });
   };
 
   return (
@@ -136,10 +120,10 @@ const Home = () => {
             onImageResize={handleImageResize}
             onImageMove={handleImageMove}
             isEditMode={isEditOpen}
-            selectedImageId={selectedImageId}
+            selectedImageId={selectedItem}
             onImageSelect={handleImageSelect}
             onImageRotate={handleImageRotate}
-            spaceId={selectedSpaceId}
+            spaceId={selectedSpace?.id}
           />
           <EditButton onClick={handleEdit}>
             {isEditOpen ? '공간 저장' : '공간 편집'}

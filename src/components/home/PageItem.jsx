@@ -1,113 +1,105 @@
-import React, { useState, useEffect } from 'react';
-import Moveable from "react-moveable";
-import { FiX } from "react-icons/fi";
+// src/components/home/PageItem.js
+import React, { useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import Moveable from 'react-moveable';
+import { FiX } from 'react-icons/fi';
 import { DeleteButton } from '../../styles/home/EditSidebarStyle';
 import { DraggableImage } from '../../styles/home/HomeDiaryStyle';
 import api from '../../api/api';
+import { useItemContext } from '../../context/ItemContext';
 
-const PageItem = ({ image, onUpdate, onDelete, isEditMode, pagePair, onSelectChange }) => {
-  const [isSelected, setIsSelected] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+const PageItem = ({ image, onUpdate, onDelete, isEditMode, pagePair }) => {
+  const { selectedItem, setSelectedItem } = useItemContext();
+  const imageRef = useRef(null);
+  const moveableRef = useRef(null);
 
-  const calculateMouseOffset = (event, target) => {
-    const rect = target.getBoundingClientRect();
-    const rotation = image.rotation || 0;
-    const radian = (rotation * Math.PI) / 180;
-    
-    // 마우스 위치와 타겟의 상대 위치 계산
-    const relativeX = event.clientX - rect.left;
-    const relativeY = event.clientY - rect.top;
-    
-    // 회전을 고려한 오프셋 계산
-    const offsetX = relativeX * Math.cos(radian) + relativeY * Math.sin(radian);
-    const offsetY = -relativeX * Math.sin(radian) + relativeY * Math.cos(radian);
-    
-    return { x: offsetX, y: offsetY };
+  const isSelected = selectedItem === image.id;
+
+  const handleSelect = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isEditMode) {
+      setSelectedItem(image.id);
+    }
   };
 
+  // Handle deleting this item
   const handleDelete = async (e) => {
     e.preventDefault();
     e.stopPropagation();
     try {
-      await api.delete(`/api/page/${item.id}`);
+      await api.delete(`/api/page/${image.id}`);
       console.log(`Item ${image.id} deleted successfully`);
+      onDelete(image.id);
+      // If the deleted item was selected, clear the selection
+      if (isSelected) {
+        setSelectedItem(null);
+      }
     } catch (error) {
       console.error('Error deleting item:', error.message);
     }
   };
 
-  const handleSelect = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsSelected(true);
-    onSelectChange(true);
+  // Update the image position
+  const handleDrag = ({ target, delta }) => {
+    const currentLeft = parseFloat(target.style.left) || 0;
+    const currentTop = parseFloat(target.style.top) || 0;
+
+    const newLeft = currentLeft + delta[0];
+    const newTop = currentTop + delta[1];
+
+    target.style.left = `${newLeft}px`;
+    target.style.top = `${newTop}px`;
+
+    onUpdate(image.id, {
+      position: { x: newLeft, y: newTop },
+    });
   };
 
+  // Update the image rotation
+  const handleRotate = ({ target, rotate }) => {
+    const newRotation = (image.rotation || 0) + rotate;
+    target.style.transform = `rotate(${newRotation}deg)`;
+
+    onUpdate(image.id, {
+      rotation: newRotation,
+    });
+  };
+
+  // Update the image size
+  const handleResize = ({ target, width, height }) => {
+    target.style.width = `${width}px`;
+    target.style.height = `${height}px`;
+
+    onUpdate(image.id, {
+      style: {
+        width: `${width}px`,
+        height: `${height}px`,
+      },
+    });
+  };
+
+  // Click outside to deselect
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (!e.target.closest('.page-item')) {
-        setIsSelected(false);
-        onSelectChange(false);
+      if (
+        imageRef.current &&
+        !imageRef.current.contains(e.target) &&
+        moveableRef.current &&
+        !moveableRef.current.contains(e.target)
+      ) {
+        setSelectedItem(null);
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [onSelectChange]);
-
-  const handleImageUpdate = (updates) => {
-    if (updates.pageNumber && 
-        (updates.pageNumber < pagePair[0] || 
-         updates.pageNumber > pagePair[1])) {
-      return;
-    }
-    onUpdate(image.id, updates);
-  };
-
-  const handleDrag = ({ target, delta, inputEvent }) => {
-    inputEvent.stopPropagation();
-    inputEvent.preventDefault();
-    
-    const parentDiv = target.closest('.page-item');
-    const currentLeft = parseFloat(parentDiv.style.left) || 0;
-    const currentTop = parseFloat(parentDiv.style.top) || 0;
-    
-    const rotation = image.rotation || 0;
-    const radian = (rotation * Math.PI) / 180;
-    
-    // 회전을 고려한 delta 값 계산
-    const adjustedDeltaX = delta[0] * Math.cos(radian) - delta[1] * Math.sin(radian);
-    const adjustedDeltaY = delta[0] * Math.sin(radian) + delta[1] * Math.cos(radian);
-    
-    const newLeft = currentLeft + adjustedDeltaX;
-    const newTop = currentTop + adjustedDeltaY;
-
-    parentDiv.style.left = `${newLeft}px`;
-    parentDiv.style.top = `${newTop}px`;
-    
-    handleImageUpdate({
-      position: { x: newLeft, y: newTop }
-    });
-  };
-
-  const handleRotate = ({ target, transform, rotate, inputEvent }) => {
-    const parentDiv = target.closest('.page-item');
-    const currentRotation = image.rotation || 0;
-    const newRotation = currentRotation + (rotate * 0.03);
-    parentDiv.style.transform = `rotate(${newRotation}deg)`;
-    target.style.transform = 'none';
-    const offset = calculateMouseOffset(inputEvent, target);
-    setDragOffset(offset);
-    handleImageUpdate({
-      rotation: newRotation
-    });
-  };
+  }, [setSelectedItem]);
 
   return (
-    <div 
+    <div
       className="page-item"
-      style={{ 
+      style={{
         position: 'absolute',
         left: `${image.position?.x}px`,
         top: `${image.position?.y}px`,
@@ -115,76 +107,56 @@ const PageItem = ({ image, onUpdate, onDelete, isEditMode, pagePair, onSelectCha
         height: image.style?.height || '100px',
         transform: `rotate(${image.rotation || 0}deg)`,
         transformOrigin: 'center center',
-        cursor: isDragging ? 'grabbing' : 'auto',
+        cursor: isEditMode ? 'grab' : 'default',
         zIndex: isSelected ? 9999 : 1,
-        pointerEvents: 'auto'
+        pointerEvents: 'auto',
       }}
       onMouseDown={handleSelect}
     >
-      <DraggableImage 
+      <DraggableImage
+        ref={imageRef}
         className={`moveable-image image-${image.id}`}
-        src={image.url} 
+        src={image.url}
         alt={image.alt}
         style={{
           width: '100%',
           height: '100%',
           objectFit: 'cover',
           transform: 'none',
-          cursor: isSelected ? (isDragging ? 'grabbing' : 'grab') : 'default',
-          userSelect: 'none'
+          userSelect: 'none',
         }}
+        draggable={false} // Disable native drag
       />
-      
-      {isSelected && (
+
+      {isSelected && isEditMode && (
         <Moveable
-          target={document.querySelector(`.image-${image.id}`)}
+          ref={moveableRef}
+          target={imageRef.current}
           container={null}
           origin={false}
           draggable={true}
           resizable={true}
           rotatable={true}
-          snappable={true}
+          snappable={false}
           keepRatio={false}
           bounds="parent"
-          renderDirections={["nw","se"]}
-          rotationPosition="top"
+          throttleDrag={0}
           throttleRotate={0}
-          rotateAroundCenter={true}
-          initialRotation={image.rotation || 0}
-          onDragStart={({ inputEvent, target }) => {
-            setIsDragging(true);
-            const offset = calculateMouseOffset(inputEvent, target);
-            setDragOffset(offset);
-            inputEvent.stopPropagation();
-            inputEvent.preventDefault();
+          throttleResize={0}
+          onDrag={({ target, delta }) => {
+            handleDrag({ target, delta });
           }}
-          onDragEnd={({ inputEvent, target }) => {
-            setIsDragging(false);
-            const offset = calculateMouseOffset(inputEvent, target);
-            setDragOffset(offset);
-            inputEvent.stopPropagation();
-            inputEvent.preventDefault();
+          onRotate={({ target, rotate }) => {
+            handleRotate({ target, rotate });
           }}
-          onDrag={handleDrag}
-          onRotate={handleRotate}
           onResize={({ target, width, height }) => {
-            const parentDiv = target.closest('.page-item');
-            parentDiv.style.width = `${width}px`;
-            parentDiv.style.height = `${height}px`;
-            target.style.width = '100%';
-            target.style.height = '100%';
-            handleImageUpdate({
-              style: {
-                width: `${width}px`,
-                height: `${height}px`
-              }
-            });
+            handleResize({ target, width, height });
           }}
         />
       )}
 
-      {(isSelected || !image.isSticker) && (
-        <DeleteButton 
+      {isSelected && isEditMode && (
+        <DeleteButton
           className={`delete-button-${image.id}`}
           onClick={handleDelete}
           style={{
@@ -192,8 +164,7 @@ const PageItem = ({ image, onUpdate, onDelete, isEditMode, pagePair, onSelectCha
             right: '-12px',
             top: '-12px',
             zIndex: 1001,
-            transform: 'none',
-            pointerEvents: 'auto'
+            pointerEvents: 'auto',
           }}
         >
           <FiX />
@@ -203,4 +174,27 @@ const PageItem = ({ image, onUpdate, onDelete, isEditMode, pagePair, onSelectCha
   );
 };
 
-export default PageItem; 
+PageItem.propTypes = {
+  image: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired,
+    alt: PropTypes.string,
+    position: PropTypes.shape({
+      x: PropTypes.number,
+      y: PropTypes.number,
+    }),
+    rotation: PropTypes.number,
+    style: PropTypes.shape({
+      width: PropTypes.string,
+      height: PropTypes.string,
+    }),
+    isSticker: PropTypes.bool,
+  }).isRequired,
+  onUpdate: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  isEditMode: PropTypes.bool.isRequired,
+  pagePair: PropTypes.array.isRequired,
+  onSelectChange: PropTypes.func, // This prop can be removed if not needed
+};
+
+export default PageItem;
