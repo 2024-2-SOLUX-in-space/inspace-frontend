@@ -47,7 +47,8 @@ const NameInput = ({ spaceName, isMainSpace, setSpaceName, setIsMainSpace, onPro
           />
           <CheckboxLabel htmlFor="mainSpace">대표 공간으로 설정</CheckboxLabel>
         </CheckboxContainer>
-        <DescriptionText>대표 공간은 사용자의 메인에 보여집니다.</DescriptionText>
+        <DescriptionText>처음으로 추가하는 공간은 대표공간으로 설정됩니다. <br />
+        대표공간은 사용자의 메인에 보여집니다.</DescriptionText>
         <NextButton onClick={handleNext}>다음</NextButton>
       </NameInputContainer>
     </NameInputOverlay>

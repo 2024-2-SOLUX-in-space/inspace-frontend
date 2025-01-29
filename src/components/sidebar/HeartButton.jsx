@@ -43,8 +43,6 @@ const HeartButton = ({ isHeartOpen, toggleHeart }) => {
     }
   }, [tab, followers, following]);
 
-
-
   // 팔로워 데이터 불러오기 (GET /api/follow/followers)
   const fetchFollowers = async () => {
     const accessToken = localStorage.getItem("accessToken"); 
@@ -72,7 +70,6 @@ const HeartButton = ({ isHeartOpen, toggleHeart }) => {
       setLoading(false);
     }
   };
-
 
   // 팔로잉 데이터 불러오기 (GET /api/follow/followings)
   const fetchFollowings = async () => {
@@ -124,11 +121,7 @@ const HeartButton = ({ isHeartOpen, toggleHeart }) => {
     }
   }, [tab]);
 
-
-
-
-
-  // 팔로우 (팔로워 탭 -> 팔로잉 리스트에 추가)
+  // 팔로우하기 (팔로워 탭 -> 팔로잉 리스트에 추가)
   const handleFollow = async (id) => {
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
@@ -169,10 +162,7 @@ const HeartButton = ({ isHeartOpen, toggleHeart }) => {
     }
   };
 
-
-
-
-  // 언팔로우
+  // 언팔로우하기
   const handleUnfollow = async (id) => {
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
@@ -191,10 +181,7 @@ const HeartButton = ({ isHeartOpen, toggleHeart }) => {
       const { message } = response.data;
       alert(message);
 
-      // 삭제할 정보 미리 저장 
       const removedUser = following.find((user) => user.id === id);
-
-      // 서버 동기화
       await fetchFollowings();
 
       if (removedUser) {
@@ -211,7 +198,6 @@ const HeartButton = ({ isHeartOpen, toggleHeart }) => {
       }
     }
   };
-
 
   return (
     <>
