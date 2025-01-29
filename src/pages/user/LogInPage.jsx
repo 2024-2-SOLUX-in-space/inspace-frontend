@@ -87,6 +87,7 @@ function LogInPage() {
         }));
 
         navigate('/home');
+        window.location.reload();
       } else {
         showAlert(response.data.message);
       }
