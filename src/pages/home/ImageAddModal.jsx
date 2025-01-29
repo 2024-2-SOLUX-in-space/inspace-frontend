@@ -20,16 +20,11 @@ const ModalOverlay = styled.div`
 const ModalContent = styled.div`
   background-color: white;
   border-radius: 0.5rem;
-  padding: 1rem;
-  width: 80%;
+  padding: 1rem ;
+  width: 50%;
   height: 70%;
   display: flex;
   flex-direction: column;
-  
-  @media (max-width: 640px) {
-    width: 90%;
-    height: 80vh;
-  }
 `;
 
 const ModalHeader = styled.div`
@@ -47,7 +42,9 @@ const CloseButton = styled.button`
   background: none;
   border: none;
   font-size: 2rem;
+  outline: none;
   cursor: pointer;
+  padding: 0;
 `;
 
 const Input = styled.input`
@@ -57,6 +54,7 @@ const Input = styled.input`
   border: 1px solid #ddd;
   border-radius: 0.25rem;
   font-size: 1.25rem;
+  outline: none;
 `;
 
 const SaveButton = styled.button`
