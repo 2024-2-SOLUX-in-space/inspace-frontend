@@ -4,8 +4,8 @@ import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { SpaceContext } from '../../context/SpaceContext';
 import api from '../../api/api';
+import PropTypes from 'prop-types';
 
-// Styled Components
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
@@ -20,10 +20,9 @@ const ModalOverlay = styled.div`
 const ModalContent = styled.div`
   background-color: white;
   border-radius: 0.5rem;
-  padding: 1.5rem;
-  width: 1000px;
-  height: 700px;
-  margin: 0 1rem;
+  padding: 1rem;
+  width: 80%;
+  height: 70%;
   display: flex;
   flex-direction: column;
   
@@ -37,7 +36,6 @@ const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
 `;
 
 const Title = styled.h2`
@@ -48,7 +46,7 @@ const Title = styled.h2`
 const CloseButton = styled.button`
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 2rem;
   cursor: pointer;
 `;
 
@@ -107,8 +105,11 @@ const Canvas = styled.canvas`
   visibility: hidden;
 `;
 
-// Modal Component
 const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
+  if (typeof onSave !== 'function') {
+    console.error('onSave is not a function');
+  }
+
   const maxLength = 20;
   const imgRef = useRef(null);
   const canvasRef = useRef(null);
@@ -118,11 +119,11 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
     unit: 'px',
     x: 0,
     y: 0,
-    width: 300,
-    height: 300
+    width: 10,
+    height: 10
   });
   const [completedCrop, setCompletedCrop] = useState(null);
-  const { activeSpace } = useContext(SpaceContext); // 변경된 부분
+  const { activeSpace } = useContext(SpaceContext);
 
   const onLoad = useCallback((img) => {
     imgRef.current = img;
@@ -142,91 +143,84 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
       unit: 'px',
       x: 0,
       y: 0,
-      width: 300,
-      height: 300
+      width: 10,
+      height: 10
     });
     setCompletedCrop(null);
     onClose();
   };
 
-  const createCroppedImage = useCallback(() => {
-    if (!completedCrop || !canvasRef.current || !imgRef.current) {
-      return;
-    }
+const createCroppedImage = useCallback(() => {
+  if (!completedCrop || !canvasRef.current || !imgRef.current) {
+    return;
+  }
 
-    const ctx = canvasRef.current.getContext('2d');
-    if (!ctx) return;
+  const ctx = canvasRef.current.getContext('2d');
+  if (!ctx) return;
 
-    const scaleX = imgRef.current.naturalWidth / imgRef.current.width;
-    const scaleY = imgRef.current.naturalHeight / imgRef.current.height;
-    const pixelRatio = window.devicePixelRatio;
+  // 원본 이미지의 크기
+  const scaleX = imgRef.current.naturalWidth / imgRef.current.width;
+  const scaleY = imgRef.current.naturalHeight / imgRef.current.height;
 
-    const cropWidth = completedCrop.width * pixelRatio * scaleX;
-    const cropHeight = completedCrop.height * pixelRatio * scaleY;
+  // 크롭된 이미지의 크기와 위치
+  const cropWidth = completedCrop.width * scaleX;
+  const cropHeight = completedCrop.height * scaleY;
+  const cropX = completedCrop.x * scaleX;
+  const cropY = completedCrop.y * scaleY;
 
-    canvasRef.current.width = cropWidth;
-    canvasRef.current.height = cropHeight;
+  // 캔버스 크기 설정
+  canvasRef.current.width = cropWidth;
+  canvasRef.current.height = cropHeight;
 
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(0, 0, cropWidth, cropHeight);
+  // 배경색 설정
+  ctx.fillStyle = '#FFFFFF'; // 배경을 흰색으로 채움
+  ctx.fillRect(0, 0, cropWidth, cropHeight);
 
-    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-    ctx.imageSmoothingQuality = 'high';
+  // 이미지를 크롭된 부분만 캔버스에 그리기
+  ctx.drawImage(
+    imgRef.current,
+    cropX,  // 크롭된 이미지의 시작 x 좌표
+    cropY,  // 크롭된 이미지의 시작 y 좌표
+    cropWidth, // 크롭된 이미지의 넓이
+    cropHeight, // 크롭된 이미지의 높이
+    0, 0,  // 캔버스에 그릴 위치
+    cropWidth,  // 캔버스에 그릴 크기
+    cropHeight  // 캔버스에 그릴 크기
+  );
+}, [completedCrop]);
 
-    ctx.drawImage(
-      imgRef.current,
-      completedCrop.x * scaleX,
-      completedCrop.y * scaleY,
-      completedCrop.width * scaleX,
-      completedCrop.height * scaleY,
-      0,
-      0,
-      cropWidth,
-      cropHeight
-    );
-  }, [completedCrop]);
+  const handleSave = useCallback(async () => {
+  if (!completedCrop) return;
 
-  const handleSave = useCallback(() => {
-    if (!completedCrop) return;
+  createCroppedImage();
 
-    createCroppedImage();
+  // Canvas에서 이미지를 Blob 형태로 변환
+  canvasRef.current.toBlob(
+    async (blob) => {
+      if (!blob) {
+        console.error('Canvas is empty');
+        return;
+      }
 
-    canvasRef.current.toBlob(
-      async (blob) => {
-        if (!blob) {
-          console.error('Canvas is empty');
-          return;
-        }
-        const croppedImageUrl = URL.createObjectURL(blob);
-        
-        // API 호출 추가
-        try {
-          const formData = new FormData();
-          formData.append('file', blob, 'cropped-image.png');
+      const formData = new FormData();
+      formData.append('file', blob, 'cropped-image.png');
 
-          const response = await api.post(`/api/image?spaceId=${activeSpace.id}&title=${title}`, formData, { // 변경된 부분
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          });
+      try {
+        const response = await api.post(`/api/image?spaceId=${activeSpace.id}&title=${title}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
 
-          console.log('Upload successful:', response.data);
-
-          // onSave 콜백을 통해 부모 컴포넌트에 알림
-          onSave(title, response.data.imageUrl, { // 변경된 부분: 서버에서 받은 이미지 URL 사용
-            width: completedCrop.width,
-            height: completedCrop.height
-          });
-
-          handleClose();
-        } catch (error) {
-          console.error('Error uploading image:', error);
-        }
-      },
-      'image/png',
-      1
-    );
-  }, [completedCrop, createCroppedImage, onSave, title, handleClose, activeSpace]);
+        console.log('Upload successful:', response.data);
+        handleClose();
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
+    },
+    'image/png', 1
+  );
+}, [completedCrop, createCroppedImage, title, handleClose, activeSpace]);
 
   const handleTitleChange = useCallback((e) => {
     const value = e.target.value;
@@ -280,6 +274,13 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
       </ModalContent>
     </ModalOverlay>
   );
+};
+
+ImageAddModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  imageFile: PropTypes.object,
+  onSave: PropTypes.func.isRequired,
 };
 
 export default ImageAddModal;

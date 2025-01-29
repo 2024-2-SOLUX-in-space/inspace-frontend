@@ -1,9 +1,8 @@
-// src/components/sidebar/EditSidebar.js
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { FiFolderPlus, FiImage, FiYoutube, FiMusic, FiPlus, FiX } from "react-icons/fi";
 import { BiSticker } from "react-icons/bi";
 import { SpaceContext } from '../../context/SpaceContext';
-import {
+import { 
   SidebarContainer,
   SidebarContent,
   DraggableContainer,
@@ -17,22 +16,23 @@ import {
 import stickerData from '../../data/stickers.json';
 import ImageAddModal from '../../pages/home/ImageAddModal';
 import api from '../../api/api';
+import { useItemContext } from '../../context/ItemContext';
 
-const EditSidebar = ({ isOpen, onClose }) => {
-  const { activeSpace } = useContext(SpaceContext); // Updated to use activeSpace
+const EditSidebar = ({ isOpen, onClose, images }) => {
+  const { activeSpace } = useContext(SpaceContext);
   const [selectedIcon, setSelectedIcon] = useState('image');
   const [categoryData, setCategoryData] = useState({
     image: [],
     youtube: [],
     music: [],
-    sticker: [...stickerData.stickers], // Fixed to spread the stickers array
+    sticker: [...stickerData.stickers],
     file: []
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
-  const [renderKey, setRenderKey] = useState(0);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const { setSelectedItem } = useItemContext();
 
   useEffect(() => {
     const fetchCategoryData = async () => {
@@ -52,9 +52,18 @@ const EditSidebar = ({ isOpen, onClose }) => {
       try {
         const category = selectedIcon === 'file' ? 'USERIMAGE' : selectedIcon.toUpperCase();
         const response = await api.get(`/api/category/space/${activeSpace.id}?category=${category}`);
+
+        const dataWithId = response.data.map(item => {
+          if (!item.itemId) {
+            console.warn('Item without id found:', item);
+            return { ...item, itemId: `temp-id-${Date.now()}` };
+          }
+          return { ...item, id: item.itemId };
+        });
+
         setCategoryData(prev => ({
           ...prev,
-          [selectedIcon]: response.data
+          [selectedIcon]: dataWithId
         }));
         setIsDataLoaded(true);
       } catch (error) {
@@ -64,7 +73,7 @@ const EditSidebar = ({ isOpen, onClose }) => {
     };
 
     fetchCategoryData();
-  }, [selectedIcon, activeSpace]); // Updated dependency to activeSpace
+  }, [selectedIcon, activeSpace]);
 
   const icons = [
     { id: 'image', Icon: FiImage, alt: '이미지' },
@@ -114,34 +123,69 @@ const EditSidebar = ({ isOpen, onClose }) => {
   };
 
   const handleDeleteItem = async (itemId) => {
+    if (!activeSpace || !activeSpace.id) {
+      console.error('Cannot delete item: No activeSpace selected.');
+      alert('삭제할 수 없습니다. 활성화된 공간이 선택되지 않았습니다.');
+      return;
+    }
+
+    if (!itemId || itemId.startsWith('temp-id-')) {
+      console.error('Invalid item ID:', itemId);
+      alert('삭제할 수 없습니다. 유효하지 않은 항목입니다.');
+      return;
+    }
+
     try {
-      const apiUrl = selectedIcon === 'file'
-        ? `/api/items/${itemId}`
-        : `/api/delete/item?itemId=${itemId}`;
+      const apiUrl = `/api/delete/item?itemId=${itemId}`;
 
-      // API 호출
       await api.delete(apiUrl);
-      console.log(`Item ${itemId} deleted successfully`);
+      console.log(`Item ${itemId} deleted successfully from space ${activeSpace.id}`);
 
-      // 로컬 상태에서 항목 삭제
       setCategoryData(prev => ({
         ...prev,
         [selectedIcon]: prev[selectedIcon].filter(item => item.id !== itemId)
       }));
+
+      // 삭제된 아이템이 선택된 경우 선택 해제
+      setSelectedItem(prevSelected => prevSelected === itemId ? null : prevSelected);
     } catch (error) {
       console.error('Error deleting item:', error.message);
       console.error('Error details:', error.response?.data || error);
+      alert('항목 삭제에 실패했습니다. 다시 시도해주세요.');
+    }
+  };
+
+  const handleAddItem = async (newItem) => {
+    const { id, title } = newItem;
+
+    try {
+      const response = await api.post(`/api/image?spaceId=${activeSpace.id}&title=${title}`, {
+        id,
+        title
+      });
+
+      console.log('Item added successfully:', response.data);
+
+      setCategoryData(prev => ({
+        ...prev,
+        [selectedIcon]: [...prev[selectedIcon], response.data]
+      }));
+      
+    } catch (error) {
+      console.error('Error adding item:', error.message);
+      console.error('Error details:', error.response?.data || error);
+      alert('항목 추가에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
   return (
-    <div key={renderKey}>
+    <div>
       <SidebarContainer isOpen={isOpen}>
         <SidebarContent>
           {isDataLoaded && (
             <DraggableContainer isStickers={isStickersSelected()}>
-              {getCurrentData().map((item, index) => (
-                <DraggableItem key={index}>
+              {getCurrentData().map((item) => (
+                <DraggableItem key={item.id}>
                   <div style={{ position: 'relative' }}>
                     <StyledImage 
                       src={item.imageUrl}
@@ -203,6 +247,7 @@ const EditSidebar = ({ isOpen, onClose }) => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         imageFile={selectedFile}
+        onSave={handleAddItem}
       />
     </div>
   );
