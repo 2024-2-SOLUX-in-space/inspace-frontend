@@ -7,13 +7,22 @@ import Alert from "../alert/AddTrashAlert";
 import styled from "styled-components";
 import PropTypes from 'prop-types';
 import { SpaceContext } from '../../context/SpaceContext';
-import api from '../../api/api'; // 필요한 경우 추가 API 호출 함수 사용
+import api from '../../api/api';
 
 const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
   const [isScrollable, setIsScrollable] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const { spaces, setSpaces, setSelectedSpace, setActiveSpace, selectedSpace } = useContext(SpaceContext);
   const archiveRef = useRef(null);
+
+  // 백엔드 응답을 프론트엔드 필드명으로 매핑하는 함수
+  const mapBackendToFrontend = (backendSpace) => ({
+    id: backendSpace.spaceId,
+    title: backendSpace.sname,
+    coverType: backendSpace.sthumb,
+    isPrimary: backendSpace.isPrimary,
+    isPublic: backendSpace.isPublic,
+  });
 
   // 외부 클릭 시 아카이브 닫기 
   React.useEffect(() => {
@@ -45,90 +54,98 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
     setSelectedSpace(selectedSpaceData);
     setActiveSpace(selectedSpaceData);
     console.log(`Selected space: ${spaceId}, ${title}, ${coverType}`);
-    toggleArchive(); // Close archive after selection
-};
+    toggleArchive();
+  };
 
+  // 공통 토글 함수
+  const handleToggle = async (spaceId, field) => {
+    const currentSpace = spaces.find(space => space.id === spaceId);
+    if (!currentSpace) {
+      console.error('Space not found:', spaceId);
+      return;
+    }
+
+    if (field === 'isPrimary') {
+      const newIsPrimary = !currentSpace.isPrimary;
+
+      // 옵티미스틱 업데이트: 선택된 공간은 새로운 isPrimary 값, 다른 모든 공간은 false
+      setSpaces(prevSpaces => prevSpaces.map(space => 
+        space.id === spaceId ? { ...space, isPrimary: newIsPrimary } : { ...space, isPrimary: false }
+      ));
+
+      try {
+        const url = `/api/spaces/${spaceId}`;
+        const data = { [field]: newIsPrimary };
+
+        const response = await api.patch(url, data);
+        if (response.status === 200) {
+          const updatedSpace = mapBackendToFrontend(response.data);
+          
+          // isPrimary가 true인 경우 다른 모든 공간의 isPrimary를 false로 설정
+          const updatedSpaces = spaces.map(space => 
+            space.id === spaceId ? updatedSpace : { ...space, isPrimary: false }
+          );
+          setSpaces(updatedSpaces);
+          console.log(`Updated Spaces after ${field} toggle:`, updatedSpaces);
+
+          // isPrimary가 true인 경우 activeSpace 업데이트
+          if (updatedSpace.isPrimary) {
+            const primarySpaceData = {
+              id: updatedSpace.id,
+              title: updatedSpace.title,
+              coverType: updatedSpace.coverType,
+            };
+            setSelectedSpace(primarySpaceData);
+            setActiveSpace(primarySpaceData);
+          }
+        }
+      } catch (error) {
+        console.error(`Error toggling ${field} for space:`, error);
+        // 실패 시 원래 상태로 롤백
+        setSpaces(prevSpaces => prevSpaces.map(space => 
+          space.id === spaceId ? { ...space, isPrimary: currentSpace.isPrimary } : space
+        ));
+      }
+
+    } else {
+      setSpaces(prevSpaces => prevSpaces.map(space => 
+        space.id === spaceId ? { ...space, [field]: !space[field] } : space
+      ));
+
+      try {
+        const url = `/api/spaces/${spaceId}`;
+        const data = { [field]: !currentSpace[field] };
+
+        const response = await api.patch(url, data);
+        if (response.status === 200) {
+          const updatedSpace = mapBackendToFrontend(response.data);
+          setSpaces(prevSpaces => prevSpaces.map(space => 
+            space.id === spaceId ? updatedSpace : space
+          ));
+          console.log(`Updated Spaces after ${field} toggle:`, spaces);
+        }
+      } catch (error) {
+        console.error(`Error toggling ${field} for space:`, error);
+        // 실패 시 원래 상태로 롤백
+        setSpaces(prevSpaces => prevSpaces.map(space => 
+          space.id === spaceId ? { ...space, [field]: currentSpace[field] } : space
+        ));
+      }
+    }
+  };
 
   // 핀버튼 클릭 시 isPrimary 토글
-  const handlePinToggle = async (spaceId) => {
-    const currentSpace = spaces.find(space => space.id === spaceId);
-    if (!currentSpace) {
-      console.error('Space not found:', spaceId);
-      return;
-    }
-    try {
-      const url = `/api/spaces/${spaceId}`;
-      const data = { "isPrimary": !currentSpace.isPrimary };
-
-      const response = await api.put(url, data);
-      if (response.status === 200) {
-        const updatedSpace = response.data;
-        const updatedSpaces = spaces.map(space => 
-          space.id === spaceId ? {
-            id: updatedSpace.spaceId,
-            title: updatedSpace.sname,
-            coverType: updatedSpace.sthumb,
-            isPrimary: updatedSpace.isPrimary,
-            isPublic: updatedSpace.isPublic,
-          } : space
-        );
-        setSpaces(updatedSpaces);
-        console.log('Updated Spaces after pin toggle:', updatedSpaces);
-
-        // 업데이트된 공간이 primary인 경우, activeSpace를 업데이트
-        if (updatedSpace.isPrimary) {
-          const primarySpaceData = {
-            id: updatedSpace.id,
-            title: updatedSpace.title,
-            coverType: updatedSpace.coverType,
-          };
-          setSelectedSpace(primarySpaceData);
-          setActiveSpace(primarySpaceData);
-        }
-      }
-    } catch (error) {
-      console.error('Error pinning space:', error);
-    }
-  };
+  const handlePinToggle = (spaceId) => handleToggle(spaceId, 'isPrimary');
 
   // 공개/비공개 전환 기능
-  const handlePublicToggle = async (spaceId) => {
-    const currentSpace = spaces.find(space => space.id === spaceId);
-    if (!currentSpace) {
-      console.error('Space not found:', spaceId);
-      return;
-    }
-    try {
-      const url = `/api/spaces/${spaceId}`;
-      const data = { isPublic: !currentSpace.isPublic };
-
-      const response = await api.put(url, data);
-      if (response.status === 200) {
-        const updatedSpace = response.data;
-        const updatedSpaces = spaces.map(space => 
-          space.id === spaceId ? {
-            id: updatedSpace.spaceId,
-            title: updatedSpace.sname,
-            coverType: updatedSpace.sthumb,
-            isPrimary: updatedSpace.isPrimary,
-            isPublic: updatedSpace.isPublic,
-          } : space
-        );
-        setSpaces(updatedSpaces);
-        console.log('Updated Spaces after public toggle:', updatedSpaces);
-      }
-    } catch (error) {
-      console.error('Error updating public status:', error);
-    }
-  };
+  const handlePublicToggle = (spaceId) => handleToggle(spaceId, 'isPublic');
 
   // trash 삭제 기능 
   const handleDeleteSpace = async (spaceId) => {
     try {
       await api.delete(`/api/spaces/${spaceId}`);
-      const updatedSpaces = spaces.filter(space => space.id !== spaceId);
-      setSpaces(updatedSpaces);
-      console.log('Spaces after deletion:', updatedSpaces);
+      setSpaces(prevSpaces => prevSpaces.filter(space => space.id !== spaceId));
+      console.log('Spaces after deletion:', spaces);
 
       // 선택된 공간이 삭제되었을 경우 activeSpace 업데이트
       if (selectedSpace && selectedSpace.id === spaceId) {
@@ -149,46 +166,54 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
     }
   };
 
+  // 모달 닫기 함수 수정: isAlertOpen과 selectedSpace 모두 초기화
   const handleCloseAlert = () => {
     setIsAlertOpen(false);
+    setSelectedSpace(null);
   };
 
   const handleConfirmDelete = async () => {
     if (selectedSpace) {
       await handleDeleteSpace(selectedSpace.id);
       setIsAlertOpen(false);
-      console.log('Confirm Delete, selectedSpace:', selectedSpace);
       setSelectedSpace(null);
+      console.log('Confirm Delete, selectedSpace:', selectedSpace);
       setActiveSpace(null);
     }
   };
+
+  // 공간 목록을 isPrimary 기준으로 정렬 (isPrimary: true인 공간이 상단에 위치)
+  const sortedSpaces = [...spaces].sort((a, b) => b.isPrimary - a.isPrimary);
 
   return (
     <>
       {isArchiveOpen && (
         <ArchiveList ref={archiveRef} isScrollable={isScrollable}>
-            {spaces.map((space) => (
-              <ListBox 
-                key={space.id}
-                isSelected={space.id === selectedSpace?.id}
-                onClick={() => handleListBoxClick(space.id, space.title, space.coverType)}
-              >
-                  <PrimaryButton
-                    spaceId={space.id}
-                    isPrimary={space.isPrimary}
-                    onPinToggle={handlePinToggle}
-                  />
-                  <TitleContainer> {space.title} </TitleContainer>
-                  <PublicButton
-                    spaceId={space.id}
-                    isPublic={space.isPublic}
-                    onSwitchToggle={handlePublicToggle}
-                  />
-                  <TrashButton onClick={() => handleTrashClick(space.id)}>
-                    <FiTrash2 />
-                  </TrashButton>
-              </ListBox>
-            ))}
+          {sortedSpaces.map((space) => (
+            <ListBox 
+              key={space.id}
+              isSelected={space.id === selectedSpace?.id}
+              onClick={() => handleListBoxClick(space.id, space.title, space.coverType)}
+            >
+              <PrimaryButton
+                spaceId={space.id}
+                isPrimary={space.isPrimary}
+                onPinToggle={handlePinToggle}
+              />
+              <TitleContainer> {space.title} </TitleContainer>
+              <PublicButton
+                spaceId={space.id}
+                isPublic={space.isPublic}
+                onSwitchToggle={handlePublicToggle}
+              />
+              <TrashButton onClick={(e) => {
+                e.stopPropagation();
+                handleTrashClick(space.id);
+              }}>
+                <FiTrash2 />
+              </TrashButton>
+            </ListBox>
+          ))}
         </ArchiveList>
       )}
       {isAlertOpen && selectedSpace && (
@@ -234,49 +259,9 @@ const TrashButton = styled.button`
   }
 `;
 
-export const TrashModal = ({ spaceId, onDelete }) => {
-  const [isAlertOpen, setIsAlertOpen] = useState(false); 
-
-  const handleTrashClick = () => {
-    setIsAlertOpen(true);
-  };
-  const handleCloseAlert = () => {
-    setIsAlertOpen(false);
-  };
-
-  const handleConfirmDelete = async () => {
-    try {
-      await api.delete(`/api/spaces/${spaceId}`);
-      onDelete(spaceId);
-    } catch (error) {
-      console.error('Error deleting space:', error);
-    }
-    handleCloseAlert();
-  };
-
-  console.log('TrashModal received spaceId:', spaceId);
-
-  return (
-    <>
-      <TrashButton onClick={handleTrashClick}>
-        <FiTrash2 /> 
-      </TrashButton>
-
-      <Alert
-        spaceId={spaceId}
-        isOpen={isAlertOpen}
-        message="정말로 삭제하시겠습니까?"
-        onClose={handleCloseAlert}
-        onConfirm={handleConfirmDelete}
-        confirmText="삭제"
-      />
-    </>
-  );
-};
-
 const PinButton = styled.div`
-  width: 15px;
-  height: 15px;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
   margin-left: 6px;
   margin-right: 0px; /* 핀버튼 ~ 제목 */
@@ -293,19 +278,28 @@ const PinButton = styled.div`
 `;
 
 export const PrimaryButton = ({ spaceId, isPrimary, onPinToggle }) => {
-  console.log('PrimaryButton isPrimary:', isPrimary);
   return (
     <PinButton
       id={spaceId}
       isPinned={isPrimary}
-      onClick={() => onPinToggle(spaceId)}
+      onClick={(e) => {
+        e.stopPropagation(); // 이벤트 버블링 방지
+        onPinToggle(spaceId);
+      }}
     >
       {isPrimary ? <BsPinAngleFill /> : <BsPinAngle />}
     </PinButton>
   );
 };
 
-const SwitchButton = styled.div`  cursor: pointer;
+PrimaryButton.propTypes = {
+  spaceId: PropTypes.number.isRequired, // 실제 타입에 맞게 수정 (예: number)
+  isPrimary: PropTypes.bool.isRequired,
+  onPinToggle: PropTypes.func.isRequired,
+};
+
+const SwitchButton = styled.div`  
+  cursor: pointer;
   display: flex;
   margin-right: 3px; /* 책 ~ 쓰레기통 */
   font-size: 17px;
@@ -320,7 +314,8 @@ const SwitchButton = styled.div`  cursor: pointer;
 `;
 
 export const PublicButton = ({ spaceId, isPublic, onSwitchToggle }) => {
-  const handleClick = () => {
+  const handleClick = (e) => {
+    e.stopPropagation(); // 이벤트 버블링 방지
     onSwitchToggle(spaceId);
   };
 
@@ -331,4 +326,8 @@ export const PublicButton = ({ spaceId, isPublic, onSwitchToggle }) => {
   );
 };
 
-
+PublicButton.propTypes = {
+  spaceId: PropTypes.number.isRequired, // 실제 타입에 맞게 수정 (예: number)
+  isPublic: PropTypes.bool.isRequired,
+  onSwitchToggle: PropTypes.func.isRequired,
+};
