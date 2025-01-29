@@ -19,9 +19,6 @@ const initialHashtags = [
   { id: 3, label: 'youtube', icon: <FaYoutube size={16} />, active: true },
 ];
 
-const ACCESS_TOKEN =
-  'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJpbnNwYWNlMDAzQGdtYWlsLmNvbSIsImlhdCI6MTczODA4OTA1NCwiZXhwIjoxNzM4MDkyNjU0fQ.LpKFP4RDb-CCrEixqCOIe7aE3V_3rG00hc-wF3bBoEU';
-
 const SearchResult = () => {
   const location = useLocation();
   const [hashtags, setHashtags] = useState(initialHashtags);
@@ -35,6 +32,18 @@ const SearchResult = () => {
     title: 'TitleExample',
   });
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [accessToken, setAccessToken] = useState(null);
+
+  useEffect(() => {
+    // localStorage에서 accessToken 가져오기
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      setAccessToken(token);
+      console.log('액세스 토큰 확인:', token); // 디버깅용
+    } else {
+      console.warn('로그인이 필요합니다. 액세스 토큰이 없습니다.');
+    }
+  }, []);
 
   const transformResponseData = (data) => {
     // 서버 응답 데이터를 배열 형태로 변환
@@ -46,20 +55,22 @@ const SearchResult = () => {
   };
 
   const fetchSearchResults = async (query, filter) => {
+    if (!accessToken) {
+      console.warn('로그인이 필요합니다. 액세스 토큰이 없습니다.');
+      return;
+    }
     try {
+      console.log('보내는 액세스 토큰:', accessToken); // 디버깅용
       console.log('API 호출 시작:', query, filter);
-
       const response = await axios.get(
-        `http://3.35.10.158:8080/api/search/results`,
+        'http://3.35.10.158:8080/api/search/results',
         {
           params: { query, filter: filter.join(',') },
-          headers: { Authorization: `Bearer ${ACCESS_TOKEN}` },
+          headers: { Authorization: `Bearer ${accessToken}` },
         },
       );
-
       console.log('API 응답:', response.data);
-
-      const results = transformResponseData(response.data); // 응답 데이터 변환
+      const results = transformResponseData(response.data);
       if (results.length === 0) {
         console.warn('검색 결과 없음');
       }
@@ -67,11 +78,18 @@ const SearchResult = () => {
     } catch (error) {
       console.error('API 호출 중 오류:', error.response || error.message);
       setResults([]);
+      if (error.response && error.response.status === 401) {
+        console.warn('토큰이 만료되었습니다. 다시 로그인하세요.');
+        localStorage.removeItem('accessToken');
+        setAccessToken(null);
+      }
     }
   };
 
   // 초기 검색어와 필터 값으로 API 호출
   useEffect(() => {
+    if (!accessToken) return; // 토큰이 없으면 실행하지 않음
+
     const query = location.state?.query || '';
     const filter = selectedTags;
     if (query) {
@@ -79,7 +97,7 @@ const SearchResult = () => {
     } else {
       console.warn('검색어가 전달되지 않았습니다.');
     }
-  }, [location.state, selectedTags]);
+  }, [location.state, selectedTags, accessToken]);
 
   const handleHashtagClick = (id) => {
     setHashtags((prev) =>
