@@ -1,4 +1,3 @@
-// src/components/sidebar/MenuSidebar.js
 import React, { useState, useContext } from 'react'; 
 import { FiMenu, FiChevronsLeft, FiHome, FiArchive, 
     FiFilePlus, FiEdit, FiHeart } from "react-icons/fi"; 
@@ -20,18 +19,17 @@ const MenuSidebar = ({
   isEditOpen, toggleEdit, 
   isHeartOpen, toggleHeart 
 }) => {
-    const [isOpen, setIsOpen] = useState(true); // Sidebar open/close state
-    const [activeIcon, setActiveIcon] = useState("home"); // Active icon state
-    const { spaces, resetToPrimarySpace } = useContext(SpaceContext); // Consume resetToPrimarySpace
+    const [isOpen, setIsOpen] = useState(true);
+    const [activeIcon, setActiveIcon] = useState("home");
+    const { spaces, resetToPrimarySpace } = useContext(SpaceContext);
 
     const toggleSidebar = () => {
       setIsOpen(!isOpen); 
     };
   
-    // Function to handle icon clicks
     const handleIconClick = (iconName) => {
       if (iconName === "home") {
-        resetToPrimarySpace(); // Reset to primary space
+        resetToPrimarySpace();
       }
       if (iconName === "archive") {
         toggleArchive();
@@ -45,7 +43,7 @@ const MenuSidebar = ({
       if (iconName === "heart") {
         toggleHeart();
       }
-      setActiveIcon(iconName); // Set active icon
+      setActiveIcon(iconName);
     };
   
     const menuItems = [
