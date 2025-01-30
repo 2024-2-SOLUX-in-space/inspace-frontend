@@ -125,7 +125,6 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
 
   const onLoad = useCallback((img) => {
     imgRef.current = img;
-    
     setCrop({
       unit: 'px',
       x: 0,
@@ -137,88 +136,82 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
 
   const handleClose = () => {
     setTitle('');
-    setCrop({
-      unit: 'px',
-      x: 0,
-      y: 0,
-      width: 10,
-      height: 10
-    });
+    setCrop({ unit: 'px', x: 0, y: 0, width: 10, height: 10 });
     setCompletedCrop(null);
     onClose();
   };
 
-const createCroppedImage = useCallback(() => {
-  if (!completedCrop || !canvasRef.current || !imgRef.current) {
-    return;
-  }
+  const createCroppedImage = useCallback(() => {
+    if (!completedCrop || !canvasRef.current || !imgRef.current) {
+      return;
+    }
+    const ctx = canvasRef.current.getContext('2d');
+    if (!ctx) return;
 
-  const ctx = canvasRef.current.getContext('2d');
-  if (!ctx) return;
+    // 원본 이미지 크기 비율
+    const scaleX = imgRef.current.naturalWidth / imgRef.current.width;
+    const scaleY = imgRef.current.naturalHeight / imgRef.current.height;
 
-  // 원본 이미지의 크기
-  const scaleX = imgRef.current.naturalWidth / imgRef.current.width;
-  const scaleY = imgRef.current.naturalHeight / imgRef.current.height;
+    const cropWidth = completedCrop.width * scaleX;
+    const cropHeight = completedCrop.height * scaleY;
+    const cropX = completedCrop.x * scaleX;
+    const cropY = completedCrop.y * scaleY;
 
-  // 크롭된 이미지의 크기와 위치
-  const cropWidth = completedCrop.width * scaleX;
-  const cropHeight = completedCrop.height * scaleY;
-  const cropX = completedCrop.x * scaleX;
-  const cropY = completedCrop.y * scaleY;
+    canvasRef.current.width = cropWidth;
+    canvasRef.current.height = cropHeight;
 
-  // 캔버스 크기 설정
-  canvasRef.current.width = cropWidth;
-  canvasRef.current.height = cropHeight;
+    ctx.fillStyle = '#FFFFFF'; 
+    ctx.fillRect(0, 0, cropWidth, cropHeight);
 
-  // 배경색 설정
-  ctx.fillStyle = '#FFFFFF'; // 배경을 흰색으로 채움
-  ctx.fillRect(0, 0, cropWidth, cropHeight);
-
-  // 이미지를 크롭된 부분만 캔버스에 그리기
-  ctx.drawImage(
-    imgRef.current,
-    cropX,  // 크롭된 이미지의 시작 x 좌표
-    cropY,  // 크롭된 이미지의 시작 y 좌표
-    cropWidth, // 크롭된 이미지의 넓이
-    cropHeight, // 크롭된 이미지의 높이
-    0, 0,  // 캔버스에 그릴 위치
-    cropWidth,  // 캔버스에 그릴 크기
-    cropHeight  // 캔버스에 그릴 크기
-  );
-}, [completedCrop]);
+    ctx.drawImage(
+      imgRef.current,
+      cropX,
+      cropY,
+      cropWidth,
+      cropHeight,
+      0,
+      0,
+      cropWidth,
+      cropHeight
+    );
+  }, [completedCrop]);
 
   const handleSave = useCallback(async () => {
-  if (!completedCrop) return;
+    if (!completedCrop) return;
+    createCroppedImage();
 
-  createCroppedImage();
+    canvasRef.current.toBlob(
+      async (blob) => {
+        if (!blob) {
+          console.error('Canvas is empty');
+          return;
+        }
 
-  // Canvas에서 이미지를 Blob 형태로 변환
-  canvasRef.current.toBlob(
-    async (blob) => {
-      if (!blob) {
-        console.error('Canvas is empty');
-        return;
-      }
+        const formData = new FormData();
+        formData.append('file', blob, 'cropped-image.png');
 
-      const formData = new FormData();
-      formData.append('file', blob, 'cropped-image.png');
+        try {
+          const response = await api.post(
+            `/api/image?spaceId=${activeSpace?.id}&title=${title}`,
+            formData,
+            { headers: { 'Content-Type': 'multipart/form-data' } }
+          );
 
-      try {
-        const response = await api.post(`/api/image?spaceId=${activeSpace.id}&title=${title}`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+          console.log('Upload successful:', response.data);
 
-        console.log('Upload successful:', response.data);
-        handleClose();
-      } catch (error) {
-        console.error('Error uploading image:', error);
-      }
-    },
-    'image/png', 1
-  );
-}, [completedCrop, createCroppedImage, title, handleClose, activeSpace]);
+          if (onSave) {
+            onSave(response.data); 
+          }
+
+          handleClose();
+        } catch (error) {
+          console.error('Error uploading image:', error);
+        }
+      },
+      'image/png',
+      1
+    );
+  }, [completedCrop, createCroppedImage, title, handleClose, activeSpace, onSave]);
 
   const handleTitleChange = useCallback((e) => {
     const value = e.target.value;

@@ -1,8 +1,8 @@
-// src/pages/home/Home.js
 import React, { useState, useContext } from 'react';
-import HomeDiary from '../home/HomeDiary';
+import HomeDiary from '../../components/home/HomeDiary';
 import EditSidebar from '../../components/home/EditSidebar';
 import Header from '../../components/Header';
+import ImageAddModal from '../../pages/home/ImageAddModal';
 import { HomeContainer, ContentWrapper, EditButton } from '../../styles/home/HomeStyle';
 import { SpaceContext } from '../../context/SpaceContext';
 import { useItemContext } from '../../context/ItemContext';
@@ -11,15 +11,37 @@ const Home = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [draggableImages, setDraggableImages] = useState([]);
   const [diaryData, setDiaryData] = useState({});
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const [newItem, setNewItem] = useState(null);
+
   const { selectedSpace } = useContext(SpaceContext);
   const { selectedItem, setSelectedItem } = useItemContext();
 
   const handleEdit = () => {
     setIsEditOpen(!isEditOpen);
   };
-
   const handleCloseSidebar = () => {
     setIsEditOpen(false);
+  };
+
+  const handleFileSelected = (file) => {
+    setSelectedFile(file);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedFile(null);
+  };
+
+  const handleAddItem = (createdItem) => {
+    console.log('Home.jsx | handleAddItem - 새 아이템:', createdItem);
+    setNewItem(createdItem);
+    setIsModalOpen(false);
+    setSelectedFile(null);
   };
 
   const handleImageDrop = (pageNumber, x, y) => {
@@ -112,6 +134,7 @@ const Home = () => {
   return (
     <>
       <Header iconInside />
+
       <HomeContainer isEditOpen={isEditOpen}>
         <ContentWrapper isEditOpen={isEditOpen}>
           <HomeDiary
@@ -129,10 +152,21 @@ const Home = () => {
             {isEditOpen ? '공간 저장' : '공간 편집'}
           </EditButton>
         </ContentWrapper>
+
         <EditSidebar
           isOpen={isEditOpen}
           onClose={handleCloseSidebar}
           images={draggableImages}
+          onFileSelected={handleFileSelected}
+          newItem={newItem}
+          setNewItem={setNewItem}
+          isModalOpen={isModalOpen}
+        />
+        <ImageAddModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          imageFile={selectedFile}
+          onSave={handleAddItem}
         />
       </HomeContainer>
     </>
