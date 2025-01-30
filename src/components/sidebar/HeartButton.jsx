@@ -52,7 +52,7 @@ const HeartButton = ({ isHeartOpen, toggleHeart }) => {
       console.log("팔로잉 API 응답 데이터:", response.data); // 응답 데이터 확인
       setFollowing(
         (response.data || []).map((following) => ({
-          id: following.uid, // FollowingId를 id로 매핑
+          id: following.followingId, // FollowingId를 id로 매핑
           name: following.name, // name 필드 매핑
         }))
       );
@@ -74,42 +74,56 @@ const HeartButton = ({ isHeartOpen, toggleHeart }) => {
     }
   }, [tab]);
 
+
+
   // 팔로우하기 (팔로워 탭 -> 팔로잉 리스트에 추가)
   const handleFollow = async (id) => {
     try {
-      const response = await api.post(`/api/follow/new/${id}`, {});
+      console.log("팔로우 요청 ID:", id);
+      const response = await api.post(`/api/follow/new/${id}`, {}); 
+      console.log("팔로우 요청 성공:", response.data); 
       const { message } = response.data;
-      alert(message);
-
+      
+      if (message) {
+        alert(message); // 메시지가 존재할 때만 알림창 표시
+      } else {
+        console.log("서버 응답 메시지가 없습니다.");
+      }
       await fetchFollowings();
 
-      const addedUser = followers.find((user) => user.id === id);
+      const addedUser = followers.find((user) => user.id === id); 
       if (addedUser) {
         setAlertInfo({
           isOpen: true,
-          message: `${addedUser.name}님을 팔로우합니다!`, // name 필드 사용
-        });
-      }
-    } catch (error) {
-      console.error("팔로우 요청 실패:", error);
-      alert("팔로우 요청 중 오류가 발생했습니다.");
+          message: `${addedUser.name}님을 팔로우합니다!`, 
+      });
     }
-  };
+  } catch (error) {
+    console.error("팔로우 요청 실패:", error);
+    alert("팔로우 요청 중 오류가 발생했습니다.");
+  }
+};
 
   // 언팔로우하기
   const handleUnfollow = async (id) => {
     try {
-      const response = await api.delete(`/api/follow/undo/${id}`);
+      console.log("언팔로우 요청 ID:", id);
+      const response = await api.delete(`/api/follow/undo/${id}`); 
+      console.log("언팔로우 요청 성공:", response.data); 
       const { message } = response.data;
-      alert(message);
-
+      
+      if (message) {
+        alert(message); // 메시지가 존재할 때만 알림창 표시
+      } else {
+        console.log("서버 응답 메시지가 없습니다.");
+      }
       await fetchFollowings();
-
-      const removedUser = following.find((user) => user.id === id);
+  
+      const removedUser = following.find((user) => user.id === id); 
       if (removedUser) {
         setAlertInfo({
           isOpen: true,
-          message: `${removedUser.name}님을 언팔로우합니다!`, // name 필드 사용
+          message: `${removedUser.name}님을 언팔로우합니다!`, 
         });
       }
     } catch (error) {
@@ -117,7 +131,7 @@ const HeartButton = ({ isHeartOpen, toggleHeart }) => {
       alert("언팔로우 요청 중 오류가 발생했습니다.");
     }
   };
-
+  
   return (
     <>
       {isHeartOpen && !alertInfo.isOpen && (
