@@ -28,9 +28,10 @@ const HeartButton = ({ isHeartOpen, toggleHeart }) => {
     setError(null);
     try {
       const response = await api.get("/api/follow/followers");
+      console.log("팔로워 API 응답 데이터:", response.data); // 응답 데이터 확인
       setFollowers(
-        response.data.followers.map((follower) => ({
-          id: follower.FollowingId, // FollowingId를 id로 매핑
+        (response.data || []).map((follower) => ({
+          id: follower.followingId, // FollowingId를 id로 매핑
           name: follower.name, // name 필드 매핑
         }))
       );
@@ -40,7 +41,7 @@ const HeartButton = ({ isHeartOpen, toggleHeart }) => {
     } finally {
       setLoading(false);
     }
-  };
+  };  
   
   // 팔로잉 데이터 불러오기 (GET /api/follow/followings)
   const fetchFollowings = async () => {
@@ -48,9 +49,10 @@ const HeartButton = ({ isHeartOpen, toggleHeart }) => {
     setError(null);
     try {
       const response = await api.get("/api/follow/followings");
+      console.log("팔로잉 API 응답 데이터:", response.data); // 응답 데이터 확인
       setFollowing(
-        response.data.followings.map((following) => ({
-          id: following.FollowingId, // FollowingId를 id로 매핑
+        (response.data || []).map((following) => ({
+          id: following.uid, // FollowingId를 id로 매핑
           name: following.name, // name 필드 매핑
         }))
       );
@@ -61,6 +63,7 @@ const HeartButton = ({ isHeartOpen, toggleHeart }) => {
       setLoading(false);
     }
   };
+  
 
   // 탭 전환 시 데이터 호출
   useEffect(() => {
