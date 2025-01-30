@@ -1,4 +1,3 @@
-// src/components/home/PageItem.jsx
 import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Moveable from 'react-moveable';
@@ -7,6 +6,7 @@ import { DeleteButton } from '../../styles/home/EditSidebarStyle';
 import { DraggableImage } from '../../styles/home/HomeDiaryStyle';
 import api from '../../api/api';
 import { useItemContext } from '../../context/ItemContext';
+import { debounce } from "lodash";
 
 const PageItem = ({
   image,
@@ -28,21 +28,13 @@ const PageItem = ({
     if (isEditMode) {
       setSelectedItem(image.id);
       onItemSelectChange?.(true);
-     // 🔥 클릭할 때 새로운 offsetX / offsetY 저장
-    const rect = e.currentTarget.getBoundingClientRect();
-    window.draggedImage = {
-      ...window.draggedImage,
-      offsetX: e.clientX - rect.left,
-      offsetY: e.clientY - rect.top,
-    };
-  }
-};
+    }
+  };
 
   const handleDelete = async (e) => {
     e.preventDefault();
     e.stopPropagation();
     try {
-      // 필요 시 API delete 호출
       await api.delete(`/api/page/${image.id}`);
       console.log(`Item ${image.id} deleted successfully`);
       onDelete(image.id);
@@ -54,6 +46,16 @@ const PageItem = ({
       console.error('Error deleting item:', error.message);
     }
   };
+
+  // 🔥 회전 API 호출을 디바운스로 최적화 (500ms 동안 추가 입력 없을 때만 실행)
+  const debouncedRotateUpdate = debounce(async (imageId, newRotation) => {
+    try {
+      await api.put(`/api/page/${imageId}`, { turnover: newRotation });
+      console.log("✅ 회전 업데이트 성공:", newRotation);
+    } catch (error) {
+      console.error("❌ 회전 업데이트 실패:", error);
+    }
+  }, 500);
 
   // Update position
   const handleDrag = ({ target, delta }) => {
@@ -72,12 +74,15 @@ const PageItem = ({
     });
   };
 
-  // Update rotation
+  // 🔥 회전 시 부모 요소에 transform 적용 → 버튼도 함께 회전됨!
   const handleRotate = ({ target, rotate }) => {
-    const newRotation = (image.rotation || 0) + rotate;
-    target.style.transform = `rotate(${newRotation}deg)`;
+    const parent = target.closest(".page-item"); // 부모 요소 찾기
+    if (parent) {
+      parent.style.transform = `rotate(${rotate}deg)`;
+    }
 
-    onUpdate(image.id, { turnover: newRotation });
+    // 🔥 API 호출을 디바운스 적용하여 500ms 후에 실행
+    debouncedRotateUpdate(image.id, rotate);
   };
 
   // Update size
@@ -152,9 +157,9 @@ const PageItem = ({
           keepRatio={false}
           bounds="parent"
           throttleDrag={0}
-          throttleRotate={0}
+          throttleRotate={5} // 🔥 회전 속도를 조절 (5도 단위)
           throttleResize={0}
-          renderDirections={['se', 'sw', 'nw']}
+          renderDirections={["nw", "sw", "se"]} // 필요한 방향의 핸들만 표시
           onDrag={({ target, delta }) => handleDrag({ target, delta })}
           onRotate={({ target, rotate }) => handleRotate({ target, rotate })}
           onResize={({ target, width, height }) => handleResize({ target, width, height })}
@@ -177,30 +182,6 @@ const PageItem = ({
       )}
     </div>
   );
-};
-
-PageItem.propTypes = {
-  image: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    url: PropTypes.string.isRequired,
-    alt: PropTypes.string,
-    position: PropTypes.shape({
-      x: PropTypes.number,
-      y: PropTypes.number,
-    }),
-    rotation: PropTypes.number,
-    style: PropTypes.shape({
-      width: PropTypes.string,
-      height: PropTypes.string,
-    }),
-    isSticker: PropTypes.bool,
-  }).isRequired,
-  onUpdate: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  isEditMode: PropTypes.bool.isRequired,
-  selectedImageId: PropTypes.string,
-  onImageSelect: PropTypes.func,
-  onItemSelectChange: PropTypes.func,
 };
 
 export default PageItem;
