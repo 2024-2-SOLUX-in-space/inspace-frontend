@@ -23,7 +23,7 @@ const CoverSelection = ({ selectedCover, onClose, onSelectCover }) => {
 
   const [currentIndex, setCurrentIndex] = useState(
     selectedCover
-      ? covers.findIndex((cover) => cover.path === selectedCover)
+      ? covers.findIndex((cover) => cover.id === selectedCover)
       : 0
   );
 
