@@ -28,8 +28,15 @@ const PageItem = ({
     if (isEditMode) {
       setSelectedItem(image.id);
       onItemSelectChange?.(true);
-    }
-  };
+     // 🔥 클릭할 때 새로운 offsetX / offsetY 저장
+    const rect = e.currentTarget.getBoundingClientRect();
+    window.draggedImage = {
+      ...window.draggedImage,
+      offsetX: e.clientX - rect.left,
+      offsetY: e.clientY - rect.top,
+    };
+  }
+};
 
   const handleDelete = async (e) => {
     e.preventDefault();
@@ -147,6 +154,7 @@ const PageItem = ({
           throttleDrag={0}
           throttleRotate={0}
           throttleResize={0}
+          renderDirections={['se', 'sw', 'nw']}
           onDrag={({ target, delta }) => handleDrag({ target, delta })}
           onRotate={({ target, rotate }) => handleRotate({ target, rotate })}
           onResize={({ target, width, height }) => handleResize({ target, width, height })}
