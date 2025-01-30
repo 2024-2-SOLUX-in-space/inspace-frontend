@@ -80,6 +80,19 @@ const HeartButton = ({ isHeartOpen, toggleHeart }) => {
   const handleFollow = async (id) => {
     try {
       console.log("팔로우 요청 ID:", id);
+
+      const isAlreadyFollowing = following.some((user) => user.id === id);
+      if (isAlreadyFollowing) {
+        const existingUser = following.find((user) => user.id === id);
+  
+        // 알림창 업데이트: 이미 팔로우 중인 경우
+        setAlertInfo({
+          isOpen: true,
+          message: `${existingUser.name}님은 이미 팔로우 중입니다.`,
+        });
+        return; // 요청 중단
+      }
+
       const response = await api.post(`/api/follow/new/${id}`, {}); 
       console.log("팔로우 요청 성공:", response.data); 
       const { message } = response.data;
