@@ -115,7 +115,7 @@ const handleFlip = (e) => {
         }
       } else {
         // 일반 이미지 => PUT
-        const response = await api.put(`/api/page/${activeSpace.id}`, [newItem]);
+        const response = await api.put(`/api/page?space_id=${activeSpace.id}&pageNum=${pageNumber}`, [newItem]);
         if (response.status === 200) {
           console.log("✅ 일반 아이템 저장 성공:", response.data);
           setPagesData(prev => ({
