@@ -22,13 +22,11 @@ const EditMyPage = () => {
   const { showAlert } = useAlert();
   const { user, setUser } = useUser();
 
-  // 이메일 제외한 정보는 수정 가능
   const [name, setName] = useState(user.name);
   const [email] = useState(user.email); // 읽기 전용
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
 
-  const emailRegex = /^[A-Za-z0-9@._-]+$/;
   const passwordRegex = /^[A-Za-z0-9!@#$%^&*]*$/;
 
   const handleNameChange = (e) => {
@@ -56,7 +54,6 @@ const EditMyPage = () => {
     showAlert('수정을 취소하시겠습니까?', () => navigate('/mypage'), '확인');
   };
 
-  // 저장 버튼 (서버에 PATCH 요청)
   const handleSave = async () => {
     if (!name.trim()) {
       showAlert('닉네임을 입력해주세요.');
@@ -79,29 +76,25 @@ const EditMyPage = () => {
       return;
     }
 
-    // 서버에 PATCH 요청
-    // setUser({
-    //   ...user,
-    //   name,
-    // });
-
     try {
+      const token = localStorage.getItem('access_token');
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
       const data = {
         name: name,
         email: email,
         password: password,
         passwordConfirmation: passwordConfirmation,
       };
-      console.log('전송할 data:', data);
 
-      const response = await api.patch('/api/user-info', data);
-
+      const response = await api.patch('/api/user-info', data, config);
       if (response.data.success) {
         setUser({
           ...user,
           name,
-          password,
-          passwordConfirmation,
         });
         showAlert(
           '프로필 수정이 완료되었습니다!',
@@ -117,7 +110,6 @@ const EditMyPage = () => {
     }
   };
 
-  // 이름, 비밀번호, 비밀번호 확인 모두 입력해야 저장 가능
   const isSaveDisabled =
     !name.trim() || !password.trim() || !passwordConfirmation.trim();
 
