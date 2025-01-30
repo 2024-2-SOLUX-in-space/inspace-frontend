@@ -39,7 +39,7 @@ const CoverSelection = ({ selectedCover, onClose, onSelectCover }) => {
   // "선택" 버튼 클릭 핸들러
   const handleConfirm = () => {
     const selectedCover = covers[currentIndex];
-    onSelectCover(selectedCover.id); // 숫자 ID 반환
+    onSelectCover(selectedCover.id); 
     console.log("선택된 커버 ID:", selectedCover.id);
   };
 

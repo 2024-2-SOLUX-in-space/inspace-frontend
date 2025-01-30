@@ -36,7 +36,6 @@ const PublicSelection = ({ visibility, setVisibility, onConfirm, onBack, onCance
             isSelected={visibility === true}
             onClick={() => {
               setVisibility(true);
-              console.log("Visibility 설정:", true); // 디버깅 코드
             }}
           >
             <FiBookOpen size={25} />

@@ -45,16 +45,11 @@ const AddButton = ({ isAddButtonOpen, toggleAddButton }) => {
       createdAt: new Date().toISOString(), 
     };
 
-// 🛠 상태 확인 로그 추가
-console.log("API 호출 직전 전송 데이터:", JSON.stringify(requestData, null, 2));
-console.log("현재 stumb 값:", sthumb);
+    if (!sname || sthumb === null || typeof sthumb !== "number") {
+      alert("유효한 썸네일 ID와 공간 이름을 입력해주세요!");
+      return;
+    }
 
-  if (!sname || sthumb === null || typeof sthumb !== "number") {
-    alert("유효한 썸네일 ID와 공간 이름을 입력해주세요!");
-    return;
-  }
-
-    // **백엔드 연동** 공간 생성 요청
     setIsLoading(true);
     try {
       const response = await api.post(
@@ -66,13 +61,10 @@ console.log("현재 stumb 값:", sthumb);
           },
         }
       );
-      console.log("공간 생성 성공:", response.data);
       setCurrentStep(5);
     } catch (error) {
-      console.error("공간 생성 실패:", error);
 
       if (error.response) {
-        console.error("서버 응답:", error.response.data);
         alert(error.response.data.message || "공간 생성에 실패했습니다. 다시 시도해주세요.");
       } else {
         alert("공간 생성에 실패했어요. 다시 시도해주세요.");
@@ -90,13 +82,11 @@ console.log("현재 stumb 값:", sthumb);
             <CoverSelection
               selectedCover={sthumb}
               onSelectCover={(cover) => {
-                console.log("선택된 커버 ID:", cover); // ✅ 선택 값 확인
                 if (typeof cover === "number" && cover >= 0) {
-                  setSthumb(cover); // ✅ 상태 업데이트
-                  console.log("설정된 썸네일 ID:", cover); // ✅ 상태 확인
-                  handleNextStep(2); // 다음 단계로 이동
+                  setSthumb(cover); 
+                  handleNextStep(2); 
                 } else {
-                  alert("유효한 썸네일을 선택해주세요!"); // 잘못된 경우 경고
+                  alert("유효한 썸네일을 선택해주세요!"); 
                 }
               }}          
               onClose={toggleAddButton}
