@@ -1,4 +1,4 @@
-// src/components/home/PageItem.js
+// src/components/home/PageItem.jsx
 import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Moveable from 'react-moveable';
@@ -8,7 +8,14 @@ import { DraggableImage } from '../../styles/home/HomeDiaryStyle';
 import api from '../../api/api';
 import { useItemContext } from '../../context/ItemContext';
 
-const PageItem = ({ image, onUpdate, onDelete, isEditMode, pagePair }) => {
+const PageItem = ({
+  image,
+  onUpdate,
+  onDelete,
+  isEditMode,
+  selectedImageId,
+  onItemSelectChange,
+}) => {
   const { selectedItem, setSelectedItem } = useItemContext();
   const imageRef = useRef(null);
   const moveableRef = useRef(null);
@@ -20,18 +27,19 @@ const PageItem = ({ image, onUpdate, onDelete, isEditMode, pagePair }) => {
     e.stopPropagation();
     if (isEditMode) {
       setSelectedItem(image.id);
+      onItemSelectChange?.(true);
     }
   };
 
-  // Handle deleting this item
   const handleDelete = async (e) => {
     e.preventDefault();
     e.stopPropagation();
     try {
+      // 필요 시 API delete 호출
       await api.delete(`/api/page/${image.id}`);
       console.log(`Item ${image.id} deleted successfully`);
       onDelete(image.id);
-      // If the deleted item was selected, clear the selection
+
       if (isSelected) {
         setSelectedItem(null);
       }
@@ -40,7 +48,7 @@ const PageItem = ({ image, onUpdate, onDelete, isEditMode, pagePair }) => {
     }
   };
 
-  // Update the image position
+  // Update position
   const handleDrag = ({ target, delta }) => {
     const currentLeft = parseFloat(target.style.left) || 0;
     const currentTop = parseFloat(target.style.top) || 0;
@@ -52,34 +60,31 @@ const PageItem = ({ image, onUpdate, onDelete, isEditMode, pagePair }) => {
     target.style.top = `${newTop}px`;
 
     onUpdate(image.id, {
-      position: { x: newLeft, y: newTop },
+      positionX: newLeft,
+      positionY: newTop,
     });
   };
 
-  // Update the image rotation
+  // Update rotation
   const handleRotate = ({ target, rotate }) => {
     const newRotation = (image.rotation || 0) + rotate;
     target.style.transform = `rotate(${newRotation}deg)`;
 
-    onUpdate(image.id, {
-      rotation: newRotation,
-    });
+    onUpdate(image.id, { turnover: newRotation });
   };
 
-  // Update the image size
+  // Update size
   const handleResize = ({ target, width, height }) => {
     target.style.width = `${width}px`;
     target.style.height = `${height}px`;
 
     onUpdate(image.id, {
-      style: {
-        width: `${width}px`,
-        height: `${height}px`,
-      },
+      width: width,
+      height: height,
     });
   };
 
-  // Click outside to deselect
+  // Click outside -> deselect
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (
@@ -89,12 +94,12 @@ const PageItem = ({ image, onUpdate, onDelete, isEditMode, pagePair }) => {
         !moveableRef.current.contains(e.target)
       ) {
         setSelectedItem(null);
+        onItemSelectChange?.(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [setSelectedItem]);
+  }, [setSelectedItem, onItemSelectChange]);
 
   return (
     <div
@@ -115,7 +120,6 @@ const PageItem = ({ image, onUpdate, onDelete, isEditMode, pagePair }) => {
     >
       <DraggableImage
         ref={imageRef}
-        className={`moveable-image image-${image.id}`}
         src={image.url}
         alt={image.alt}
         style={{
@@ -125,7 +129,7 @@ const PageItem = ({ image, onUpdate, onDelete, isEditMode, pagePair }) => {
           transform: 'none',
           userSelect: 'none',
         }}
-        draggable={false} // Disable native drag
+        draggable={false}
       />
 
       {isSelected && isEditMode && (
@@ -143,21 +147,14 @@ const PageItem = ({ image, onUpdate, onDelete, isEditMode, pagePair }) => {
           throttleDrag={0}
           throttleRotate={0}
           throttleResize={0}
-          onDrag={({ target, delta }) => {
-            handleDrag({ target, delta });
-          }}
-          onRotate={({ target, rotate }) => {
-            handleRotate({ target, rotate });
-          }}
-          onResize={({ target, width, height }) => {
-            handleResize({ target, width, height });
-          }}
+          onDrag={({ target, delta }) => handleDrag({ target, delta })}
+          onRotate={({ target, rotate }) => handleRotate({ target, rotate })}
+          onResize={({ target, width, height }) => handleResize({ target, width, height })}
         />
       )}
 
       {isSelected && isEditMode && (
         <DeleteButton
-          className={`delete-button-${image.id}`}
           onClick={handleDelete}
           style={{
             position: 'absolute',
@@ -193,8 +190,9 @@ PageItem.propTypes = {
   onUpdate: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   isEditMode: PropTypes.bool.isRequired,
-  pagePair: PropTypes.array.isRequired,
-  onSelectChange: PropTypes.func, // This prop can be removed if not needed
+  selectedImageId: PropTypes.string,
+  onImageSelect: PropTypes.func,
+  onItemSelectChange: PropTypes.func,
 };
 
 export default PageItem;
