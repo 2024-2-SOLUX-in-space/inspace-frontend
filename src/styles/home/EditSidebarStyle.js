@@ -9,11 +9,10 @@ export const SidebarContainer = styled.div`
   background-color: white;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
   transform: translateX(${(props) => (props.isOpen ? '0' : '100%')});
-  transition: transform 0.3s ease-in-out;
-  visibility: ${(props) => (props.isOpen ? 'visible' : 'hidden')};
   transition:
     transform 0.3s ease-in-out,
     visibility 0.3s ease-in-out;
+  visibility: ${(props) => (props.isOpen ? 'visible' : 'hidden')};
 `;
 
 export const SidebarContent = styled.div`
@@ -40,35 +39,34 @@ export const DraggableItem = styled.div`
   justify-content: center;
   align-items: center;
   padding: 5px;
+  position: relative;
 `;
 
 export const StyledImage = styled.img`
-  width: ${(props) => {
-    if (props.isSticker) return '150px';
-    return props.width ? `${props.width}px` : 'auto';
-  }};
-  height: ${(props) => {
-    if (props.isSticker) return '150px';
-    return props.height ? `${props.height}px` : 'auto';
-  }};
+  width: 150px;
+  height: 150px;
   object-fit: contain;
   max-width: 100%;
   cursor: pointer;
 `;
 
 export const IconContainer = styled.div`
+  position: absolute;
+  bottom: 0;
   display: flex;
   justify-content: space-around;
   align-items: center;
   border-top: 1px solid #eee;
   padding: 20px 10px;
   overflow-x: hidden;
+
   div {
     display: flex;
     align-items: center;
     justify-content: center;
     transition: background-color 0.2s ease-in-out;
     color: #000000;
+
     &:hover {
       background-color: #ececec;
       border-radius: 5px;
@@ -97,6 +95,9 @@ export const AddButtonContainer = styled.div`
   padding: 10px 20px;
   margin-top: auto;
   margin-bottom: 20px;
+  position: absolute;
+  bottom: 65px;
+  right: 10px;
 `;
 
 export const AddButton = styled.button`
@@ -123,8 +124,8 @@ export const AddButton = styled.button`
 
 export const DeleteButton = styled.button`
   position: absolute;
-  top: -10px;
-  right: -10px;
+  top: 5px;
+  right: 5px;
   width: 24px;
   height: 24px;
   border-radius: 50%;
