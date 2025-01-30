@@ -57,6 +57,7 @@ export const IconContainer = styled.div`
   justify-content: space-around;
   align-items: center;
   border-top: 1px solid #eee;
+  background-color: white;
   padding: 20px 10px;
   overflow-x: hidden;
 
