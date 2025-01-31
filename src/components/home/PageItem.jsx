@@ -1,10 +1,11 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import Moveable from 'react-moveable';
 import { FiX } from 'react-icons/fi';
 import { DeleteButton } from '../../styles/home/EditSidebarStyle';
 import { DraggableImage } from '../../styles/home/HomeDiaryStyle';
 import api from '../../api/api';
+import { SpaceContext } from '../../context/SpaceContext';
 import { useItemContext } from '../../context/ItemContext';
 import { debounce } from "lodash";
 
@@ -15,7 +16,9 @@ const PageItem = ({
   onDelete,
   isEditMode,
   onItemSelectChange,
+  onDeselect,
 }) => {
+  const { activeSpace } = useContext(SpaceContext);
   const { selectedItem, setSelectedItem } = useItemContext();
   const imageRef = useRef(null);
   const moveableRef = useRef(null);
@@ -96,22 +99,50 @@ const PageItem = ({
     });
   };
 
+  const handleImageUpdate = async (imageId, updates) => {
+    try {
+      const response = await api.put(`/api/page?space_id=${activeSpace.id}&pageNum=${pageNum}`, [updates]);
+      
+      if (response.status === 200) {
+        console.log("✅ 이미지 업데이트 성공", response.data);
+        onUpdate(imageId, response.data);
+      }
+    } catch (error) {
+      console.error("❌ 이미지 업데이트 실패", error);
+    }
+  };
+
   // Click outside -> deselect
   useEffect(() => {
     const handleClickOutside = (e) => {
+      console.log("클릭 감지됨");
       if (
         imageRef.current &&
-        !imageRef.current.contains(e.target) &&
-        moveableRef.current &&
-        !moveableRef.current.contains(e.target)
+        !imageRef.current.contains(e.target)
       ) {
+        console.log("아이템 외부 클릭 감지됨");
+        const updates = {
+          itemId: image.id,
+          title: image.title || "No Title",
+          imageUrl: image.imageUrl || "No URL",
+          contentsUrl: image.contentsUrl || "No URL",
+          ctype: image.ctype,
+          positionX: parseFloat(imageRef.current.style.left) || image.position.x,
+          positionY: parseFloat(imageRef.current.style.top) || image.position.y,
+          height: parseFloat(imageRef.current.style.height) || parseFloat(image.style.height),
+          width: parseFloat(imageRef.current.style.width) || parseFloat(image.style.width),
+          turnover: parseFloat(imageRef.current.style.transform.replace(/[^0-9\-.,]/g, '')) || image.rotation,
+          sequence: 0,
+          sticker: image.sticker,
+        };
+        handleImageUpdate(image.id, updates);
         setSelectedItem(null);
         onItemSelectChange?.(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [setSelectedItem, onItemSelectChange]);
+  }, [setSelectedItem, onItemSelectChange, image]);
 
   return (
     <div
@@ -157,9 +188,9 @@ const PageItem = ({
           keepRatio={false}
           bounds="parent"
           throttleDrag={0}
-          throttleRotate={5} // 🔥 회전 속도를 조절 (5도 단위)
+          throttleRotate={5}
           throttleResize={0}
-          renderDirections={["nw", "sw", "se"]} // 필요한 방향의 핸들만 표시
+          renderDirections={["nw", "sw", "se"]}
           onDrag={({ target, delta }) => handleDrag({ target, delta })}
           onRotate={({ target, rotate }) => handleRotate({ target, rotate })}
           onResize={({ target, width, height }) => handleResize({ target, width, height })}
