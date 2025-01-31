@@ -42,25 +42,18 @@ const Page = forwardRef((props, ref) => {
     console.log("🚀 드롭한 아이템:", newItem);
 
     try {
-      if (newItem.ctype === "sticker") {
-        const response = await api.post(`/api/page/sticker?space_id=${activeSpace.id}&pageNum=${props.number}`, [newItem]);
-        if (response.status === 200) {
-          console.log("✅ 스티커 저장 성공:", response.data);
-        }
-      } else {
-        const response = await api.put(`/api/page?space_id=${activeSpace.id}&pageNum=${props.number}`, [newItem]);
-        if (response.status === 200) {
-          console.log("✅ 일반 아이템 저장 성공:2222", response.data);
-        }
+      const endpoint = newItem.ctype === "sticker" ? "/api/page/sticker" : "/api/page";
+      const method = newItem.ctype === "sticker" ? api.post : api.put;
+      const response = await method(`${endpoint}?space_id=${activeSpace.id}&pageNum=${props.number}`, [newItem]);
+      if (response.status === 200) {
+        console.log(`✅ ${newItem.ctype} 저장 성공`, response.data);
       }
     } catch (error) {
-      console.error("❌ 아이템 저장 실패:22222", error);
+      console.error("❌ 아이템 저장 실패", error);
     }
   };
 
-  // 서버에서 받은 item => PageItem이 요구하는 형태로 변환
   const transformItemToPageItem = (item) => {
-    console.log("불러온 아이템 정보:", item); // 아이템 정보 출력
 
     return {
       id: item.itemId,
@@ -77,7 +70,7 @@ const Page = forwardRef((props, ref) => {
         height: item.height ? `${item.height}px` : '100px',
       },
       turnover: item.turnover,
-      sequence: 1,
+      sequence: item.sequence || 0,
       sticker: item.sticker,
       rotation: item.turnover || 0,
       isSticker: !!item.sticker,
@@ -101,7 +94,7 @@ const Page = forwardRef((props, ref) => {
       height: item.height || 100,
       turnover: item.turnover || 0,
       sequence: 1,
-      sticker: item.ctype === 'sticker' ? sticker : null,
+      sticker: item.ctype === 'sticker' ? item : null,
     };
   };
 
@@ -109,7 +102,7 @@ const Page = forwardRef((props, ref) => {
     <div className="page" ref={ref}>
       <PageContent className="page-content">
         <PageNumber>{props.number}</PageNumber>
-        <DiaryContent onDragOver={handleDragOver} onDrop={(e) => handleDrop(e)}>
+        <DiaryContent onDragOver={handleDragOver} onDrop={handleDrop}>
           {(props.images || []).map((item) => {
             const transformed = transformItemToPageItem(item);
             return (
@@ -125,7 +118,7 @@ const Page = forwardRef((props, ref) => {
                 onItemSelectChange={props.onItemSelectChange}
                 handleDragStart={handleDragStart}
                 handleDragOver={handleDragOver}
-                handleDrop={(e) => handleDrop(e)}
+                handleDrop={handleDrop}
               />
             );
           })}
