@@ -226,54 +226,58 @@ const Header = () => {
 
   // SSE 연결, 실시간
   useEffect(() => {
-    if (!token) {
-      console.error('No access token found');
-      return;
-    }
-
+    let eventSource;
+  
     const connectSSE = () => {
-      const eventSource = new EventSourcePolyfill(
+      eventSource = new EventSourcePolyfill(
         `http://3.35.10.158:8080/api/notifications/stream`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          heartbeatTimeout: 60000, // 서버 heartbeat 없는 경우 60초 대기
+          heartbeatTimeout: 60000, 
         }
       );
-
-      // 실시간 데이터 수신
+  
+      // SSE 메시지 수신
       eventSource.onmessage = (event) => {
         try {
           const newNotification = JSON.parse(event.data);
-          setNotifications((prev) => [newNotification, ...prev].slice(0, 10)); // 새로운 알림 추가
+          setNotifications((prev) => [newNotification, ...prev].slice(0, 10));
+          console.log('Received notification:', newNotification);
         } catch (e) {
           console.error('Failed to parse notification:', e);
         }
       };
-      
-      // 오류 처리 및 연결 종료
+  
+      // SSE 연결 성공
+      eventSource.onopen = () => {
+        console.log('SSE connection established.');
+      };
+      // SSE 오류 처리
       eventSource.onerror = (error) => {
         console.error('SSE connection error:', error);
-        eventSource.close();
-
-        // 5초 후 재연결
-        setTimeout(() => {
-          console.log('Reconnecting to SSE...');
-          connectSSE();
-        }, 5000);
+  
+        if (eventSource.readyState === EventSource.CLOSED) {
+          console.log('SSE connection closed. Reconnecting...');
+          setTimeout(connectSSE, 5000); // 5초 후 재연결
+        } else {
+          eventSource.close();
+        }
       };
-
-      return eventSource;
     };
-
-    fetchNotifications(); // 컴포넌트 마운트 시 초기 알림 데이터 가져오기
-    const eventSource = connectSSE();
-
-    return () => {
-      eventSource.close(); // 컴포넌트 언마운트 시 연결 종료
+  
+    fetchNotifications(); // 초기 알림 데이터
+    connectSSE(); // SSE 연결 시작
+  
+    return () => { // 컴포넌트 언마운트 시 정리
+      if (eventSource) {
+        eventSource.close();
+        console.log('SSE connection closed.');
+      }
     };
   }, [token]);
+  
 
   
 
@@ -340,6 +344,7 @@ const Header = () => {
               {notifications.length > 0 ? (
                 notifications.map((notification) => (
                   <Notification
+                    key={notification.notification_id}
                     notification_id={notification.notification_id} 
                     message={notification.message} 
                   />
