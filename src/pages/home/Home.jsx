@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, Suspense } from 'react';
 import HomeDiary from '../../components/home/HomeDiary';
 import EditSidebar from '../../components/home/EditSidebar';
 import Header from '../../components/Header';
@@ -137,17 +137,19 @@ const Home = () => {
 
       <HomeContainer isEditOpen={isEditOpen}>
         <ContentWrapper isEditOpen={isEditOpen}>
-          <HomeDiary
-            diaryData={diaryData}
-            onImageDrop={handleImageDrop}
-            onImageResize={handleImageResize}
-            onImageMove={handleImageMove}
-            isEditMode={isEditOpen}
+          <Suspense fallback={<div>Loading...</div>}>
+            <HomeDiary
+              diaryData={diaryData}
+              onImageDrop={handleImageDrop}
+              onImageResize={handleImageResize}
+              onImageMove={handleImageMove}
+              isEditMode={isEditOpen}
             selectedImageId={selectedItem}
             onImageSelect={handleImageSelect}
             onImageRotate={handleImageRotate}
             spaceId={selectedSpace?.id}
-          />
+            />
+          </Suspense>
           <EditButton onClick={handleEdit}>
             {isEditOpen ? '공간 저장' : '공간 편집'}
           </EditButton>
