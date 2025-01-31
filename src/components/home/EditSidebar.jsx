@@ -131,7 +131,7 @@ const EditSidebar = ({
       title: item.title || item.alt || "No Title",
       imageUrl: item.src || item.imageUrl || "No URL",
       contentsUrl: item.src || item.contentsUrl || "No URL",
-      ctype: selectedIcon, // 선택한 아이콘에 따라 ctype 설정
+      ctype: selectedIcon === 'file' ? 'image' : selectedIcon, // 선택한 아이콘에 따라 ctype 설정
       positionX: offsetX,
       positionY: offsetY,
       width: item.width || 100,
