@@ -137,6 +137,7 @@ const HomeDiary = ({
               selectedImageId={selectedImageId}
               onImageSelect={onImageSelect}
               onItemSelectChange={setIsItemSelected}
+              onPageUpdate={fetchPageData}
             />
           ))}
           <PageCover position="bottom" coverType={activeSpace.coverType} /> 

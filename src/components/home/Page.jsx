@@ -47,6 +47,7 @@ const Page = forwardRef((props, ref) => {
       const response = await method(`${endpoint}?space_id=${activeSpace.id}&pageNum=${props.number}`, [newItem]);
       if (response.status === 200) {
         console.log(`✅ ${newItem.ctype} 저장 성공`, response.data);
+        props.onPageUpdate(props.number);
       }
     } catch (error) {
       console.error("❌ 아이템 저장 실패", error);
