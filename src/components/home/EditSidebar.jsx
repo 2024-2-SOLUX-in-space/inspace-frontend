@@ -19,15 +19,13 @@ import { useItemContext } from '../../context/ItemContext';
 
 const EditSidebar = ({
   isOpen,
-  onClose,
-  images,
   onFileSelected,
-  isModalOpen, 
+  onDragStart,
+  selectedIcon,
+  setSelectedIcon
 }) => {
   const { activeSpace } = useContext(SpaceContext);
   const { setSelectedItem } = useItemContext();
-
-  const [selectedIcon, setSelectedIcon] = useState('image');
 
   const [categoryData, setCategoryData] = useState({
     image: [],
@@ -42,7 +40,7 @@ const EditSidebar = ({
   const fileInputRef = useRef(null);
 
   useEffect(() => {
-    if (!activeSpace || !activeSpace.id) {
+    if (!activeSpace || !activeSpace.id || selectedIcon === 'sticker') {
       resetCategoryData();
       return;
     }
@@ -130,14 +128,22 @@ const EditSidebar = ({
 
     window.draggedImage = {
       id: item.id,
-      src: item.src || item.imageUrl,
-      alt: item.alt || item.title,
-      color: item.color || "default",
-      width: 100,
-      height: 100,
-      offsetX,
-      offsetY,
-      type: selectedIcon.toUpperCase()
+      title: item.title || item.alt || "No Title",
+      imageUrl: item.src || item.imageUrl || "No URL",
+      contentsUrl: item.src || item.contentsUrl || "No URL",
+      ctype: selectedIcon, // 선택한 아이콘에 따라 ctype 설정
+      positionX: offsetX,
+      positionY: offsetY,
+      width: item.width || 100,
+      height: item.height || 100,
+      turnover: item.turnover || 0,
+      sequence: 1,
+      sticker: selectedIcon === 'sticker' ? {
+        title: item.id,
+        src: item.src,
+        alt: item.alt,
+        color: item.color
+      } : null,
     };
   };
 
@@ -169,7 +175,6 @@ const EditSidebar = ({
                       draggable="true"
                       onDragStart={handleDragStart(item)}
                     />
-                    {/* 이미지 & DeleteButton 같이 표시 */}
                     <DeleteButton onClick={() => handleDeleteItem(item.id)}>
                       <FiX />
                     </DeleteButton>

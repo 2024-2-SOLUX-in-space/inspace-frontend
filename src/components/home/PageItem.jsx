@@ -10,10 +10,10 @@ import { debounce } from "lodash";
 
 const PageItem = ({
   image,
+  pageNum,
   onUpdate,
   onDelete,
   isEditMode,
-  selectedImageId,
   onItemSelectChange,
 }) => {
   const { selectedItem, setSelectedItem } = useItemContext();
@@ -50,7 +50,7 @@ const PageItem = ({
   // 🔥 회전 API 호출을 디바운스로 최적화 (500ms 동안 추가 입력 없을 때만 실행)
   const debouncedRotateUpdate = debounce(async (imageId, newRotation) => {
     try {
-      await api.put(`/api/page/${imageId}`, { turnover: newRotation });
+      await api.put(`/api/page?space_id=${activeSpace.id}&pageNum=${pageNum}`, { turnover: newRotation, });
       console.log("✅ 회전 업데이트 성공:", newRotation);
     } catch (error) {
       console.error("❌ 회전 업데이트 실패:", error);

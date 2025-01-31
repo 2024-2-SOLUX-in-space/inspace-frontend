@@ -12,6 +12,7 @@ const HomeDiary = ({
   isEditMode,
   selectedImageId,
   onImageSelect,
+  selectedIcon
 }) => {
   const flipBook = useRef();
   const [pagesData, setPagesData] = useState({});
@@ -23,9 +24,7 @@ const HomeDiary = ({
   // 1) 서버에서 페이지 데이터를 가져옴
   const fetchPageData = async (pageNum) => {
     try {
-      const response = await api.get(`/api/page`, {
-        params: { space_id: activeSpace?.id, pageNum }
-      });
+      const response = await api.get(`/api/page?space_id=${activeSpace?.id}&pageNum=${pageNum}`);
 
       const items = Array.isArray(response.data) ? response.data : [];
 
@@ -56,79 +55,66 @@ const HomeDiary = ({
   }, [activeSpace]);
 
   // 3) pageNumber에 해당하는 데이터 불러오기
-const getImagesForPage = (pageNumber) => {
-  // spreadNum 제거
-  return pagesData[pageNumber] || [];
-};
+  const getImagesForPage = (pageNum) => {
+    // spreadNum 제거
+    return pagesData[pageNum] || [];
+  };
 
-const handleFlip = (e) => {
-  const currentPage = e.data; 
+  const handleFlip = (e) => {
+    const currentPage = e.data; 
 
-  if (!pagesData[currentPage]) {
-    fetchPageData(currentPage);
-  }
-};
+    if (!pagesData[currentPage]) {
+      fetchPageData(currentPage);
+    }
+  };
 
-  const handleImageDrop = async (pageNumber, x, y) => {
-    const draggedImage = window.draggedImage;
-    if (!draggedImage) return;
+  const handleDrop = async (e) => {
+    if (e.preventDefault) e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+    const rect = e.currentTarget.getBoundingClientRect();
+
+    if (!window.draggedImage) return; 
+
+    const x = e.clientX - rect.left - (window.draggedImage.positionX || 0);
+    const y = e.clientY - rect.top - (window.draggedImage.positionY || 0);
 
     const newItem = {
-      itemId: draggedImage.id,
-      title: draggedImage.alt,
-      imageUrl: draggedImage.src,
-      contentsUrl: draggedImage.src,
-      ctype: "image", 
+      itemId: window.draggedImage.id,
+      title: window.draggedImage.title || "No Title",
+      imageUrl: window.draggedImage.imageUrl || "No URL",
+      contentsUrl: window.draggedImage.contentsUrl || "No URL",
+      ctype: window.draggedImage.ctype,
       positionX: x,
       positionY: y,
-      height: draggedImage.height || 100,
-      width: draggedImage.width || 100,
+      height: window.draggedImage.height || 100,
+      width: window.draggedImage.width || 100,
       turnover: 0,
-      sequence: pageNumber,
-      sticker: draggedImage.type === "STICKER"
-        ? {
-            title: draggedImage.alt,
-            src: draggedImage.src,
-            alt: draggedImage.alt,
-            color: draggedImage.color || "default",
-          }
-        : null,
+      sequence: 0,
+      sticker: window.draggedImage.ctype === "sticker" ? {
+        title: window.draggedImage.id,
+        src: window.draggedImage.src, 
+        alt: window.draggedImage.alt,
+        color: window.draggedImage.color
+      } : null
     };
 
     console.log("🚀 드롭한 아이템:", newItem);
 
     try {
-      // 스티커 vs 일반아이템 구분
-      if (draggedImage.type === "STICKER") {
-        // 스티커 => POST
-        const response = await api.post(
-          `/api/page/sticker?spaceId=${activeSpace.id}&pageNum=${pageNumber}`,
-          [newItem]
-        );
+      if (newItem.ctype === "sticker") {
+        const response = await api.post(`/api/page/sticker?space_id=${activeSpace.id}&pageNum=${pageNum}`, newItem);
         if (response.status === 200) {
           console.log("✅ 스티커 저장 성공:", response.data);
-          // pagesData에 즉시 반영
-          setPagesData(prev => ({
-            ...prev,
-            [pageNumber]: [...(prev[pageNumber] || []), newItem],
-          }));
         }
       } else {
-        // 일반 이미지 => PUT
-        const response = await api.put(`/api/page?space_id=${activeSpace.id}&pageNum=${pageNumber}`, [newItem]);
+        const response = await api.put(`/api/page?space_id=${activeSpace.id}&pageNum=${pageNum}`, newItem);
         if (response.status === 200) {
-          console.log("✅ 일반 아이템 저장 성공:", response.data);
-          setPagesData(prev => ({
-            ...prev,
-            [pageNumber]: [...(prev[pageNumber] || []), newItem],
-          }));
+          console.log("✅ 일반 아이템 저장 성공:1111", response.data);
         }
       }
     } catch (error) {
-      console.error("❌ Error saving item:", error);
+      console.error("❌ 아이템 저장 실패:111", error);
     }
-
-    window.draggedImage = null;
   };
 
   // 5) 이미지(아이템) 삭제 시
@@ -159,6 +145,32 @@ const handleFlip = (e) => {
       });
       return updated;
     });
+  };
+
+  const handleDragStart = (item) => (e) => {
+    const rect = e.target.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const offsetY = e.clientY - rect.top;
+
+    window.draggedImage = {
+      id: item.id,
+      title: item.title || item.alt || "No Title",
+      imageUrl: item.src || item.imageUrl || "No URL",
+      contentsUrl: item.src || item.contentsUrl || "No URL",
+      ctype: selectedIcon, // 선택한 아이콘에 따라 ctype 설정
+      positionX: offsetX,
+      positionY: offsetY,
+      width: item.width || 100,
+      height: item.height || 100,
+      turnover: item.turnover || 0,
+      sequence: 1,
+      sticker: selectedIcon === 'sticker' ? {
+        title: item.id,
+        src: item.src,
+        alt: item.alt,
+        color: item.color
+      } : null,
+    };
   };
 
   // 공간 선택이 안 된 경우
@@ -206,6 +218,7 @@ const handleFlip = (e) => {
           swipeDistance={isItemSelected ? 0 : 30}
           cornerCursor={isItemSelected ? 'default' : 'pointer'}
           onFlip={handleFlip}
+          onDrop={handleDrop}
         >
           <PageCover position="top" coverType={activeSpace.coverType} title={activeSpace.title} />
           {[...Array(10)].map((_, i) => (
@@ -213,7 +226,7 @@ const handleFlip = (e) => {
               key={i + 1}
               number={i + 1}
               images={getImagesForPage(i + 1)}
-              onImageDrop={handleImageDrop}
+              onImageDrop={handleDrop}
               onDeleteImage={handleDeleteImage}
               onImageUpdate={handleImageUpdate}
               isEditMode={isEditMode}

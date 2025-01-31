@@ -11,6 +11,7 @@ const Home = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [draggableImages, setDraggableImages] = useState([]);
   const [diaryData, setDiaryData] = useState({});
+  const [selectedIcon, setSelectedIcon] = useState('image');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -44,27 +45,38 @@ const Home = () => {
     setSelectedFile(null);
   };
 
-  const handleImageDrop = (pageNumber, x, y) => {
+  const handleImageDrop = async (pageNum, x, y) => {
+    console.log("🚀 이미지 드롭 호출:", pageNum, x, y);
     const draggedImage = window.draggedImage;
     if (!draggedImage) return;
 
-    const newImage = {
-      id: `${draggedImage.id}-${Date.now()}`,
-      url: draggedImage.src,
-      alt: draggedImage.alt,
-      pageNumber: pageNumber,
-      width: draggedImage.width,
-      height: draggedImage.height,
-      position: { x, y },
-      style: {
-        width: draggedImage.width ? `${draggedImage.width}px` : 'auto',
-        height: draggedImage.height ? `${draggedImage.height}px` : 'auto',
-      },
+    console.log("🚀 드래그된 이미지:", draggedImage);
+
+    const newItem = {
+      itemId: draggedImage.id,
+      title: draggedImage.title || "No Title",
+      imageUrl: draggedImage.src || "No URL",
+      contentsUrl: draggedImage.src || "No URL",
+      ctype: draggedImage.ctype,
+      positionX: x,
+      positionY: y,
+      height: draggedImage.height || 100,
+      width: draggedImage.width || 100,
+      turnover: 0,
+      sequence: 0,
+      sticker: draggedImage.ctype === "sticker" ? {
+        title: draggedImage.id,
+        src: draggedImage.src, 
+        alt: draggedImage.alt,
+        color: draggedImage.color
+      } : null
     };
+
+    console.log("🚀 드롭한 아이템:", newItem);
 
     setDiaryData(prev => ({
       ...prev,
-      [pageNumber]: [...(prev[pageNumber] || []), newImage],
+      [pageNum]: [...(prev[pageNum] || []), newItem],
     }));
 
     setDraggableImages(prev =>
@@ -144,10 +156,11 @@ const Home = () => {
               onImageResize={handleImageResize}
               onImageMove={handleImageMove}
               isEditMode={isEditOpen}
-            selectedImageId={selectedItem}
-            onImageSelect={handleImageSelect}
-            onImageRotate={handleImageRotate}
-            spaceId={selectedSpace?.id}
+              selectedImageId={selectedItem}
+              onImageSelect={handleImageSelect}
+              onImageRotate={handleImageRotate}
+              spaceId={selectedSpace?.id}
+              selectedIcon={selectedIcon}
             />
           </Suspense>
           <EditButton onClick={handleEdit}>
@@ -163,6 +176,8 @@ const Home = () => {
           newItem={newItem}
           setNewItem={setNewItem}
           isModalOpen={isModalOpen}
+          selectedIcon={selectedIcon}
+          setSelectedIcon={setSelectedIcon}
         />
         <ImageAddModal
           isOpen={isModalOpen}
