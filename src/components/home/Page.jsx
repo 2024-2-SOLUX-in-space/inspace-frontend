@@ -39,14 +39,12 @@ const Page = forwardRef((props, ref) => {
       sticker: window.draggedImage.sticker
     };
 
-    console.log("🚀 드롭한 아이템:", newItem);
 
     try {
       const endpoint = newItem.ctype === "sticker" ? "/api/page/sticker" : "/api/page";
       const method = newItem.ctype === "sticker" ? api.post : api.put;
       const response = await method(`${endpoint}?space_id=${activeSpace.id}&pageNum=${props.number}`, [newItem]);
       if (response.status === 200) {
-        console.log(`✅ ${newItem.ctype} 저장 성공`, response.data);
         props.onPageUpdate(props.number);
       }
     } catch (error) {

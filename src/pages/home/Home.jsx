@@ -39,18 +39,14 @@ const Home = () => {
   };
 
   const handleAddItem = (createdItem) => {
-    console.log('Home.jsx | handleAddItem - 새 아이템:', createdItem);
     setNewItem(createdItem);
     setIsModalOpen(false);
     setSelectedFile(null);
   };
 
   const handleImageDrop = async (pageNum, x, y) => {
-    console.log("🚀 이미지 드롭 호출:", pageNum, x, y);
     const draggedImage = window.draggedImage;
     if (!draggedImage) return;
-
-    console.log("🚀 드래그된 이미지:", draggedImage);
 
     const newItem = {
       itemId: draggedImage.id,
@@ -71,8 +67,6 @@ const Home = () => {
         color: draggedImage.color
       } : null
     };
-
-    console.log("🚀 드롭한 아이템:", newItem);
 
     setDiaryData(prev => ({
       ...prev,

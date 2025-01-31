@@ -39,7 +39,6 @@ const PageItem = ({
     e.stopPropagation();
     try {
       await api.delete(`/api/page/${image.id}`);
-      console.log(`Item ${image.id} deleted successfully`);
       onDelete(image.id);
 
       if (isSelected) {
@@ -54,7 +53,6 @@ const PageItem = ({
   const debouncedRotateUpdate = debounce(async (imageId, newRotation) => {
     try {
       await api.put(`/api/page?space_id=${activeSpace.id}&pageNum=${pageNum}`, { turnover: newRotation, });
-      console.log("✅ 회전 업데이트 성공:", newRotation);
     } catch (error) {
       console.error("❌ 회전 업데이트 실패:", error);
     }
@@ -102,9 +100,8 @@ const PageItem = ({
   const handleImageUpdate = async (imageId, updates) => {
     try {
       const response = await api.put(`/api/page?space_id=${activeSpace.id}&pageNum=${pageNum}`, [updates]);
-      
+
       if (response.status === 200) {
-        console.log("✅ 이미지 업데이트 성공", response.data);
         onUpdate(imageId, response.data);
       }
     } catch (error) {
@@ -115,12 +112,10 @@ const PageItem = ({
   // Click outside -> deselect
   useEffect(() => {
     const handleClickOutside = (e) => {
-      console.log("클릭 감지됨");
       if (
         imageRef.current &&
         !imageRef.current.contains(e.target)
       ) {
-        console.log("아이템 외부 클릭 감지됨");
         const updates = {
           itemId: image.id,
           title: image.title || "No Title",

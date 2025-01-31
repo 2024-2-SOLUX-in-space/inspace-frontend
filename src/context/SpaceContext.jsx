@@ -91,7 +91,6 @@ export const SpaceProvider = ({ children }) => {
     if (primarySpace) {
       setActiveSpace(primarySpace);
       setSelectedSpace(primarySpace);
-      console.log('Reset to primary space:', primarySpace);
     }
   };
 

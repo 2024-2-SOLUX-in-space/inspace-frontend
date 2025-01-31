@@ -53,7 +53,6 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
     const selectedSpaceData = { id: spaceId, title, coverType };
     setSelectedSpace(selectedSpaceData);
     setActiveSpace(selectedSpaceData);
-    console.log(`Selected space: ${spaceId}, ${title}, ${coverType}`);
     toggleArchive();
   };
 
@@ -86,7 +85,6 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
             space.id === spaceId ? updatedSpace : { ...space, isPrimary: false }
           );
           setSpaces(updatedSpaces);
-          console.log(`Updated Spaces after ${field} toggle:`, updatedSpaces);
 
           // isPrimary가 true인 경우 activeSpace 업데이트
           if (updatedSpace.isPrimary) {
@@ -122,7 +120,6 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
           setSpaces(prevSpaces => prevSpaces.map(space => 
             space.id === spaceId ? updatedSpace : space
           ));
-          console.log(`Updated Spaces after ${field} toggle:`, spaces);
         }
       } catch (error) {
         console.error(`Error toggling ${field} for space:`, error);
@@ -162,7 +159,6 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
     if (selectedSpaceData) {
       setSelectedSpace(selectedSpaceData);
       setIsAlertOpen(true);
-      console.log('Trash Clicked, spaceId:', spaceId);
     }
   };
 
@@ -177,7 +173,6 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
       await handleDeleteSpace(selectedSpace.id);
       setIsAlertOpen(false);
       setSelectedSpace(null);
-      console.log('Confirm Delete, selectedSpace:', selectedSpace);
       setActiveSpace(null);
     }
   };

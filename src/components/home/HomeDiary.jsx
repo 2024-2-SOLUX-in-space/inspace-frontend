@@ -29,7 +29,6 @@ const HomeDiary = ({
         ...prev,
         [pageNum]: items,
       }));
-      console.log(`🚀 페이지 데이터 가져오기 성공 ${pageNum}`, response.data);
     } catch (error) {
       console.error(`Error fetching data for page ${pageNum}:`, error);
       setPagesData(prev => ({
@@ -41,7 +40,6 @@ const HomeDiary = ({
 
   useEffect(() => {
     if (activeSpace?.id) {
-      console.log("🚀 페이지 데이터 가져오기 시작", activeSpace.id);
       for (let i = 1; i <= 10; i++) {
         fetchPageData(i);
       }
@@ -51,7 +49,6 @@ const HomeDiary = ({
   }, [activeSpace]);
 
   const getImagesForPage = (pageNum) => {
-    console.log("🚀 페이지 데이터 가져오기 성공",pageNum, pagesData[pageNum]);
     return pagesData[pageNum] || [];
   };
 
@@ -76,7 +73,6 @@ const HomeDiary = ({
   };
 
   const handleImageUpdate = (imageId, updates) => {
-    console.log("🚀 onUpdate 호출:", imageId, updates);
     setPagesData(prev => {
       const updated = { ...prev };
       Object.keys(updated).forEach(pageNum => {

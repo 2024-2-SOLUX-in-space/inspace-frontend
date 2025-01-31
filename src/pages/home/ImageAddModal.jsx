@@ -197,8 +197,6 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
             { headers: { 'Content-Type': 'multipart/form-data' } }
           );
 
-          console.log('Upload successful:', response.data);
-
           if (onSave) {
             onSave(response.data); 
           }
