@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FiSearch, FiBell, FiUser } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import Notification from './alert/Notification';
+import api from '../api/api.js';
+import { EventSourcePolyfill } from 'event-source-polyfill';
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -188,20 +190,11 @@ const Header = () => {
   const [isUserFilled, setIsUserFilled] = useState(false);
   const [isSearchFilled, setIsSearchFilled] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState([]);
   const navigate = useNavigate();
-  //가상 데이터 예시
-  const [notifications, setNotifications] = useState([
-    { username: 'space', action: '나를 팔로우합니다' },
-    { username: '웹프핑', action: '나를 팔로잉합니다' },
-    { username: '차은우', action: '나를 팔로우합니다' },
-    { username: '에스파', action: '나를 팔로우합니다' },
-    { username: 'nct', action: '나를 팔로우합니다' },
-    { username: '아이유', action: '나를 팔로우합니다' },
-    { username: '블랙핑크', action: '나를 팔로우합니다' },
-    { username: '뉴진스', action: '나를 팔로우합니다' },
-    { username: '트와이스', action: '나를 팔로우합니다' },
-  ]);
+  const token = localStorage.getItem('access_token');
 
+  // 검색 기능 
   const handleSearch = () => {
     setIsSearchFilled(!isSearchFilled);
     if (searchText.trim()) {
@@ -209,20 +202,97 @@ const Header = () => {
     }
   };
 
-  //마이페이지 이동 로직
+  // 마이페이지 이동 로직
   const handleUserClick = () => {
     //etIsUserFilled(!isUserFilled);
     navigate('/mypage');
   };
 
-  const handleMarkAsRead = () => {
-    setNotifications([]);
+
+
+
+
+  // 초기 알림 데이터 불러오기
+  const fetchNotifications = async () => {
+    try {
+      const response = await api.get('/api/notifications/unread');
+      const unreadNotifications = response.data.slice(0, 10);
+      setNotifications(unreadNotifications); 
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    }
+  };
+  
+
+  // SSE 연결, 실시간
+  useEffect(() => {
+    if (!token) {
+      console.error('No access token found');
+      return;
+    }
+
+    const connectSSE = () => {
+      const eventSource = new EventSourcePolyfill(
+        `http://3.35.10.158:8080/api/notifications/stream`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          heartbeatTimeout: 60000, // 서버 heartbeat 없는 경우 60초 대기
+        }
+      );
+
+      // 실시간 데이터 수신
+      eventSource.onmessage = (event) => {
+        try {
+          const newNotification = JSON.parse(event.data);
+          setNotifications((prev) => [newNotification, ...prev].slice(0, 10)); // 새로운 알림 추가
+        } catch (e) {
+          console.error('Failed to parse notification:', e);
+        }
+      };
+      
+      // 오류 처리 및 연결 종료
+      eventSource.onerror = (error) => {
+        console.error('SSE connection error:', error);
+        eventSource.close();
+
+        // 5초 후 재연결
+        setTimeout(() => {
+          console.log('Reconnecting to SSE...');
+          connectSSE();
+        }, 5000);
+      };
+
+      return eventSource;
+    };
+
+    fetchNotifications(); // 컴포넌트 마운트 시 초기 알림 데이터 가져오기
+    const eventSource = connectSSE();
+
+    return () => {
+      eventSource.close(); // 컴포넌트 언마운트 시 연결 종료
+    };
+  }, [token]);
+
+  
+
+  // 알림 아이콘 클릭
+  const handleBellClick = () => {
+    setShowNotifications(!showNotifications);
+    setIsBellFilled(false);
   };
 
-  const handleBellClick = () => {
-    setIsBellFilled(!isBellFilled);
-    setShowNotifications(!showNotifications);
+  // 모두 읽음 처리
+  const handleMarkAsRead = async () => {
+    try {
+      await api.patch('/api/notifications/read-all');
+      setNotifications([]);
+    } catch (error) {
+      console.error('Error marking notifications as read:', error);
+    }
   };
+
 
   return (
     <HeaderContainer>
@@ -268,11 +338,10 @@ const Header = () => {
 
             <NotificationsContent>
               {notifications.length > 0 ? (
-                notifications.map((notification, index) => (
+                notifications.map((notification) => (
                   <Notification
-                    key={index}
-                    username={notification.username}
-                    action={notification.action}
+                    notification_id={notification.notification_id} 
+                    message={notification.message} 
                   />
                 ))
               ) : (

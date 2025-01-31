@@ -18,7 +18,7 @@ const Content = styled.div`
   color: #666;
 `;
 
-const Username = styled.span`
+const NotificationId = styled.span`
   font-weight: 500;
   color: #333;
   font-size: 16px;
@@ -40,12 +40,12 @@ const Heart = styled.span`
   padding-left: 4px;
 `;
 
-const Notification = ({ username, action }) => {
+const Notification = ({ notification_id, message }) => {
   return (
     <NotificationContainer>
       <Content>
-        <Username>{username}</Username>
-        <Message>{action}</Message>
+        <NotificationId>{notification_id}</NotificationId>
+        <Message>{message}</Message>
         <Heart>
           <FiHeart size={16} fill='red' />
         </Heart>
