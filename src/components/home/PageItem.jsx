@@ -132,8 +132,8 @@ const PageItem = ({
     >
       <DraggableImage
         ref={imageRef}
-        src={image.url}
-        alt={image.alt}
+        src={image.ctype === 'sticker' ? image.sticker.src : image.imageUrl}
+        alt={image.alt || image.sticker?.alt || 'No Alt'}
         style={{
           width: '100%',
           height: '100%',
