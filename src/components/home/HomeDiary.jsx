@@ -29,6 +29,7 @@ const HomeDiary = ({
         ...prev,
         [pageNum]: items,
       }));
+      console.log(`🚀 페이지 데이터 가져오기 성공 ${pageNum}`, response.data);
     } catch (error) {
       console.error(`Error fetching data for page ${pageNum}:`, error);
       setPagesData(prev => ({
@@ -41,14 +42,16 @@ const HomeDiary = ({
   useEffect(() => {
     if (activeSpace?.id) {
       console.log("🚀 페이지 데이터 가져오기 시작", activeSpace.id);
-      fetchPageData(1);
-      fetchPageData(2);
+      for (let i = 1; i <= 10; i++) {
+        fetchPageData(i);
+      }
     } else {
       setPagesData({});
     }
   }, [activeSpace]);
 
   const getImagesForPage = (pageNum) => {
+    console.log("🚀 페이지 데이터 가져오기 성공",pageNum, pagesData[pageNum]);
     return pagesData[pageNum] || [];
   };
 
@@ -83,32 +86,6 @@ const HomeDiary = ({
       });
       return updated;
     });
-  };
-
-  const handleDragStart = (item) => (e) => {
-    const rect = e.target.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const offsetY = e.clientY - rect.top;
-
-    window.draggedImage = {
-      id: item.id,
-      title: item.title || item.alt || "No Title",
-      imageUrl: item.src || item.imageUrl || "No URL",
-      contentsUrl: item.src || item.contentsUrl || "No URL",
-      ctype: selectedIcon,
-      positionX: offsetX,
-      positionY: offsetY,
-      width: item.width || 100,
-      height: item.height || 100,
-      turnover: item.turnover || 0,
-      sequence: 1,
-      sticker: selectedIcon === 'sticker' ? {
-        title: item.id,
-        src: item.src,
-        alt: item.alt,
-        color: item.color
-      } : null,
-    };
   };
 
   if (!activeSpace) {
