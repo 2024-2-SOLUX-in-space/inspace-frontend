@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { HeartList, ListBox, TitleContainer, 
+import { HeartList, ListBox, TitleContainer, HeartButtonBackground,
   FollowIconContainer, LeftIconContainer, TabContainer, TabButton } from "../../styles/sidebar/HeartButtonStyle";
 import { FiUser, FiUserCheck, FiUserMinus } from "react-icons/fi"; 
 import HeartAlert from "../alert/HeartAlert";
@@ -94,7 +94,6 @@ const HeartButton = ({ isHeartOpen }) => {
       if (message) {
         alert(message); 
       } else {
-        console.log("서버 응답 메시지가 없습니다.");
       }
       await fetchFollowings();
 
@@ -119,7 +118,6 @@ const HeartButton = ({ isHeartOpen }) => {
       if (message) {
         alert(message);
       } else {
-        console.log("서버 응답 메시지가 없습니다.");
       }
       await fetchFollowings();
   
@@ -138,6 +136,8 @@ const HeartButton = ({ isHeartOpen }) => {
   return (
     <>
       {isHeartOpen && !alertInfo.isOpen && (
+        <>
+        <HeartButtonBackground />
         <HeartList isScrollable = {isScrollable}>
           <TabContainer>
             <TabButton
@@ -180,6 +180,7 @@ const HeartButton = ({ isHeartOpen }) => {
           )}
           </div>
         </HeartList>
+        </>
       )}
 
       <HeartAlert

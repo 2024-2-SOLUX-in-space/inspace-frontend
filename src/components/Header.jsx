@@ -4,7 +4,6 @@ import { FiSearch, FiBell, FiUser } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import Notification from './alert/Notification';
 import api from '../api/api.js';
-import { EventSourcePolyfill } from 'event-source-polyfill';
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -161,24 +160,20 @@ const NotificationsContent = styled.div`
   max-height: 200px;
   overflow-y: auto;
 
-  /* 스크롤바 전체 너비 */
   &::-webkit-scrollbar {
     width: 6px;
   }
 
-  /* 스크롤바 트랙(배경) */
   &::-webkit-scrollbar-track {
     background: transparent;
     margin: 5px;
   }
 
-  /* 스크롤바 thumb(움직이는 부분) */
   &::-webkit-scrollbar-thumb {
     background: #e0e0e0;
     border-radius: 50px;
   }
 
-  /* 스크롤바 thumb 호버 시 */
   &::-webkit-scrollbar-thumb:hover {
     background: #bdbdbd;
   }
@@ -208,10 +203,6 @@ const Header = () => {
     navigate('/mypage');
   };
 
-
-
-
-
   // 초기 알림 데이터 불러오기
   const fetchNotifications = async () => {
     try {
@@ -220,15 +211,11 @@ const Header = () => {
   
       // 초기 알림 데이터를 SSE 알림과 병합
       setNotifications((prev) => [...unreadNotifications, ...prev]);
-      console.log("초기 알림 데이터와 SSE 데이터 병합 완료:", unreadNotifications);
     } catch (error) {
       console.error('Error fetching notifications:', error);
     }
   };
   
-  
-
-
   useEffect(() => {
     let isMounted = true;
     let reader;
@@ -249,31 +236,27 @@ const Header = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
   
-        console.log("SSE connection established.");
-  
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
   
         while (isMounted) {
           const { done, value } = await reader.read();
-          if (done) break; // 데이터 스트림 종료 시 루프 종료
+          if (done) break; 
   
-          const text = decoder.decode(value, { stream: true }).trim(); // 공백 제거
-          console.log("첫 메시지 수신:", text);
+          const text = decoder.decode(value, { stream: true }).trim();
   
           // `data:` 부분 추출
           if (text.includes("data:")) {
-            const jsonData = text.split("data:")[1]?.trim(); // `data:` 이후 부분만 추출
+            const jsonData = text.split("data:")[1]?.trim(); 
   
             try {
-              const newNotification = JSON.parse(jsonData); // JSON 파싱
-              console.log("파싱된 알림 데이터:", newNotification);
+              const newNotification = JSON.parse(jsonData); 
   
               // 알림 목록 업데이트
               setNotifications((prev) => {
                 const updatedNotifications = [newNotification, ...prev];
                 if (updatedNotifications.length > 10) {
-                  updatedNotifications.pop(); // 최대 10개 유지
+                  updatedNotifications.pop(); 
                 }
                 return updatedNotifications;
               });
@@ -281,12 +264,11 @@ const Header = () => {
               console.error("Failed to parse notification:", e);
             }
           } else {
-            console.log("JSON 형식이 아닌 메시지 무시:", text);
           }
         }
       } catch (error) {
         console.error("SSE fetch error:", error);
-        setTimeout(connectSSE, 5000); // 5초 후 재연결
+        setTimeout(connectSSE, 5000); 
       }
     };
   
@@ -294,7 +276,6 @@ const Header = () => {
     connectSSE(); // SSE 연결 실행
   
     return () => {
-      console.log("Cleaning up SSE connection...");
       isMounted = false;
   
       if (reader) {
@@ -302,18 +283,6 @@ const Header = () => {
       }
     };
   }, []);
-  
-  
-  useEffect(() => {
-    console.log("알림 목록 변경:", notifications); // 상태 변경 시 전체 알림 목록 출력
-    if (notifications.length > 0) {
-      console.log("가장 최근 알림:", notifications[0]); // 가장 최근 알림 출력
-    }
-  }, [notifications]); // notifications 상태가 변경될 때 실행
-  
-  
-
-
 
   // 알림 아이콘 클릭
   const handleBellClick = () => {
@@ -330,7 +299,6 @@ const Header = () => {
       console.error('Error marking notifications as read:', error);
     }
   };
-
 
   return (
     <HeaderContainer>
@@ -377,7 +345,6 @@ const Header = () => {
             <NotificationsContent>
               {notifications?.length > 0 ? (
                 notifications.map((notification) => {
-                  console.log("렌더링 알림:", notification); // 렌더링 중인 알림 출력 
                   return (
                     <Notification
                       key={notification.notification_id}
