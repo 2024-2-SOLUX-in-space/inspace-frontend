@@ -163,6 +163,6 @@ export const NextButton = styled.button`
 export const DescriptionText = styled.p`
   font-size: 0.875rem;
   color: #777;
-  margin-bottom: 1rem;
+  margin-bottom: 0rem;
   margin-left: 1.2rem;
 `;

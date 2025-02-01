@@ -15,7 +15,7 @@ import {
 
 const PublicSelection = ({ visibility, setVisibility, onConfirm, onBack, onCancel }) => {
   const handleNextClick = () => {
-    if (visibility) {
+    if (visibility !== null) {
       onConfirm(visibility);
     } else {
       alert("공개 여부를 선택해주세요.");
@@ -33,15 +33,20 @@ const PublicSelection = ({ visibility, setVisibility, onConfirm, onBack, onCance
         </PublicSelectionHeader>
         <IconContainer>
           <IconWrapper
-            isSelected={visibility === "public"}
-            onClick={() => setVisibility("public")}
+            isSelected={visibility === true}
+            onClick={() => {
+              setVisibility(true);
+            }}
           >
             <FiBookOpen size={25} />
             <span>공개</span>
           </IconWrapper>
           <IconWrapper
-            isSelected={visibility === "private"}
-            onClick={() => setVisibility("private")}
+            isSelected={visibility === false}
+            onClick={() => { 
+              setVisibility(false)
+              console.log("Visibility 설정:", false); }
+            }
           >
             <FiBook size={25} />
             <span>비공개</span>
