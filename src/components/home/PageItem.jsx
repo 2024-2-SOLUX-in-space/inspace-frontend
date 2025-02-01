@@ -44,6 +44,7 @@ const PageItem = ({
 
       if (isSelected) {
         setSelectedItem(null);
+        onItemSelectChange?.(false);
       }
     } catch (error) {
       console.error('Error deleting item:', error.message);
