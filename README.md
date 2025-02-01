@@ -1,4 +1,4 @@
-# 🎨 inspace Frontend
+# 🎨 in/space Frontend
 [프로젝트 설명 보러가기](https://github.com/2024-2-SOLUX-in-space)
 
 <br/>
@@ -37,6 +37,9 @@ inspace
 │   └── styles
 └── vite.config.js
 ```
+
+## 플로우차트
+
 
 ## 🖥️ 기술 스택
 - **React**(18.3.1)
