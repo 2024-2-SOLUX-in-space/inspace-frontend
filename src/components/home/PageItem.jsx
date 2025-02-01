@@ -16,7 +16,6 @@ const PageItem = ({
   onDelete,
   isEditMode,
   onItemSelectChange,
-  onDeselect,
 }) => {
   const { activeSpace } = useContext(SpaceContext);
   const { selectedItem, setSelectedItem } = useItemContext();
