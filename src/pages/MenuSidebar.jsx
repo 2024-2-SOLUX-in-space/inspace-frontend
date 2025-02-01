@@ -27,20 +27,23 @@ const MenuSidebar = ({
     };
   
     const handleIconClick = (iconName) => {
-      if (iconName === "home") {
-        resetToPrimarySpace();
+      if (activeIcon === iconName) {
+        setActiveIcon(null);
+      } else {
+        if (iconName === "home") {
+          resetToPrimarySpace();
+        }
+        if (iconName === "archive") {
+          toggleArchive();
+        }
+        if (iconName === "filePlus") {
+          toggleAddButton();
+        }
+        if (iconName === "heart") {
+          toggleHeart();
+        }
+        setActiveIcon(iconName);
       }
-      if (iconName === "archive") {
-        toggleArchive();
-      }
-      if (iconName === "filePlus") {
-        toggleAddButton();
-      }
-
-      if (iconName === "heart") {
-        toggleHeart();
-      }
-      setActiveIcon(iconName);
     };
   
     const menuItems = [
