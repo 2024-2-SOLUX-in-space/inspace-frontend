@@ -31,7 +31,7 @@ const HeartButton = ({ isHeartOpen }) => {
 
       setFollowers(
         (response.data || []).map((follower) => ({
-          id: follower.followingId, 
+          id: follower.followId, 
           name: follower.name, 
         }))
       );
@@ -52,7 +52,7 @@ const HeartButton = ({ isHeartOpen }) => {
 
       setFollowing(
         (response.data || []).map((following) => ({
-          id: following.followingId, 
+          id: following.followId, 
           name: following.name,
         }))
       );

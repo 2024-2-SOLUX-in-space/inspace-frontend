@@ -224,7 +224,7 @@ const Header = () => {
   };
   
 
-  // SSE 연결, 실시간
+  // 1 SSE 연결 및 이벤트 리스닝 
   useEffect(() => {
     let eventSource;
   
@@ -235,48 +235,72 @@ const Header = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          heartbeatTimeout: 60000, 
+          heartbeatTimeout: 86400000, 
         }
       );
   
+      // 2 SSE 연결 성공 이벤트 
+      // 서버와 SSE 연결이 성공하면 실행된다 
+      eventSource.onopen = () => {
+        console.log('SSE connection established.');
+      };
+
+      // 3 새로운 알림 이벤트 처리 
       // SSE 메시지 수신
       eventSource.onmessage = (event) => {
+        console.log("첫 메시지 수신:", event.data);
+
         try {
           const newNotification = JSON.parse(event.data);
-          setNotifications((prev) => [newNotification, ...prev].slice(0, 10));
-          console.log('Received notification:', newNotification);
+
+          // 알림 목록 업데이트 
+          setNotifications((prev) => {
+            const updatedNotifications = [newNotification, ...prev];
+
+            if (updatedNotifications.length > 10) {
+              updatedNotifications.pop();
+            }
+
+            return updatedNotifications;
+          });
+
         } catch (e) {
           console.error('Failed to parse notification:', e);
         }
       };
-  
-      // SSE 연결 성공
-      eventSource.onopen = () => {
-        console.log('SSE connection established.');
-      };
-      // SSE 오류 처리
+
+      // 4 SSE 연결 에러 및 재연결 
       eventSource.onerror = (error) => {
         console.error('SSE connection error:', error);
   
         if (eventSource.readyState === EventSource.CLOSED) {
           console.log('SSE connection closed. Reconnecting...');
-          setTimeout(connectSSE, 5000); // 5초 후 재연결
+          setTimeout(connectSSE, 1000); // 5초 후 재연결
         } else {
           eventSource.close();
         }
       };
     };
-  
+
     fetchNotifications(); // 초기 알림 데이터
-    connectSSE(); // SSE 연결 시작
-  
-    return () => { // 컴포넌트 언마운트 시 정리
+    connectSSE(); // SSE 연결 실행
+
+    // 5 컴포넌트 언마운트 시 SSE 연결 종료 
+    return () => { 
+      console.log('Cleaning up SSE connection...');
+
       if (eventSource) {
-        eventSource.close();
-        console.log('SSE connection closed.');
+        console.log(`ReadyState: ${eventSource.readyState}`);
+
+        if (eventSource.readyState !== EventSource.OPEN) {
+          eventSource.close();
+        }
+        eventSource.onopen = null;
+        eventSource.onmessage = null;
+        eventSource.onerror = null;
       }
     };
-  }, [token]);
+  }, []);
   
 
   
@@ -321,7 +345,7 @@ const Header = () => {
           <IconButton onClick={handleBellClick} isSelected={isBellFilled}>
             <FiBell size={32} fill={isBellFilled ? 'currentColor' : 'none'} />
           </IconButton>
-          {notifications.length > 0 && <NotificationBadge />}
+          {notifications?.length > 0 && <NotificationBadge />}
         </IconButtonWrapper>
 
         <IconButton onClick={handleUserClick} isSelected={isUserFilled}>
@@ -341,7 +365,7 @@ const Header = () => {
             </NotificationHeader>
 
             <NotificationsContent>
-              {notifications.length > 0 ? (
+              {notifications?.length > 0 ? (
                 notifications.map((notification) => (
                   <Notification
                     key={notification.notification_id}
