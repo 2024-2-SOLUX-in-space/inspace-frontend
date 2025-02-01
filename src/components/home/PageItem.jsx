@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useContext } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import Moveable from 'react-moveable';
 import { FiX } from 'react-icons/fi';
@@ -22,6 +22,8 @@ const PageItem = ({
   const { selectedItem, setSelectedItem } = useItemContext();
   const imageRef = useRef(null);
   const moveableRef = useRef(null);
+  const [localTurnover, setLocalTurnover] = useState(image.turnover || 0);
+  const prevRotateRef = useRef(0);
 
   const isSelected = selectedItem === image.id;
 
@@ -59,46 +61,67 @@ const PageItem = ({
   }, 500);
 
   // Update position
-const handleDrag = ({ target, delta }) => {
-  const parentDiv = target.closest(".page-item");
-  const currentLeft = parseFloat(parentDiv.style.left) || 0;
-  const currentTop = parseFloat(parentDiv.style.top) || 0;
+  const handleDrag = ({ target, delta }) => {
+    const parentDiv = target.closest(".page-item");
+    const currentLeft = parseFloat(parentDiv.style.left) || 0;
+    const currentTop = parseFloat(parentDiv.style.top) || 0;
 
-  // 현재 회전 각도 가져오기
-  const rotation = image.turnover || 0;
-  const radian = (rotation * Math.PI) / 180;
+    // 현재 회전 각도 가져오기
+    const rotation = image.turnover || 0;
+    const radian = (rotation * Math.PI) / 180;
 
-  // ✅ 회전된 상태에서도 올바르게 드래그 방향을 유지하도록 변환
-  const adjustedDeltaX = delta[0] * Math.cos(radian) - delta[1] * Math.sin(radian);
-  const adjustedDeltaY = delta[0] * Math.sin(radian) + delta[1] * Math.cos(radian);
+    // ✅ 회전된 상태에서도 올바르게 드래그 방향을 유지하도록 변환
+    const adjustedDeltaX = delta[0] * Math.cos(radian) - delta[1] * Math.sin(radian);
+    const adjustedDeltaY = delta[0] * Math.sin(radian) + delta[1] * Math.cos(radian);
 
-  const newLeft = currentLeft + adjustedDeltaX;
-  const newTop = currentTop + adjustedDeltaY;
+    const newLeft = currentLeft + adjustedDeltaX;
+    const newTop = currentTop + adjustedDeltaY;
 
-  parentDiv.style.left = `${newLeft}px`;
-  parentDiv.style.top = `${newTop}px`;
+    parentDiv.style.left = `${newLeft}px`;
+    parentDiv.style.top = `${newTop}px`;
 
-  onUpdate(image.id, {
-    positionX: newLeft,
-    positionY: newTop,
-  });
-};
+    onUpdate(image.id, {
+      positionX: newLeft,
+      positionY: newTop,
+    });
+  };
+
+  const handleRotate = ({ target, rotate }) => {
+    const parentDiv = target.closest(".page-item");
+
+    // ✅ 기존 turnover 값 유지 + 새로운 회전값과의 차이 계산
+    const rotateDelta = rotate - prevRotateRef.current;
+    const newTurnover = (localTurnover + rotateDelta) % 360;
+
+    // ✅ 음수 회전 방지 (예: -10도 → 350도로 변환)
+    const normalizedTurnover = newTurnover < 0 ? newTurnover + 360 : newTurnover;
+
+    // 🔥 회전값 즉시 적용 (중심 유지)
+    parentDiv.style.transform = `rotate(${normalizedTurnover}deg)`;
+    parentDiv.style.transformOrigin = "center center";
+
+    // ✅ 회전 상태를 로컬에서도 유지
+    setLocalTurnover(normalizedTurnover);
+
+    // 데이터 수정
+    onUpdate(image.id, {
+      turnover: normalizedTurnover
+    });
+  };
+
+  // 🔥 서버에서 turnover 값이 바뀌면 로컬 상태 반영
+  useEffect(() => {
+    if (image.turnover !== localTurnover) {
+      console.log("🌐 서버에서 변경된 turnover 반영:", image.turnover);
+      setTimeout(() => {
+        setLocalTurnover(image.turnover || 0);
+        prevRotateRef.current = image.turnover || 0; // 🔥 서버 반영된 값으로 다시 초기화
+      }, 100);  // 🔥 서버 업데이트 타이밍 조정
+    }
+  }, [image.turnover]);
 
 
-
-  // 🔥 회전 시 부모 요소에 transform 적용 → 버튼도 함께 회전됨!
-const handleRotate = ({ target, rotate }) => {
-  const parentDiv = target.closest(".page-item");
-  
-  // ✅ 부모 요소의 transform에 직접 회전 적용 (중복 회전 방지)
-  parentDiv.style.transform = `rotate(${rotate}deg)`;
-
-  onUpdate(image.id, {
-    turnover: rotate
-  });
-};
-
-  // Update size
+  // 사이즈 변경
   const handleResize = ({ target, width, height }) => {
     target.style.width = `${width}px`;
     target.style.height = `${height}px`;
@@ -124,7 +147,7 @@ const handleRotate = ({ target, rotate }) => {
     }
   };
 
-  // Click outside -> deselect
+  // 아이템 외부 클릭하면 선택 해제
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (
