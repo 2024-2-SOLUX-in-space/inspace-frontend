@@ -166,15 +166,13 @@ const EditSidebar = ({
   const handleAddItem = (createdItem) => {
     const newItem = {
       ...createdItem,
-      
       id: createdItem['item-id'], // response body에 있는 item-id를 id로 사용
       imageUrl: createdItem.fileUrl // response body에 있는 fileUrl을 imageUrl로 사용
-      
     };
     console.log(newItem);
     setCategoryData(prev => ({
       ...prev,
-      file: [...prev.file, newItem]
+      file: [newItem, ...prev.file] // 새로운 아이템을 맨 앞에 추가
     }));
     handleCloseModal();
   };
