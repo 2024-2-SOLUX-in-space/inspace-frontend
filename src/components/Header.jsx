@@ -217,93 +217,103 @@ const Header = () => {
     try {
       const response = await api.get('/api/notifications/unread');
       const unreadNotifications = response.data.slice(0, 10);
-      setNotifications(unreadNotifications); 
+  
+      // 초기 알림 데이터를 SSE 알림과 병합
+      setNotifications((prev) => [...unreadNotifications, ...prev]);
+      console.log("초기 알림 데이터와 SSE 데이터 병합 완료:", unreadNotifications);
     } catch (error) {
       console.error('Error fetching notifications:', error);
     }
   };
   
+  
 
-  // 1 SSE 연결 및 이벤트 리스닝 
+
   useEffect(() => {
-    let eventSource;
+    let isMounted = true;
+    let reader;
   
-    const connectSSE = () => {
-      eventSource = new EventSourcePolyfill(
-        `http://3.35.10.158:8080/api/notifications/stream`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          heartbeatTimeout: 86400000, 
+    const connectSSE = async () => {
+      try {
+        const response = await fetch(
+          `http://3.35.10.158:8080/api/notifications/stream`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-      );
   
-      // 2 SSE 연결 성공 이벤트 
-      // 서버와 SSE 연결이 성공하면 실행된다 
-      eventSource.onopen = () => {
-        console.log('SSE connection established.');
-      };
-
-      // 3 새로운 알림 이벤트 처리 
-      // SSE 메시지 수신
-      eventSource.onmessage = (event) => {
-        console.log("첫 메시지 수신:", event.data);
-
-        try {
-          const newNotification = JSON.parse(event.data);
-
-          // 알림 목록 업데이트 
-          setNotifications((prev) => {
-            const updatedNotifications = [newNotification, ...prev];
-
-            if (updatedNotifications.length > 10) {
-              updatedNotifications.pop();
+        console.log("SSE connection established.");
+  
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+  
+        while (isMounted) {
+          const { done, value } = await reader.read();
+          if (done) break; // 데이터 스트림 종료 시 루프 종료
+  
+          const text = decoder.decode(value, { stream: true }).trim(); // 공백 제거
+          console.log("첫 메시지 수신:", text);
+  
+          // `data:` 부분 추출
+          if (text.includes("data:")) {
+            const jsonData = text.split("data:")[1]?.trim(); // `data:` 이후 부분만 추출
+  
+            try {
+              const newNotification = JSON.parse(jsonData); // JSON 파싱
+              console.log("파싱된 알림 데이터:", newNotification);
+  
+              // 알림 목록 업데이트
+              setNotifications((prev) => {
+                const updatedNotifications = [newNotification, ...prev];
+                if (updatedNotifications.length > 10) {
+                  updatedNotifications.pop(); // 최대 10개 유지
+                }
+                return updatedNotifications;
+              });
+            } catch (e) {
+              console.error("Failed to parse notification:", e);
             }
-
-            return updatedNotifications;
-          });
-
-        } catch (e) {
-          console.error('Failed to parse notification:', e);
+          } else {
+            console.log("JSON 형식이 아닌 메시지 무시:", text);
+          }
         }
-      };
-
-      // 4 SSE 연결 에러 및 재연결 
-      eventSource.onerror = (error) => {
-        console.error('SSE connection error:', error);
-  
-        if (eventSource.readyState === EventSource.CLOSED) {
-          console.log('SSE connection closed. Reconnecting...');
-          setTimeout(connectSSE, 1000); // 5초 후 재연결
-        } else {
-          eventSource.close();
-        }
-      };
+      } catch (error) {
+        console.error("SSE fetch error:", error);
+        setTimeout(connectSSE, 5000); // 5초 후 재연결
+      }
     };
-
+  
     fetchNotifications(); // 초기 알림 데이터
     connectSSE(); // SSE 연결 실행
-
-    // 5 컴포넌트 언마운트 시 SSE 연결 종료 
-    return () => { 
-      console.log('Cleaning up SSE connection...');
-
-      if (eventSource) {
-        console.log(`ReadyState: ${eventSource.readyState}`);
-
-        if (eventSource.readyState !== EventSource.OPEN) {
-          eventSource.close();
-        }
-        eventSource.onopen = null;
-        eventSource.onmessage = null;
-        eventSource.onerror = null;
+  
+    return () => {
+      console.log("Cleaning up SSE connection...");
+      isMounted = false;
+  
+      if (reader) {
+        reader.cancel().catch((err) => console.error("Error canceling reader:", err));
       }
     };
   }, []);
   
-
   
+  useEffect(() => {
+    console.log("알림 목록 변경:", notifications); // 상태 변경 시 전체 알림 목록 출력
+    if (notifications.length > 0) {
+      console.log("가장 최근 알림:", notifications[0]); // 가장 최근 알림 출력
+    }
+  }, [notifications]); // notifications 상태가 변경될 때 실행
+  
+  
+
+
 
   // 알림 아이콘 클릭
   const handleBellClick = () => {
@@ -366,13 +376,16 @@ const Header = () => {
 
             <NotificationsContent>
               {notifications?.length > 0 ? (
-                notifications.map((notification) => (
-                  <Notification
-                    key={notification.notification_id}
-                    notification_id={notification.notification_id} 
-                    message={notification.message} 
-                  />
-                ))
+                notifications.map((notification) => {
+                  console.log("렌더링 알림:", notification); // 렌더링 중인 알림 출력 
+                  return (
+                    <Notification
+                      key={notification.notification_id}
+                      notification_id={notification.notification_id}
+                      message={notification.message}
+                    />
+                  )
+                })
               ) : (
                 <EmptyNotification>
                   현재 최신 알림이 없습니다.
