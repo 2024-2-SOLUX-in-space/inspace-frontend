@@ -130,28 +130,34 @@ const EditSidebar = ({
   };
 
   const handleDragStart = (item) => (e) => {
-    const rect = e.target.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const offsetY = e.clientY - rect.top;
+    const img = new Image();
+    img.src = item.src || item.imageUrl;
 
-    window.draggedImage = {
-      id: item.id,
-      title: item.title || item.alt || "No Title",
-      imageUrl: item.src || item.imageUrl || "No URL",
-      contentsUrl: item.src || item.contentsUrl || "No URL",
-      ctype: selectedIcon === 'file' ? 'image' : selectedIcon, // 선택한 아이콘에 따라 ctype 설정
-      positionX: offsetX,
-      positionY: offsetY,
-      width: item.width || 100,
-      height: item.height || 100,
-      turnover: item.turnover || 0,
-      sequence: 1,
-      sticker: selectedIcon === 'sticker' ? {
-        title: item.id,
-        src: item.src,
-        alt: item.alt,
-        color: item.color
-      } : null,
+    img.onload = () => {
+      const rect = e.target.getBoundingClientRect();
+      const offsetX = e.clientX - rect.left;
+      const offsetY = e.clientY - rect.top;
+
+      window.draggedImage = {
+        id: item.id,
+        title: item.title || item.alt || "No Title",
+        imageUrl: item.src || item.imageUrl || "No URL",
+        contentsUrl: item.src || item.contentsUrl || "No URL",
+        ctype: selectedIcon === 'file' ? 'image' : selectedIcon,
+        positionX: offsetX,
+        positionY: offsetY,
+        width: e.target.offsetWidth,
+        height: e.target.offsetHeight,
+        turnover: item.turnover || 0,
+        sequence: 1,
+        sticker: selectedIcon === 'sticker' ? {
+          title: item.id,
+          src: item.src,
+          alt: item.alt,
+          color: item.color
+        } : null,
+      };
+      console.log(window.draggedImage);
     };
   };
 
@@ -160,9 +166,12 @@ const EditSidebar = ({
   const handleAddItem = (createdItem) => {
     const newItem = {
       ...createdItem,
-      imageUrl: createdItem.fileUrl //response body에 있는 fileUrl을 imageUrl로 사용
+      
+      id: createdItem['item-id'], // response body에 있는 item-id를 id로 사용
+      imageUrl: createdItem.fileUrl // response body에 있는 fileUrl을 imageUrl로 사용
+      
     };
-
+    console.log(newItem);
     setCategoryData(prev => ({
       ...prev,
       file: [...prev.file, newItem]
@@ -190,15 +199,25 @@ const EditSidebar = ({
               ))
             ) : (
               categoryData[selectedIcon].map(item => (
-                <DraggableItem key={item.id}>
+                <DraggableItem key={item.id} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                   <div style={{ position: 'relative' }}>
                     <StyledImage
                       src={item.imageUrl}
                       alt={item.title}
                       draggable="true"
                       onDragStart={handleDragStart(item)}
+                      style={{ width: '90%', height: '90%' }}
                     />
-                    <DeleteButton onClick={() => handleDeleteItem(item.id)}>
+                    <DeleteButton
+                      onClick={() => handleDeleteItem(item.id)}
+                      style={{
+                        position: 'absolute',
+                        top: '-10px',
+                        right: '-10px',
+                        zIndex: 1001,
+                        pointerEvents: 'auto',
+                      }}
+                    >
                       <FiX />
                     </DeleteButton>
                   </div>

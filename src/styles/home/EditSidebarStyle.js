@@ -35,7 +35,8 @@ export const DraggableContainer = styled.div`
 `;
 
 export const DraggableItem = styled.div`
-  width: 100%;
+  width: 80%;
+  height: auto;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -44,8 +45,8 @@ export const DraggableItem = styled.div`
 `;
 
 export const StyledImage = styled.img`
-  width: 150px;
-  height: 150px;
+  width: ${(props) => props.width || '150px'};
+  height: ${(props) => props.height || '150px'};
   object-fit: contain;
   max-width: 100%;
   cursor: pointer;

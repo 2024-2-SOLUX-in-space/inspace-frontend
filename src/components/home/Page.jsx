@@ -32,9 +32,9 @@ const Page = forwardRef((props, ref) => {
       ctype: window.draggedImage.ctype,
       positionX: x,
       positionY: y,
-      height: window.draggedImage.height || 100,
-      width: window.draggedImage.width || 100,
-      turnover: 0,
+      height: window.draggedImage.height || 150,
+      width: window.draggedImage.width || 150,
+      turnover: window.draggedImage.turnover || 0,
       sequence: 0,
       sticker: window.draggedImage.sticker
     };
@@ -65,8 +65,8 @@ const Page = forwardRef((props, ref) => {
         y: item.positionY || 0,
       },
       style: {
-        width: item.width ? `${item.width}px` : '100px',
-        height: item.height ? `${item.height}px` : '100px',
+        width: item.width ? `${item.width}px` : '125px',
+        height: item.height ? `${item.height}px` : 'auto',
       },
       turnover: item.turnover,
       sequence: item.sequence || 0,
