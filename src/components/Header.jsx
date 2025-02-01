@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FiSearch, FiBell, FiUser } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import Notification from './alert/Notification';
+import api from '../api/api.js';
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -159,24 +160,20 @@ const NotificationsContent = styled.div`
   max-height: 200px;
   overflow-y: auto;
 
-  /* 스크롤바 전체 너비 */
   &::-webkit-scrollbar {
     width: 6px;
   }
 
-  /* 스크롤바 트랙(배경) */
   &::-webkit-scrollbar-track {
     background: transparent;
     margin: 5px;
   }
 
-  /* 스크롤바 thumb(움직이는 부분) */
   &::-webkit-scrollbar-thumb {
     background: #e0e0e0;
     border-radius: 50px;
   }
 
-  /* 스크롤바 thumb 호버 시 */
   &::-webkit-scrollbar-thumb:hover {
     background: #bdbdbd;
   }
@@ -188,20 +185,11 @@ const Header = () => {
   const [isUserFilled, setIsUserFilled] = useState(false);
   const [isSearchFilled, setIsSearchFilled] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState([]);
   const navigate = useNavigate();
-  //가상 데이터 예시
-  const [notifications, setNotifications] = useState([
-    { username: 'space', action: '나를 팔로우합니다' },
-    { username: '웹프핑', action: '나를 팔로잉합니다' },
-    { username: '차은우', action: '나를 팔로우합니다' },
-    { username: '에스파', action: '나를 팔로우합니다' },
-    { username: 'nct', action: '나를 팔로우합니다' },
-    { username: '아이유', action: '나를 팔로우합니다' },
-    { username: '블랙핑크', action: '나를 팔로우합니다' },
-    { username: '뉴진스', action: '나를 팔로우합니다' },
-    { username: '트와이스', action: '나를 팔로우합니다' },
-  ]);
+  const token = localStorage.getItem('access_token');
 
+  // 검색 기능 
   const handleSearch = () => {
     setIsSearchFilled(!isSearchFilled);
     if (searchText.trim()) {
@@ -209,19 +197,107 @@ const Header = () => {
     }
   };
 
-  //마이페이지 이동 로직
+  // 마이페이지 이동 로직
   const handleUserClick = () => {
     //etIsUserFilled(!isUserFilled);
     navigate('/mypage');
   };
 
-  const handleMarkAsRead = () => {
-    setNotifications([]);
+  // 초기 알림 데이터 불러오기
+  const fetchNotifications = async () => {
+    try {
+      const response = await api.get('/api/notifications/unread');
+      const unreadNotifications = response.data.slice(0, 10);
+  
+      // 초기 알림 데이터를 SSE 알림과 병합
+      setNotifications((prev) => [...unreadNotifications, ...prev]);
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    }
+  };
+  
+  useEffect(() => {
+    let isMounted = true;
+    let reader;
+  
+    const connectSSE = async () => {
+      try {
+        const response = await fetch(
+          `http://3.35.10.158:8080/api/notifications/stream`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+  
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+  
+        while (isMounted) {
+          const { done, value } = await reader.read();
+          if (done) break; 
+  
+          const text = decoder.decode(value, { stream: true }).trim();
+  
+          // `data:` 부분 추출
+          if (text.includes("data:")) {
+            const jsonData = text.split("data:")[1]?.trim(); 
+  
+            try {
+              const newNotification = JSON.parse(jsonData); 
+  
+              // 알림 목록 업데이트
+              setNotifications((prev) => {
+                const updatedNotifications = [newNotification, ...prev];
+                if (updatedNotifications.length > 10) {
+                  updatedNotifications.pop(); 
+                }
+                return updatedNotifications;
+              });
+            } catch (e) {
+              console.error("Failed to parse notification:", e);
+            }
+          } else {
+          }
+        }
+      } catch (error) {
+        console.error("SSE fetch error:", error);
+        setTimeout(connectSSE, 5000); 
+      }
+    };
+  
+    fetchNotifications(); // 초기 알림 데이터
+    connectSSE(); // SSE 연결 실행
+  
+    return () => {
+      isMounted = false;
+  
+      if (reader) {
+        reader.cancel().catch((err) => console.error("Error canceling reader:", err));
+      }
+    };
+  }, []);
+
+  // 알림 아이콘 클릭
+  const handleBellClick = () => {
+    setShowNotifications(!showNotifications);
+    setIsBellFilled(false);
   };
 
-  const handleBellClick = () => {
-    setIsBellFilled(!isBellFilled);
-    setShowNotifications(!showNotifications);
+  // 모두 읽음 처리
+  const handleMarkAsRead = async () => {
+    try {
+      await api.patch('/api/notifications/read-all');
+      setNotifications([]);
+    } catch (error) {
+      console.error('Error marking notifications as read:', error);
+    }
   };
 
   return (
@@ -247,7 +323,7 @@ const Header = () => {
           <IconButton onClick={handleBellClick} isSelected={isBellFilled}>
             <FiBell size={32} fill={isBellFilled ? 'currentColor' : 'none'} />
           </IconButton>
-          {notifications.length > 0 && <NotificationBadge />}
+          {notifications?.length > 0 && <NotificationBadge />}
         </IconButtonWrapper>
 
         <IconButton onClick={handleUserClick} isSelected={isUserFilled}>
@@ -267,14 +343,16 @@ const Header = () => {
             </NotificationHeader>
 
             <NotificationsContent>
-              {notifications.length > 0 ? (
-                notifications.map((notification, index) => (
-                  <Notification
-                    key={index}
-                    username={notification.username}
-                    action={notification.action}
-                  />
-                ))
+              {notifications?.length > 0 ? (
+                notifications.map((notification) => {
+                  return (
+                    <Notification
+                      key={notification.notification_id}
+                      notification_id={notification.notification_id}
+                      message={notification.message}
+                    />
+                  )
+                })
               ) : (
                 <EmptyNotification>
                   현재 최신 알림이 없습니다.
