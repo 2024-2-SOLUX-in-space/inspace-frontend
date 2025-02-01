@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useContext } from 'react';
+import React, { useRef, useState, useEffect, useContext, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import HTMLFlipBook from 'react-pageflip';
 import PageCover from './PageCover';
@@ -14,7 +14,9 @@ const HomeDiary = ({
   onImageSelect,
   selectedIcon
 }) => {
-  const flipBook = useRef();
+  const flipBook = useRef(null);
+  const [pageFlip, setPageFlip] = useState(null);
+
   const [pagesData, setPagesData] = useState({});
   const [isItemSelected, setIsItemSelected] = useState(false);
 
@@ -22,16 +24,17 @@ const HomeDiary = ({
   const { selectedItem, setSelectedItem } = useItemContext();
 
   const fetchPageData = async (pageNum) => {
+    if (!activeSpace?.id) return;
     try {
-      const response = await api.get(`/api/page?space_id=${activeSpace?.id}&pageNum=${pageNum}`);
+      const response = await api.get(`/api/page?space_id=${activeSpace.id}&pageNum=${pageNum}`);
       const items = Array.isArray(response.data) ? response.data : [];
-      setPagesData(prev => ({
+      setPagesData((prev) => ({
         ...prev,
         [pageNum]: items,
       }));
     } catch (error) {
       console.error(`Error fetching data for page ${pageNum}:`, error);
-      setPagesData(prev => ({
+      setPagesData((prev) => ({
         ...prev,
         [pageNum]: [],
       }));
@@ -48,22 +51,36 @@ const HomeDiary = ({
     }
   }, [activeSpace]);
 
+  const handleInit = useCallback((flipEl) => {
+    const pageFlipInstance = flipEl.pageFlip();
+    setPageFlip(pageFlipInstance);
+  }, []);
+
+  useEffect(() => {
+    if (activeSpace?.id && flipBook.current) {
+      const pageFlipInstance = flipBook.current.pageFlip?.();
+      if (pageFlipInstance && typeof pageFlipInstance.flip === 'function') {
+        pageFlipInstance.flip(0);
+      }
+    }
+  }, [activeSpace]);
+
   const getImagesForPage = (pageNum) => {
     return pagesData[pageNum] || [];
   };
 
   const handleFlip = (e) => {
-    const currentPage = e.data; 
+    const currentPage = e.data;
     if (!pagesData[currentPage]) {
       fetchPageData(currentPage);
     }
   };
 
   const handleDeleteImage = (id) => {
-    setPagesData(prev => {
+    setPagesData((prev) => {
       const updated = { ...prev };
-      Object.keys(updated).forEach(pageNum => {
-        updated[pageNum] = updated[pageNum].filter(img => img.itemId !== id);
+      Object.keys(updated).forEach((pageNum) => {
+        updated[pageNum] = updated[pageNum].filter((img) => img.itemId !== id);
       });
       return updated;
     });
@@ -73,10 +90,10 @@ const HomeDiary = ({
   };
 
   const handleImageUpdate = (imageId, updates) => {
-    setPagesData(prev => {
+    setPagesData((prev) => {
       const updated = { ...prev };
-      Object.keys(updated).forEach(pageNum => {
-        updated[pageNum] = updated[pageNum].map(img =>
+      Object.keys(updated).forEach((pageNum) => {
+        updated[pageNum] = updated[pageNum].map((img) =>
           img.itemId === imageId ? { ...img, ...updates } : img
         );
       });
@@ -96,6 +113,8 @@ const HomeDiary = ({
     <DiaryWrapper style={{ pointerEvents: isEditMode ? 'auto' : 'auto' }}>
       <BookWrapper>
         <HTMLFlipBook
+          key={activeSpace?.id}
+          ref={flipBook}
           width={400}
           height={500}
           size="stretch"
@@ -110,7 +129,6 @@ const HomeDiary = ({
           drawShadow={true}
           flippingTime={1000}
           className="flip-book"
-          ref={flipBook}
           drawOnDemand={false}
           usePortrait={false}
           startPage={0}
@@ -121,14 +139,18 @@ const HomeDiary = ({
           cornerCursor={isItemSelected ? 'default' : 'pointer'}
           onFlip={handleFlip}
         >
-          <PageCover position="top" coverType={activeSpace.coverType} title={activeSpace.title} />
+          <PageCover
+            position="top"
+            coverType={activeSpace.coverType}
+            title={activeSpace.title}
+          />
           {[...Array(10)].map((_, i) => (
             <Page
               key={i + 1}
               number={i + 1}
               images={getImagesForPage(i + 1)}
-              onDeleteImage={handleDeleteImage}
               onImageUpdate={handleImageUpdate}
+              onDeleteImage={handleDeleteImage}
               isEditMode={isEditMode}
               selectedImageId={selectedImageId}
               onImageSelect={onImageSelect}
@@ -136,7 +158,10 @@ const HomeDiary = ({
               onPageUpdate={fetchPageData}
             />
           ))}
-          <PageCover position="bottom" coverType={activeSpace.coverType} /> 
+          <PageCover
+            position="bottom"
+            coverType={activeSpace.coverType}
+          />
         </HTMLFlipBook>
       </BookWrapper>
     </DiaryWrapper>
