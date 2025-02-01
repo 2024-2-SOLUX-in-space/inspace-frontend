@@ -9,7 +9,7 @@
 |[김채현](https://github.com/chaehyeon03)|로그인, 회원가입, 마이페이지|
 |[배정연](https://github.com/bluishflame)|검색화면|
 |[안예빈](https://github.com/ye-bean)|공간(홈)|
-|[정채연](https://github.com/chaeyeon-jung)|사이드바|
+|[정채연](https://github.com/chaeyeon-jung)|헤더, 사이드바|
 <br/>
 
 ## 📁 폴더 구조
