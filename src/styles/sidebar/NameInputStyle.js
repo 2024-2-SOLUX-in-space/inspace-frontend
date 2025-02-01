@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const NameInputOverlay = styled.div`
   position: fixed;
@@ -62,16 +62,17 @@ export const CloseButton = styled.button`
     outline: none;
   }
 
-  &:focus{
-  outline: none;}
+  &:focus {
+    outline: none;
+  }
 
   z-index: 60;
 `;
 
 export const BackButton = styled.button`
-  position: absolute; 
-  top: 0.45rem; 
-  left: 0.28rem; 
+  position: absolute;
+  top: 0.45rem;
+  left: 0.28rem;
   background: none;
   border: none;
   font-size: 1.27rem;
@@ -84,7 +85,8 @@ export const BackButton = styled.button`
   }
 
   &:focus {
-  outline: none;}
+    outline: none;
+  }
 
   z-index: 60;
 `;
@@ -108,8 +110,8 @@ export const CheckboxContainer = styled.div`
   align-items: center;
   margin-bottom: 0.5rem;
 
-  input[type="checkbox"] {
-    appearance: none; 
+  input[type='checkbox'] {
+    appearance: none;
     width: 17px;
     height: 17px;
     border-radius: 4px;
@@ -121,7 +123,7 @@ export const CheckboxContainer = styled.div`
     &:checked {
       background-color: black;
       &::after {
-        content: "✓"; 
+        content: '✓';
         color: white;
         font-size: 13px;
         position: absolute;

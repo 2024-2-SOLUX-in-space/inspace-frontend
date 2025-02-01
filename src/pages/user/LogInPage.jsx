@@ -87,6 +87,7 @@ function LogInPage() {
         }));
 
         navigate('/home');
+        //window.location.reload(); //새로 고침
       } else {
         showAlert(response.data.message);
       }

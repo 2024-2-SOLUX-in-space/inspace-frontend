@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { HeartList, ListBox, TitleContainer, HeartButtonBackground,
   FollowIconContainer, LeftIconContainer, TabContainer, TabButton } from "../../styles/sidebar/HeartButtonStyle";
 import { FiUser, FiUserCheck, FiUserMinus } from "react-icons/fi"; 
 import HeartAlert from "../alert/HeartAlert";
 import api from '../../api/api.js';
 
-const HeartButton = ({ isHeartOpen }) => {
+const HeartButton = ({ isHeartOpen, toggleHeart }) => {
+  const heartRef = useRef(null);
   const [tab, setTab] = useState("followers");
   const [alertInfo, setAlertInfo] = useState( {isOpen: false, message: "" });
   const [followers, setFollowers] = useState([]);
@@ -43,6 +44,25 @@ const HeartButton = ({ isHeartOpen }) => {
     }
   };  
   
+  // 외부 클릭 시 하트 닫기 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (heartRef.current && !heartRef.current.contains(event.target)) {
+        toggleHeart();
+      }
+    };
+
+    if (isHeartOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isHeartOpen, toggleHeart]);
+
   // 팔로잉 데이터 불러오기 (GET /api/follow/followings)
   const fetchFollowings = async () => {
     setLoading(true);
@@ -137,8 +157,8 @@ const HeartButton = ({ isHeartOpen }) => {
     <>
       {isHeartOpen && !alertInfo.isOpen && (
         <>
-        <HeartButtonBackground />
-        <HeartList isScrollable = {isScrollable}>
+        <HeartButtonBackground  />
+        <HeartList ref={heartRef} isScrollable = {isScrollable}>
           <TabContainer>
             <TabButton
               isActive={tab === "followers"}
