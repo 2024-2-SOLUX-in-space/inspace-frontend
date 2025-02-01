@@ -156,8 +156,17 @@ const EditSidebar = ({
   };
 
   const handleCloseModal = () => setIsModalOpen(false);
+  
   const handleAddItem = (createdItem) => {
-    // Implement logic to add the item to the categoryData or other state
+    const newItem = {
+      ...createdItem,
+      imageUrl: createdItem.fileUrl //response body에 있는 fileUrl을 imageUrl로 사용
+    };
+
+    setCategoryData(prev => ({
+      ...prev,
+      file: [...prev.file, newItem]
+    }));
     handleCloseModal();
   };
 
