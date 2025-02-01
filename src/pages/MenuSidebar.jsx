@@ -9,7 +9,6 @@ import { MenuSidebarContainer,
 import ArchiveButton from '../components/sidebar/ArchiveButton';
 import HomeButton from '../components/sidebar/HomeButton';
 import AddButton from "../components/sidebar/AddButton";
-import EditButton from '../components/sidebar/EditButton';
 import HeartButton from '../components/sidebar/HeartButton';
 import { SpaceContext } from '../context/SpaceContext';
 
@@ -37,9 +36,7 @@ const MenuSidebar = ({
       if (iconName === "filePlus") {
         toggleAddButton();
       }
-      if (iconName === "edit") {
-        toggleEdit();
-      }
+
       if (iconName === "heart") {
         toggleHeart();
       }
@@ -50,7 +47,6 @@ const MenuSidebar = ({
       { icon: <FiHome />, id: "home", tooltip: "홈" },
       { icon: <FiArchive />, id: "archive", tooltip: "공간 목록" },
       { icon: <FiFilePlus />, id: "filePlus", tooltip: "공간 추가" },
-      { icon: <FiEdit />, id: "edit", tooltip: "공간 편집" },
       { icon: <FiHeart />, id: "heart", tooltip: "팔로워/팔로잉" },
     ];
   
@@ -96,15 +92,8 @@ const MenuSidebar = ({
                 { activeIcon === "filePlus" && (
                   <AddButton isAddButtonOpen={isAddButtonOpen} 
                   toggleAddButton={toggleAddButton} />
-                )}
-
-                { activeIcon === "edit" && (
-                  <EditButton
-                    isEditOpen={isEditOpen}
-                    toggleEdit={toggleEdit} 
-                  />
-                )}  
-
+              )}
+              
                 { activeIcon === "heart" && (
                   <HeartButton
                     isHeartOpen={isHeartOpen}
