@@ -1,36 +1,38 @@
 import React, { useState, useRef, useCallback, useContext } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { SpaceContext } from '../../context/SpaceContext';
 import api from '../../api/api';
-import PropTypes from 'prop-types';
+import Modal from 'react-modal';
 
-const ModalOverlay = styled.div`
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 50;
-  pointer-events: auto;
-`;
-
-const ModalContent = styled.div`
-  background-color: white;
-  border-radius: 0.5rem;
-  padding: 1rem ;
-  width: 50%;
-  height: 70%;
-  display: flex;
-  flex-direction: column;
-`;
+const ModalStyles = {
+  overlay: {
+    backgroundColor: 'rgba(1, 1, 1, 0.5)',
+    zIndex:3000,
+    pointerEvents: 'auto',
+  },
+  modal: {
+    position: 'fixed',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '60%',
+    height: '80%',
+    backgroundColor: '#ffffff',
+    padding: '35px 40px',
+    border: 'none',
+    borderRadius: '10px',
+    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+  },
+};
 
 const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 30px;
 `;
 
 const Title = styled.h2`
@@ -42,43 +44,24 @@ const CloseButton = styled.button`
   background: none;
   border: none;
   font-size: 2rem;
-  outline: none;
   cursor: pointer;
   padding: 0;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 0.25rem;
-  font-size: 1.25rem;
   outline: none;
-`;
-
-const SaveButton = styled.button`
-  background-color: #111827;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  float: right;
-  cursor: pointer;
   
-  &:hover {
-    background-color: #1F2937;
+  &:focus {
+    outline: none;
   }
 `;
 
 const CropContainer = styled.div`
   flex: 1;
-  min-height: 0;
+  min-height: 100px;
   margin-bottom: 1rem;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: auto;
+  overflow: hidden;
   
   & > div {
     max-width: 100%;
@@ -93,14 +76,48 @@ const CropContainer = styled.div`
   }
 `;
 
-const BottomContainer = styled.div`
-  margin-top: auto;
-`;
-
 const Canvas = styled.canvas`
   width: 0;
   height: 0;
   visibility: hidden;
+`;
+
+const InputContainer = styled.div`
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  bottom: 30px;
+  width: 90%;
+`;
+
+const Input = styled.input`
+  width: 90%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 0.375rem;
+  font-size: 1.25rem;
+  outline: none;
+`;
+
+const SaveButton = styled.button`
+  height: 3rem;
+  background-color: #111827;
+  padding: 0.75rem 1rem;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-size: 1rem;
+  
+  &:hover {
+    background-color: #1F2937;
+  }
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
@@ -117,8 +134,8 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
     unit: 'px',
     x: 0,
     y: 0,
-    width: 10,
-    height: 10
+    width: 50,
+    height: 50
   });
   const [completedCrop, setCompletedCrop] = useState(null);
   const { activeSpace } = useContext(SpaceContext);
@@ -221,11 +238,18 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
   if (!isOpen) return null;
 
   return (
-    <ModalOverlay>
-      <ModalContent>
-        <ModalHeader>
-          <Title>이미지의 제목을 입력해주세요 ({title.length}/{maxLength})</Title>
-          <CloseButton onClick={handleClose}>×</CloseButton>
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={handleClose}
+      contentLabel="이미지 추가 모달"
+      style={{
+        overlay: ModalStyles.overlay,
+        content: ModalStyles.modal,
+      }}
+    >
+      <ModalHeader>
+        <Title>이미지의 제목을 입력해주세요 ({title.length}/{maxLength})</Title>
+        <CloseButton onClick={handleClose}>×</CloseButton>
         </ModalHeader>
         
         <CropContainer>
@@ -248,7 +272,7 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
           )}
         </CropContainer>
         
-        <BottomContainer>
+        <InputContainer>
           <Input
             type="text"
             value={title}
@@ -257,11 +281,10 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
             maxLength={maxLength}
           />
           <SaveButton onClick={handleSave}>저장</SaveButton>
-        </BottomContainer>
+        </InputContainer>
 
         <Canvas ref={canvasRef} />
-      </ModalContent>
-    </ModalOverlay>
+    </Modal>
   );
 };
 
