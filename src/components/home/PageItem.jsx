@@ -49,52 +49,67 @@ const PageItem = ({
     }
   };
 
-  // 🔥 회전 API 호출을 디바운스로 최적화 (500ms 동안 추가 입력 없을 때만 실행)
-  const debouncedRotateUpdate = debounce(async (imageId, newRotation) => {
+  // 🔥 디바운스된 업데이트 함수 (500ms 동안 추가 입력 없을 때만 실행)
+  const debouncedUpdate = debounce(async (imageId, updates) => {
     try {
-      await api.put(`/api/page?space_id=${activeSpace.id}&pageNum=${pageNum}`, { turnover: newRotation, });
+      await api.put(`/api/page?space_id=${activeSpace.id}&pageNum=${pageNum}`, [updates]);
     } catch (error) {
-      console.error("❌ 회전 업데이트 실패:", error);
+      console.error("❌ 업데이트 실패:", error);
     }
   }, 500);
 
   // Update position
-  const handleDrag = ({ target, delta }) => {
-    const currentLeft = parseFloat(target.style.left) || 0;
-    const currentTop = parseFloat(target.style.top) || 0;
+const handleDrag = ({ target, delta }) => {
+  const parentDiv = target.closest(".page-item");
+  const currentLeft = parseFloat(parentDiv.style.left) || 0;
+  const currentTop = parseFloat(parentDiv.style.top) || 0;
 
-    const newLeft = currentLeft + delta[0];
-    const newTop = currentTop + delta[1];
+  // 현재 회전 각도 가져오기
+  const rotation = image.turnover || 0;
+  const radian = (rotation * Math.PI) / 180;
 
-    target.style.left = `${newLeft}px`;
-    target.style.top = `${newTop}px`;
+  // ✅ 회전된 상태에서도 올바르게 드래그 방향을 유지하도록 변환
+  const adjustedDeltaX = delta[0] * Math.cos(radian) - delta[1] * Math.sin(radian);
+  const adjustedDeltaY = delta[0] * Math.sin(radian) + delta[1] * Math.cos(radian);
 
-    onUpdate(image.id, {
-      positionX: newLeft,
-      positionY: newTop,
-    });
-  };
+  const newLeft = currentLeft + adjustedDeltaX;
+  const newTop = currentTop + adjustedDeltaY;
+
+  parentDiv.style.left = `${newLeft}px`;
+  parentDiv.style.top = `${newTop}px`;
+
+  onUpdate(image.id, {
+    positionX: newLeft,
+    positionY: newTop,
+  });
+};
+
+
 
   // 🔥 회전 시 부모 요소에 transform 적용 → 버튼도 함께 회전됨!
-  const handleRotate = ({ target, rotate }) => {
-    const parent = target.closest(".page-item"); // 부모 요소 찾기
-    if (parent) {
-      parent.style.transform = `rotate(${rotate}deg)`;
-    }
+const handleRotate = ({ target, rotate }) => {
+  const parentDiv = target.closest(".page-item");
+  
+  // ✅ 부모 요소의 transform에 직접 회전 적용 (중복 회전 방지)
+  parentDiv.style.transform = `rotate(${rotate}deg)`;
 
-    // 🔥 API 호출을 디바운스 적용하여 500ms 후에 실행
-    debouncedRotateUpdate(image.id, rotate);
-  };
+  onUpdate(image.id, {
+    turnover: rotate
+  });
+};
 
   // Update size
   const handleResize = ({ target, width, height }) => {
     target.style.width = `${width}px`;
     target.style.height = `${height}px`;
 
-    onUpdate(image.id, {
+    const updates = {
       width: width,
       height: height,
-    });
+    };
+
+    onUpdate(image.id, updates);
+    //debouncedUpdate(image.id, updates);
   };
 
   const handleImageUpdate = async (imageId, updates) => {
@@ -126,7 +141,7 @@ const PageItem = ({
           positionY: parseFloat(imageRef.current.style.top) || image.position.y,
           height: parseFloat(imageRef.current.style.height) || parseFloat(image.style.height),
           width: parseFloat(imageRef.current.style.width) || parseFloat(image.style.width),
-          turnover: parseFloat(imageRef.current.style.transform.replace(/[^0-9\-.,]/g, '')) || image.rotation,
+          turnover: parseFloat(imageRef.current.style.transform.replace(/[^0-9\-.,]/g, '')) || image.turnover,
           sequence: 0,
           sticker: image.sticker,
         };
@@ -146,9 +161,9 @@ const PageItem = ({
         position: 'absolute',
         left: `${image.position?.x}px`,
         top: `${image.position?.y}px`,
-        width: image.style?.width || '100px',
-        height: image.style?.height || '100px',
-        transform: `rotate(${image.rotation || 0}deg)`,
+        width: image.style?.width,
+        height: image.style?.height,
+        transform: `rotate(${image.turnover || 0}deg)`,
         transformOrigin: 'center center',
         cursor: isEditMode ? 'grab' : 'default',
         zIndex: isSelected ? 9999 : 1,
