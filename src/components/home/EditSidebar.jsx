@@ -113,19 +113,17 @@ const EditSidebar = ({
       return;
     }
 
-    setIsLoading(true);
+    setCategoryData(prev => ({
+      ...prev,
+      [selectedIcon]: prev[selectedIcon].filter(item => item.id !== itemId)
+    }));
+    setSelectedItem(prevSelected => (prevSelected === itemId ? null : prevSelected));
+
     try {
       await api.delete(`/api/delete/item?itemId=${itemId}`);
-      setCategoryData(prev => ({
-        ...prev,
-        [selectedIcon]: prev[selectedIcon].filter(item => item.id !== itemId)
-      }));
-      setSelectedItem(prevSelected => (prevSelected === itemId ? null : prevSelected));
     } catch (error) {
       console.error('Error deleting item:', error.message);
       alert('항목 삭제에 실패했습니다. 다시 시도해주세요.');
-    } finally {
-      setIsLoading(false);
     }
   };
 
