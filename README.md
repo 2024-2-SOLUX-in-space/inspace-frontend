@@ -39,6 +39,7 @@ inspace
 ```
 
 ## 플로우차트
+![inspace_flowchart](https://github.com/user-attachments/assets/3835c2f5-2a0d-45c3-9adf-6ac1066feb03)
 
 
 ## 🖥️ 기술 스택
