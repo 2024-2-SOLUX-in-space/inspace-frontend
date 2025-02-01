@@ -2,7 +2,6 @@ import React, { useState, useContext, Suspense } from 'react';
 import HomeDiary from '../../components/home/HomeDiary';
 import EditSidebar from '../../components/home/EditSidebar';
 import Header from '../../components/Header';
-import ImageAddModal from '../../pages/home/ImageAddModal';
 import { HomeContainer, ContentWrapper, EditButton } from '../../styles/home/HomeStyle';
 import { SpaceContext } from '../../context/SpaceContext';
 import { useItemContext } from '../../context/ItemContext';
@@ -12,10 +11,7 @@ const Home = () => {
   const [draggableImages, setDraggableImages] = useState([]);
   const [diaryData, setDiaryData] = useState({});
   const [selectedIcon, setSelectedIcon] = useState('image');
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-
+  
   const [newItem, setNewItem] = useState(null);
 
   const { selectedSpace } = useContext(SpaceContext);
@@ -26,22 +22,6 @@ const Home = () => {
   };
   const handleCloseSidebar = () => {
     setIsEditOpen(false);
-  };
-
-  const handleFileSelected = (file) => {
-    setSelectedFile(file);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedFile(null);
-  };
-
-  const handleAddItem = (createdItem) => {
-    setNewItem(createdItem);
-    setIsModalOpen(false);
-    setSelectedFile(null);
   };
 
   const handleImageDrop = async (pageNum, x, y) => {
@@ -166,18 +146,10 @@ const Home = () => {
           isOpen={isEditOpen}
           onClose={handleCloseSidebar}
           images={draggableImages}
-          onFileSelected={handleFileSelected}
           newItem={newItem}
           setNewItem={setNewItem}
-          isModalOpen={isModalOpen}
           selectedIcon={selectedIcon}
           setSelectedIcon={setSelectedIcon}
-        />
-        <ImageAddModal
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          imageFile={selectedFile}
-          onSave={handleAddItem}
         />
       </HomeContainer>
     </>

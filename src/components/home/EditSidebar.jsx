@@ -16,11 +16,11 @@ import {
 import stickerData from '../../data/stickers.json';
 import api from '../../api/api';
 import { useItemContext } from '../../context/ItemContext';
+import ImageAddModal from '../../pages/home/ImageAddModal';
 
 const EditSidebar = ({
   isOpen,
   onFileSelected,
-  onDragStart,
   selectedIcon,
   setSelectedIcon
 }) => {
@@ -38,6 +38,9 @@ const EditSidebar = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const fileInputRef = useRef(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   useEffect(() => {
     if (!activeSpace || !activeSpace.id || selectedIcon === 'sticker') {
@@ -88,10 +91,15 @@ const EditSidebar = ({
     });
   };
 
+  const handleOpenModal = () => {
+    fileInputRef.current?.click();
+  };
+
   const handleFileUpload = (e) => {
     const files = e.target.files;
     if (files && files[0]) {
-      onFileSelected(files[0]);
+      setSelectedFile(files[0]);
+      setIsModalOpen(true);
     }
   };
 
@@ -147,6 +155,12 @@ const EditSidebar = ({
     };
   };
 
+  const handleCloseModal = () => setIsModalOpen(false);
+  const handleAddItem = (createdItem) => {
+    // Implement logic to add the item to the categoryData or other state
+    handleCloseModal();
+  };
+
   return (
     <SidebarContainer isOpen={isOpen}>
       <SidebarContent>
@@ -187,7 +201,7 @@ const EditSidebar = ({
 
         {selectedIcon === 'file' && (
           <AddButtonContainer>
-            <AddButton onClick={() => fileInputRef.current?.click()}>
+            <AddButton onClick={handleOpenModal}>
               <FiPlus /> 추가
             </AddButton>
           </AddButtonContainer>
@@ -221,6 +235,13 @@ const EditSidebar = ({
             accept="image/*"
           />
         </IconContainer>
+
+        <ImageAddModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          imageFile={selectedFile}
+          onSave={handleAddItem}
+        />
       </SidebarContent>
     </SidebarContainer>
   );
