@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { HeartList, ClickedHeart, ListBox, TitleContainer, HearButtonBackground, 
+import { HeartList, ListBox, TitleContainer, HeartButtonBackground, 
   FollowIconContainer, LeftIconContainer, TabContainer, TabButton } from "../../styles/sidebar/HeartButtonStyle";
 import { FiUser, FiUserCheck, FiUserMinus } from "react-icons/fi"; 
 import HeartAlert from "../alert/HeartAlert";
