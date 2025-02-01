@@ -18,7 +18,8 @@ export const SidebarContainer = styled.div`
 export const SidebarContent = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: calc(100% - 65px);
+  overflow-y: auto;
 `;
 
 export const DraggableContainer = styled.div`
@@ -51,7 +52,7 @@ export const StyledImage = styled.img`
 `;
 
 export const IconContainer = styled.div`
-  position: absolute;
+  position: fixed;
   bottom: 0;
   display: flex;
   justify-content: space-around;
