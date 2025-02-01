@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import NameInput from "./NameInput";
 import CoverSelection from "./CoverSelection";
 import PublicSelection from "./PublicSelection";
 import Alert from "../alert/AddTrashAlert";
