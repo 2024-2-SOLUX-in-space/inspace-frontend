@@ -1,28 +1,8 @@
 import React, { useState } from "react";
-import styled from "styled-components";
-import CoverSelection from "./CoverSelection";
 import NameInput from "./NameInput";
+import CoverSelection from "./CoverSelection";
 import PublicSelection from "./PublicSelection";
 import Alert from "../alert/AddTrashAlert";
-
-const ClickedAdd = styled.div`
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  justify-content: center;
-  width: 45px;
-  height: 45px;
-  border-radius: 5px;
-
-  background-color: ${({ isActive }) => 
-    isActive ? "#ECECEC" : "transparent"};
-  transition: background-color 0.2s ease-in-out;
-
-  position: absolute;
-  top: 205px; 
-  left: 15px; 
-  z-index: -1000; 
-`;
 
 const AddButton = ({ isAddButtonOpen, toggleAddButton }) => {
   const [currentStep, setCurrentStep] = useState(1); 

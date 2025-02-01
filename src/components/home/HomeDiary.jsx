@@ -3,25 +3,25 @@ import PropTypes from 'prop-types';
 import HTMLFlipBook from 'react-pageflip';
 import PageCover from './PageCover';
 import Page from './Page';
-import { SpaceContext } from '../../context/SpaceContext';
-import { DiaryWrapper, BookWrapper } from '../../styles/home/HomeDiaryStyle';
 import api from '../../api/api';
+import { SpaceContext } from '../../context/SpaceContext';
 import { useItemContext } from '../../context/ItemContext';
+import { DiaryWrapper, BookWrapper } from '../../styles/home/HomeDiaryStyle';
 
 const HomeDiary = ({
   isEditMode,
   selectedImageId,
   onImageSelect,
-  selectedIcon
 }) => {
   const flipBook = useRef(null);
 
   const [pagesData, setPagesData] = useState({});
   const [isItemSelected, setIsItemSelected] = useState(false);
   const [isInteracting, setIsInteracting] = useState(false);
-  const { activeSpace, spaces } = useContext(SpaceContext);
+  const { activeSpace } = useContext(SpaceContext);
   const { selectedItem, setSelectedItem } = useItemContext();
 
+  // 페이지 데이터 가져오기
   const fetchPageData = async (pageNum) => {
     if (!activeSpace?.id) return;
     try {
@@ -40,6 +40,7 @@ const HomeDiary = ({
     }
   };
 
+  // 페이지 데이터 가져오기
   useEffect(() => {
     if (activeSpace?.id) {
       for (let i = 1; i <= 10; i++) {
@@ -56,12 +57,10 @@ const HomeDiary = ({
 
   const handleChangeState = (e) => {
     if (isItemSelected) {
-      //e.preventDefault(); // 기본 동작 방지
       flipBook.current.pageFlip().setState('read'); // 상태를 "read"로 강제 설정
       return;
     }
   };
-
 
   const handleDeleteImage = (id) => {
     setPagesData((prev) => {

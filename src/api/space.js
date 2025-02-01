@@ -1,4 +1,3 @@
-// src/api/space.js
 import api from './api';
 
 export const fetchSpaces = async () => {

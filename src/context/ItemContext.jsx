@@ -1,10 +1,7 @@
-// src/context/ItemContext.js
 import React, { createContext, useState, useContext } from 'react';
 
-// Context 생성
 export const ItemContext = createContext();
 
-// Provider 컴포넌트
 export const ItemProvider = ({ children }) => {
   const [items, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);

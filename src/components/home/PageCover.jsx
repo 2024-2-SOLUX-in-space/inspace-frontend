@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 const PageCover = React.forwardRef((props, ref) => {
   const getCoverImage = (position, coverType = 1) => {

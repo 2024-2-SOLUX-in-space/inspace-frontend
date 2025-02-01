@@ -1,13 +1,13 @@
-// src/components/sidebar/ArchiveButton.js
-import React, { useState, useContext, useRef } from "react";
-import { ArchiveList, ListBox, TitleContainer } from "../../styles/sidebar/ArchiveButtonStyle";
+import React, { useState, useEffect, useContext, useRef } from "react";
+import PropTypes from 'prop-types';
 import { FiBookOpen, FiBook, FiTrash2 } from "react-icons/fi";
 import { BsPinAngle, BsPinAngleFill } from "react-icons/bs";
-import Alert from "../alert/AddTrashAlert";
 import styled from "styled-components";
-import PropTypes from 'prop-types';
-import { SpaceContext } from '../../context/SpaceContext';
+import Alert from "../alert/AddTrashAlert";
+import { ArchiveList, ListBox, TitleContainer } from "../../styles/sidebar/ArchiveButtonStyle";
 import api from '../../api/api';
+import { SpaceContext } from '../../context/SpaceContext';
+
 
 const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
   const [isScrollable, setIsScrollable] = useState(false);
@@ -25,7 +25,7 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
   });
 
   // 외부 클릭 시 아카이브 닫기 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleClickOutside = (event) => {
       if (archiveRef.current && !archiveRef.current.contains(event.target)) {
         toggleArchive();
@@ -44,7 +44,7 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
   }, [isArchiveOpen, toggleArchive]);
 
   // spaces 변경 시 스크롤 여부 설정
-  React.useEffect(() => {
+  useEffect(() => {
     setIsScrollable(spaces.length > 5);
   }, [spaces]);
 
@@ -67,7 +67,7 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
     if (field === 'isPrimary') {
       const newIsPrimary = !currentSpace.isPrimary;
 
-      // 옵티미스틱 업데이트: 선택된 공간은 새로운 isPrimary 값, 다른 모든 공간은 false
+      // 공간 편집 api 호출 전 공간 상태 업데이트
       setSpaces(prevSpaces => prevSpaces.map(space => 
         space.id === spaceId ? { ...space, isPrimary: newIsPrimary } : { ...space, isPrimary: false }
       ));
@@ -278,7 +278,7 @@ export const PrimaryButton = ({ spaceId, isPrimary, onPinToggle }) => {
       id={spaceId}
       isPinned={isPrimary}
       onClick={(e) => {
-        e.stopPropagation(); // 이벤트 버블링 방지
+        e.stopPropagation();
         onPinToggle(spaceId);
       }}
     >
@@ -288,7 +288,7 @@ export const PrimaryButton = ({ spaceId, isPrimary, onPinToggle }) => {
 };
 
 PrimaryButton.propTypes = {
-  spaceId: PropTypes.number.isRequired, // 실제 타입에 맞게 수정 (예: number)
+  spaceId: PropTypes.number.isRequired,
   isPrimary: PropTypes.bool.isRequired,
   onPinToggle: PropTypes.func.isRequired,
 };
@@ -310,7 +310,7 @@ const SwitchButton = styled.div`
 
 export const PublicButton = ({ spaceId, isPublic, onSwitchToggle }) => {
   const handleClick = (e) => {
-    e.stopPropagation(); // 이벤트 버블링 방지
+    e.stopPropagation();
     onSwitchToggle(spaceId);
   };
 
@@ -322,7 +322,7 @@ export const PublicButton = ({ spaceId, isPublic, onSwitchToggle }) => {
 };
 
 PublicButton.propTypes = {
-  spaceId: PropTypes.number.isRequired, // 실제 타입에 맞게 수정 (예: number)
+  spaceId: PropTypes.number.isRequired,
   isPublic: PropTypes.bool.isRequired,
   onSwitchToggle: PropTypes.func.isRequired,
 };

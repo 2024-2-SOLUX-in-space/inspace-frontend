@@ -2,10 +2,11 @@ import React, { useState, useRef, useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import ReactCrop from 'react-image-crop';
-import 'react-image-crop/dist/ReactCrop.css';
-import { SpaceContext } from '../../context/SpaceContext';
-import api from '../../api/api';
 import Modal from 'react-modal';
+import 'react-image-crop/dist/ReactCrop.css';
+import api from '../../api/api';
+import { SpaceContext } from '../../context/SpaceContext';
+
 
 const ModalStyles = {
   overlay: {

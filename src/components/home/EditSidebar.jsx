@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { FiFolderPlus, FiImage, FiYoutube, FiMusic, FiPlus, FiX } from "react-icons/fi";
 import { BiSticker } from "react-icons/bi";
-import { SpaceContext } from '../../context/SpaceContext';
 import { 
   SidebarContainer,
   SidebarContent,
@@ -13,19 +12,20 @@ import {
   AddButton,
   DeleteButton
 } from '../../styles/home/EditSidebarStyle';
+import ImageAddModal from '../../pages/home/ImageAddModal';
 import stickerData from '../../data/stickers.json';
 import api from '../../api/api';
 import { useItemContext } from '../../context/ItemContext';
-import ImageAddModal from '../../pages/home/ImageAddModal';
+import { SpaceContext } from '../../context/SpaceContext';
 
 const EditSidebar = ({
   isOpen,
-  onFileSelected,
   selectedIcon,
   setSelectedIcon
 }) => {
   const { activeSpace } = useContext(SpaceContext);
   const { setSelectedItem } = useItemContext();
+  const fileInputRef = useRef(null);
 
   const [categoryData, setCategoryData] = useState({
     image: [],
@@ -35,13 +35,11 @@ const EditSidebar = ({
     file: []
   });
 
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fileInputRef = useRef(null);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-
+  // 공간 선택 시 카테고리 데이터 초기화
   useEffect(() => {
     if (!activeSpace || !activeSpace.id || selectedIcon === 'sticker') {
       resetCategoryData();
@@ -50,6 +48,7 @@ const EditSidebar = ({
     fetchCategoryData();
   }, [selectedIcon, activeSpace]);
 
+  // 카테고리 데이터 가져오기
   const fetchCategoryData = async () => {
     setIsLoading(true);
     try {
@@ -103,6 +102,7 @@ const EditSidebar = ({
     }
   };
 
+  // 공간 저장소 내 아이템 삭제
   const handleDeleteItem = async (itemId) => {
     if (!activeSpace || !activeSpace.id) {
       alert('삭제할 수 없습니다. 활성화된 공간이 선택되지 않았습니다.');

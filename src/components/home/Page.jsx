@@ -1,8 +1,7 @@
-// src/components/home/Page.jsx
 import React, { forwardRef, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { PageContent, PageNumber, DiaryContent } from '../../styles/home/HomeDiaryStyle';
 import PageItem from './PageItem';
+import { PageContent, PageNumber, DiaryContent } from '../../styles/home/HomeDiaryStyle';
 import api from '../../api/api';
 import { SpaceContext } from '../../context/SpaceContext';
 
@@ -39,7 +38,7 @@ const Page = forwardRef((props, ref) => {
       sticker: window.draggedImage.sticker
     };
 
-
+    // 사이드바에서 페이지로 아이템 저장
     try {
       const endpoint = newItem.ctype === "sticker" ? "/api/page/sticker" : "/api/page";
       const method = newItem.ctype === "sticker" ? api.post : api.put;

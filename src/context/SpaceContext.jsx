@@ -1,7 +1,6 @@
-// src/context/SpaceContext.jsx
 import React, { createContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { fetchSpaces } from '../api/space'; // spaces 데이터를 가져오는 API 함수
+import { fetchSpaces } from '../api/space';
 
 export const SpaceContext = createContext();
 
