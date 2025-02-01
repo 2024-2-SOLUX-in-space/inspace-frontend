@@ -32,7 +32,7 @@ const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 `;
 
 const Title = styled.h2`
@@ -81,20 +81,19 @@ const Canvas = styled.canvas`
   height: 0;
   visibility: hidden;
 `;
-
 const InputContainer = styled.div`
   position: fixed;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  bottom: 30px;
+  bottom: 25px;
   width: 90%;
 `;
 
 const Input = styled.input`
   width: 90%;
-  padding: 0.75rem;
+  padding: 0.75rem 1rem;
   border: 1px solid #ddd;
   border-radius: 0.375rem;
   font-size: 1.25rem;
@@ -102,6 +101,7 @@ const Input = styled.input`
 `;
 
 const SaveButton = styled.button`
+  min-width: 70px;
   height: 3rem;
   background-color: #111827;
   padding: 0.75rem 1rem;
@@ -134,8 +134,8 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
     unit: 'px',
     x: 0,
     y: 0,
-    width: 50,
-    height: 50
+    width: 75,
+    height: 75
   });
   const [completedCrop, setCompletedCrop] = useState(null);
   const { activeSpace } = useContext(SpaceContext);
