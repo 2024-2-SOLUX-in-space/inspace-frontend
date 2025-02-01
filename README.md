@@ -50,3 +50,4 @@ inspace
 - **react-moveable**(0.56.0)
 - **lodash**(4.17.21)
 - **page-flip**(2.0.7)
+- **react-masonry-css**(1.0.16)
