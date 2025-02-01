@@ -51,20 +51,6 @@ const HomeDiary = ({
     }
   }, [activeSpace]);
 
-  const handleInit = useCallback((flipEl) => {
-    const pageFlipInstance = flipEl.pageFlip();
-    setPageFlip(pageFlipInstance);
-  }, []);
-
-  useEffect(() => {
-    if (activeSpace?.id && flipBook.current) {
-      const pageFlipInstance = flipBook.current.pageFlip?.();
-      if (pageFlipInstance && typeof pageFlipInstance.flip === 'function') {
-        pageFlipInstance.flip(0);
-      }
-    }
-  }, [activeSpace]);
-
   const getImagesForPage = (pageNum) => {
     return pagesData[pageNum] || [];
   };
