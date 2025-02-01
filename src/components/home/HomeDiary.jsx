@@ -88,14 +88,6 @@ const HomeDiary = ({
     });
   };
 
-  if (!activeSpace) {
-    return (
-      <DiaryWrapper>
-        <p>{spaces.length === 0 ? '공간을 추가해주세요!' : '공간을 선택해주세요.'}</p>
-      </DiaryWrapper>
-    );
-  }
-
   return (
     <DiaryWrapper style={{ pointerEvents: isEditMode ? 'auto' : 'auto' }}>
       <BookWrapper>
