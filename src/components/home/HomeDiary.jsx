@@ -15,7 +15,6 @@ const HomeDiary = ({
   selectedIcon
 }) => {
   const flipBook = useRef(null);
-  const [pageFlip, setPageFlip] = useState(null);
 
   const [pagesData, setPagesData] = useState({});
   const [isItemSelected, setIsItemSelected] = useState(false);
