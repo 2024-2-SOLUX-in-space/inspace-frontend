@@ -42,7 +42,7 @@ const CoverSelection = ({ selectedCover, onClose, onSelectCover }) => {
         <CoverSelectionHeader>
           <CoverSelectionTitle>공간의 표지를 선택해 주세요!</CoverSelectionTitle>
           <CoverSelectionSubTitle>공간 표지는 선택하면 수정할 수 없으니, 신중히 골라주세요!</CoverSelectionSubTitle>
-          <CloseButton onClick={onClose}>X</CloseButton>
+          <CloseButton onClick={onClose}>✕</CloseButton>
         </CoverSelectionHeader>
 
         <ArrowButton className="prev" onClick={handlePrev} aria-label="이전 표지">

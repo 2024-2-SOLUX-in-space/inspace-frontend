@@ -43,7 +43,7 @@ const Title = styled.h2`
 const CloseButton = styled.button`
   background: none;
   border: none;
-  font-size: 2rem;
+  font-size: 1.35rem;
   cursor: pointer;
   padding: 0;
   outline: none;
@@ -249,7 +249,7 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
     >
       <ModalHeader>
         <Title>이미지의 제목을 입력해주세요 ({title.length}/{maxLength})</Title>
-        <CloseButton onClick={handleClose}>×</CloseButton>
+        <CloseButton onClick={handleClose}>✕</CloseButton>
         </ModalHeader>
         
         <CropContainer>
