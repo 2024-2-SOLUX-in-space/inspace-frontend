@@ -32,8 +32,8 @@ const Page = forwardRef((props, ref) => {
       ctype: window.draggedImage.ctype,
       positionX: x,
       positionY: y,
-      height: window.draggedImage.height || 150,
-      width: window.draggedImage.width || 150,
+      height: window.draggedImage.height,
+      width: window.draggedImage.width,
       turnover: window.draggedImage.turnover || 0,
       sequence: 0,
       sticker: window.draggedImage.sticker
@@ -89,8 +89,8 @@ const Page = forwardRef((props, ref) => {
       ctype: item.ctype,
       positionX: offsetX,
       positionY: offsetY,
-      width: item.width || 100,
-      height: item.height || 100,
+      width: item.width,
+      height: item.height,
       turnover: item.turnover || 0,
       sequence: 1,
       sticker: item.ctype === 'sticker' ? item : null,
@@ -118,6 +118,7 @@ const Page = forwardRef((props, ref) => {
                 handleDragStart={handleDragStart}
                 handleDragOver={handleDragOver}
                 handleDrop={handleDrop}
+                setIsInteracting={props.setIsInteracting} 
               />
             );
           })}
@@ -137,6 +138,7 @@ Page.propTypes = {
   selectedImageId: PropTypes.string,
   onImageSelect: PropTypes.func,
   onItemSelectChange: PropTypes.func,
+  setIsInteracting: PropTypes.func,
 };
 
 export default Page;

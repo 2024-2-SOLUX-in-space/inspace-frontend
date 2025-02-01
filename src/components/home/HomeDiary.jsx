@@ -18,7 +18,7 @@ const HomeDiary = ({
 
   const [pagesData, setPagesData] = useState({});
   const [isItemSelected, setIsItemSelected] = useState(false);
-
+  const [isInteracting, setIsInteracting] = useState(false);
   const { activeSpace, spaces } = useContext(SpaceContext);
   const { selectedItem, setSelectedItem } = useItemContext();
 
@@ -54,12 +54,14 @@ const HomeDiary = ({
     return pagesData[pageNum] || [];
   };
 
-  const handleFlip = (e) => {
-    const currentPage = e.data;
-    if (!pagesData[currentPage]) {
-      fetchPageData(currentPage);
+  const handleChangeState = (e) => {
+    if (isItemSelected) {
+      //e.preventDefault(); // 기본 동작 방지
+      flipBook.current.pageFlip().setState('read'); // 상태를 "read"로 강제 설정
+      return;
     }
   };
+
 
   const handleDeleteImage = (id) => {
     setPagesData((prev) => {
@@ -110,7 +112,7 @@ const HomeDiary = ({
           maxShadowOpacity={0.5}
           showCover={true}
           mobileScrollSupport={true}
-          useMouseEvents={!isItemSelected}
+          useMouseEvents={!isItemSelected && !isInteracting}
           drawShadow={true}
           flippingTime={1000}
           className="flip-book"
@@ -122,7 +124,7 @@ const HomeDiary = ({
           clickEventForward={false}
           swipeDistance={isItemSelected ? 0 : 30}
           cornerCursor={isItemSelected ? 'default' : 'pointer'}
-          onFlip={handleFlip}
+          onChangeState={handleChangeState}
         >
           <PageCover
             position="top"
@@ -141,6 +143,7 @@ const HomeDiary = ({
               onImageSelect={onImageSelect}
               onItemSelectChange={setIsItemSelected}
               onPageUpdate={fetchPageData}
+              setIsInteracting={setIsInteracting}
             />
           ))}
           <PageCover
