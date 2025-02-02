@@ -103,19 +103,6 @@ function LogInPage() {
     }
   };
 
-  useEffect(() => {
-    if (spaces.length > 0) {
-      // isPrimary가 true인 공간을 activeSpace로 설정
-      const primarySpace = spaces.find(space => space.isPrimary);
-      if (primarySpace) {
-        dispatch(setActiveSpace(primarySpace));
-      } else {
-        // isPrimary가 true인 공간이 없으면 첫 번째 공간을 activeSpace로 설정
-        dispatch(setActiveSpace(spaces[0]));
-      }
-    }
-  }, [spaces, dispatch]);
-
   return (
     <LoginPageContainer>
       {/* 페이지 우상단 회원가입 버튼 */}

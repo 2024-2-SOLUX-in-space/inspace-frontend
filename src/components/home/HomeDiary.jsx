@@ -87,6 +87,9 @@ const HomeDiary = ({
     });
   };
 
+  // 예시: coverType을 안전하게 접근
+  const coverType = activeSpace?.coverType || 'defaultCoverType';
+
   return (
     <DiaryWrapper style={{ pointerEvents: isEditMode ? 'auto' : 'auto' }}>
       <BookWrapper>
@@ -119,8 +122,8 @@ const HomeDiary = ({
         >
           <PageCover
             position="top"
-            coverType={activeSpace.coverType}
-            title={activeSpace.title}
+            coverType={coverType}
+            title={activeSpace?.title}
           />
           {[...Array(10)].map((_, i) => (
             <Page
@@ -139,7 +142,7 @@ const HomeDiary = ({
           ))}
           <PageCover
             position="bottom"
-            coverType={activeSpace.coverType}
+            coverType={coverType}
           />
         </HTMLFlipBook>
       </BookWrapper>
