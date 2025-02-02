@@ -1,10 +1,10 @@
-import React, { useRef, useState, useEffect, useContext, useCallback } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import HTMLFlipBook from 'react-pageflip';
 import PageCover from './PageCover';
 import Page from './Page';
 import api from '../../api/api';
-import { SpaceContext } from '../../context/SpaceContext';
 import { useItemContext } from '../../context/ItemContext';
 import { DiaryWrapper, BookWrapper } from '../../styles/home/HomeDiaryStyle';
 
@@ -18,7 +18,7 @@ const HomeDiary = ({
   const [pagesData, setPagesData] = useState({});
   const [isItemSelected, setIsItemSelected] = useState(false);
   const [isInteracting, setIsInteracting] = useState(false);
-  const { activeSpace } = useContext(SpaceContext);
+  const activeSpace = useSelector(state => state.space.activeSpace);
   const { selectedItem, setSelectedItem } = useItemContext();
 
   // 페이지 데이터 가져오기

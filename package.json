@@ -28,7 +28,10 @@
     "react-modal": "^3.16.3",
     "react-moveable": "^0.56.0",
     "react-pageflip": "^2.0.3",
+    "react-redux": "^9.2.0",
     "react-router-dom": "^7.0.2",
+    "redux": "^5.0.1",
+    "redux-thunk": "^3.1.0",
     "styled-components": "^6.1.14"
   },
   "devDependencies": {

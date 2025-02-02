@@ -1,6 +1,9 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 const PageCover = React.forwardRef((props, ref) => {
+  const activeSpace = useSelector(state => state.space.activeSpace);
+
   const getCoverImage = (position, coverType = 1) => {
     if (position === 'top') {
       switch(coverType) {
@@ -19,7 +22,7 @@ const PageCover = React.forwardRef((props, ref) => {
     }
   };
 
-  const imageUrl = getCoverImage(props.position, props.coverType);
+  const imageUrl = getCoverImage(props.position, activeSpace.coverType);
   
   const getTitleStyle = (coverType) => {
     switch(coverType) {
@@ -63,7 +66,7 @@ const PageCover = React.forwardRef((props, ref) => {
     }
   };
 
-  const titleStyle = getTitleStyle(props.coverType);
+  const titleStyle = getTitleStyle(activeSpace.coverType);
 
   return (
     <div 
@@ -97,7 +100,7 @@ const PageCover = React.forwardRef((props, ref) => {
           fontWeight: 'bold',
           fontFamily: "'Bodoni MT', 'Times New Roman', serif"
         }}>
-          {props.title}
+          {activeSpace.title}
         </h2>
       </div>
     </div>

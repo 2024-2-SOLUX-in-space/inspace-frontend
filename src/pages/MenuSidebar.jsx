@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'; 
+import React, { useState, useContext, useEffect } from 'react'; 
 import { FiMenu, FiChevronsLeft, FiHome, FiArchive, 
     FiFilePlus, FiEdit, FiHeart } from "react-icons/fi"; 
 import { MenuSidebarContainer, 
@@ -10,17 +10,46 @@ import ArchiveButton from '../components/sidebar/ArchiveButton';
 import HomeButton from '../components/sidebar/HomeButton';
 import AddButton from "../components/sidebar/AddButton";
 import HeartButton from '../components/sidebar/HeartButton';
-import { SpaceContext } from '../context/SpaceContext';
+import { useSelector, useDispatch } from 'react-redux';
+import { setActiveSpace } from '../redux/actions/spaceActions';
 
 const MenuSidebar = ({
   isArchiveOpen, toggleArchive, 
-  isAddButtonOpen, toggleAddButton, 
-  isEditOpen, toggleEdit, 
+  isAddButtonOpen, toggleAddButton,
   isHeartOpen, toggleHeart 
 }) => {
     const [isOpen, setIsOpen] = useState(true);
     const [activeIcon, setActiveIcon] = useState("home");
-    const { spaces, resetToPrimarySpace } = useContext(SpaceContext);
+    const dispatch = useDispatch();
+    // ✅ useSelector를 최상단에서 호출 (이벤트 핸들러 내부에서 호출 X)
+    const spaces = useSelector(state => state.space.spaces);
+    const activeSpace = useSelector(state => state.space.activeSpace);
+    const currentUserId = useSelector(state => state.auth.currentUser?.id); // ✅ 최상단에서 호출
+
+    useEffect(() => {
+      if (spaces.length === 0) {
+        dispatch(setActiveSpace(null));
+      }
+    }, [spaces, dispatch]);
+
+    useEffect(() => {
+      // 컴포넌트가 처음 렌더링될 때 home 아이콘의 기능 실행
+      if (activeIcon === "home") {
+        const savedPrimarySpace = currentUserId
+          ? localStorage.getItem(`primarySpace_${currentUserId}`)
+          : null;
+        const primarySpace = savedPrimarySpace
+          ? JSON.parse(savedPrimarySpace)
+          : spaces.find((space) => space.isPrimary);
+
+        if (primarySpace) {
+          dispatch(setActiveSpace(primarySpace));
+        } else {
+          console.warn("⚠ 공간 없음: activeSpace를 null로 설정");
+          dispatch(setActiveSpace(null));
+        }
+      }
+    }, [activeIcon, currentUserId, spaces, dispatch]);
 
     const toggleSidebar = () => {
       setIsOpen(!isOpen); 
@@ -30,8 +59,21 @@ const MenuSidebar = ({
       if (activeIcon === iconName) {
         setActiveIcon(null);
       } else {
+        setActiveIcon(iconName); // 상태 업데이트를 먼저 수행
         if (iconName === "home") {
-          resetToPrimarySpace();
+          const savedPrimarySpace = currentUserId
+            ? localStorage.getItem(`primarySpace_${currentUserId}`)
+            : null;
+          const primarySpace = savedPrimarySpace
+            ? JSON.parse(savedPrimarySpace)
+            : spaces.find((space) => space.isPrimary);
+
+          if (primarySpace) {
+            dispatch(setActiveSpace(primarySpace));
+          } else {
+            console.warn("⚠ 공간 없음: activeSpace를 null로 설정");
+            dispatch(setActiveSpace(null));
+          }
         }
         if (iconName === "archive") {
           toggleArchive();
@@ -42,7 +84,6 @@ const MenuSidebar = ({
         if (iconName === "heart") {
           toggleHeart();
         }
-        setActiveIcon(iconName);
       }
     };
   

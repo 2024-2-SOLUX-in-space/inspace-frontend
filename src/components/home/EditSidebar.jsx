@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { FiFolderPlus, FiImage, FiYoutube, FiMusic, FiPlus, FiX } from "react-icons/fi";
 import { BiSticker } from "react-icons/bi";
 import { 
@@ -16,14 +17,13 @@ import ImageAddModal from '../../pages/home/ImageAddModal';
 import stickerData from '../../data/stickers.json';
 import api from '../../api/api';
 import { useItemContext } from '../../context/ItemContext';
-import { SpaceContext } from '../../context/SpaceContext';
 
 const EditSidebar = ({
   isOpen,
   selectedIcon,
   setSelectedIcon
 }) => {
-  const { activeSpace } = useContext(SpaceContext);
+  const activeSpace = useSelector(state => state.space.activeSpace);
   const { setSelectedItem } = useItemContext();
   const fileInputRef = useRef(null);
 
@@ -155,7 +155,6 @@ const EditSidebar = ({
           color: item.color
         } : null,
       };
-      console.log(window.draggedImage);
     };
   };
 
@@ -167,7 +166,6 @@ const EditSidebar = ({
       id: createdItem.itemId, // response body에 있는 item-id를 id로 사용
       imageUrl: createdItem.fileUrl // response body에 있는 fileUrl을 imageUrl로 사용
     };
-    console.log(newItem);
     setCategoryData(prev => ({
       ...prev,
       file: [newItem, ...prev.file] // 새로운 아이템을 맨 앞에 추가

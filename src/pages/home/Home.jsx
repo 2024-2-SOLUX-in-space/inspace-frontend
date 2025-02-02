@@ -1,10 +1,10 @@
-import React, { useState, useContext, Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useSelector } from 'react-redux';
 import HomeDiary from '../../components/home/HomeDiary';
 import EditSidebar from '../../components/home/EditSidebar';
 import Header from '../../components/Header';
 import emptySpace from '../../../public/home/diary.png';
 import { HomeContainer, ContentWrapper, EditButton } from '../../styles/home/HomeStyle';
-import { SpaceContext } from '../../context/SpaceContext';
 import { useItemContext } from '../../context/ItemContext';
 
 const Home = () => {
@@ -14,9 +14,17 @@ const Home = () => {
   const [selectedIcon, setSelectedIcon] = useState('image');
   
   const [newItem, setNewItem] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const { spaces,activeSpace, selectedSpace } = useContext(SpaceContext);
+  const activeSpace = useSelector(state => state.space.activeSpace);
+  const selectedSpace = useSelector(state => state.space.selectedSpace);
   const { selectedItem, setSelectedItem } = useItemContext();
+
+  useEffect(() => {
+    if (activeSpace !== null) {
+      setIsLoading(false);
+    }
+  }, [activeSpace]);
 
   const handleEdit = () => {
     setIsEditOpen(!isEditOpen);
@@ -124,7 +132,11 @@ const Home = () => {
 
       <HomeContainer isEditOpen={isEditOpen}>
         <ContentWrapper isEditOpen={isEditOpen}>
-          {!activeSpace ? (
+          {isLoading ? (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+              <div>Loading...</div>
+            </div>
+          ) : !activeSpace ? (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
               <img src={emptySpace} alt="empty-space" style={{ width: '60%', height: '60%' }} />
             </div>
@@ -137,12 +149,12 @@ const Home = () => {
                   onImageResize={handleImageResize}
                   onImageMove={handleImageMove}
                   isEditMode={isEditOpen}
-                selectedImageId={selectedItem}
-                onImageSelect={handleImageSelect}
-                onImageRotate={handleImageRotate}
-                spaceId={selectedSpace?.id}
-                selectedIcon={selectedIcon}
-              />
+                  selectedImageId={selectedItem}
+                  onImageSelect={handleImageSelect}
+                  onImageRotate={handleImageRotate}
+                  spaceId={selectedSpace?.id}
+                  selectedIcon={selectedIcon}
+                />
               </Suspense>
               <EditButton onClick={handleEdit}>
                 {isEditOpen ? '공간 저장' : '공간 편집'}

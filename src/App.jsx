@@ -9,8 +9,9 @@ import {
 import { AlertProvider } from "./context/AlertContext";
 import { UserProvider } from "./context/UserContext";
 import { SidebarProvider, useSidebar } from "./context/SidebarContext"; 
-import { SpaceProvider } from "./context/SpaceContext";
 import { ItemProvider } from "./context/ItemContext";
+import { Provider } from 'react-redux';
+import store from './redux/store';
 import GlobalStyle from "./styles/GlobalStyle";
 import StartPage from "./pages/StartPage";
 import SignUpPage from "./pages/user/SignUpPage";
@@ -22,32 +23,34 @@ import MyPage from "./pages/user/MyPage";
 import EditMyPage from "./pages/user/EditMyPage";
 import SearchResult from "./pages/search/SearchResultPage";
 
+
 function App() {
   return (
+    <Provider store={store}>
     <UserProvider>
       <AlertProvider>
         <SidebarProvider> 
-          <SpaceProvider>
             <ItemProvider>
-          <Router>
-            <GlobalStyle />
-            <SidebarWrapper />
-            <Routes>
-              <Route path="/" element={<StartPage />} />
-              <Route path="/signup" element={<SignUpPage />} />
-              <Route path="/login" element={<LogInPage />} />
-              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/search" element={<SearchResult />} />
-              <Route path="/mypage" element={<MyPage />} />
-              <Route path="/mypage-edit" element={<EditMyPage />} />
-            </Routes>
+            <Router>
+              <GlobalStyle />
+              <SidebarWrapper />
+              <Routes>
+                <Route path="/" element={<StartPage />} />
+                <Route path="/signup" element={<SignUpPage />} />
+                <Route path="/login" element={<LogInPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/menusidebar" element={<MenuSidebar />} />
+                <Route path="/search" element={<SearchResult />} />
+                <Route path="/mypage" element={<MyPage />} />
+                <Route path="/mypage-edit" element={<EditMyPage />} />
+              </Routes>
             </Router>
             </ItemProvider>
-          </SpaceProvider>
         </SidebarProvider>
       </AlertProvider>
     </UserProvider>
+    </Provider>
   );
 }
 

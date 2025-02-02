@@ -46,8 +46,6 @@ const TrashModal = ({ spaceId, onDelete }) => {
     handleCloseAlert();
   };
 
-  console.log('TrashModal received spaceId:', spaceId);
-
   return (
     <>
       <TrashButton onClick={handleTrashClick}>

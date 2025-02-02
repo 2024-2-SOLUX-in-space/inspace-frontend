@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { useUser } from '../../context/UserContext';
 import { useAlert } from '../../context/AlertContext';
 import api from '../../api/api.js';
@@ -13,6 +14,7 @@ import {
   ForgotPasswordButton,
   LoginButton,
 } from '../../styles/user/LogInPageStyle';
+import { fetchSpaces, setActiveSpace } from '../../redux/actions/spaceActions';
 
 function LogInPage() {
   const [email, setEmail] = useState('');
@@ -21,6 +23,8 @@ function LogInPage() {
   const { setUser } = useUser(); // 전역 user 상태를 업데이트할 수 있는 setUser
   const { showAlert } = useAlert();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const spaces = useSelector(state => state.space.spaces);
 
   const goToSignUp = () => {
     navigate('/signup');
@@ -86,8 +90,10 @@ function LogInPage() {
           ...prev,
         }));
 
+        // 공간 목록 업데이트
+        await dispatch(fetchSpaces());
+
         navigate('/home');
-        //window.location.reload(); //새로 고침
       } else {
         showAlert(response.data.message);
       }
@@ -96,6 +102,19 @@ function LogInPage() {
       showAlert('로그인에 실패했습니다. 다시 시도해주세요.');
     }
   };
+
+  useEffect(() => {
+    if (spaces.length > 0) {
+      // isPrimary가 true인 공간을 activeSpace로 설정
+      const primarySpace = spaces.find(space => space.isPrimary);
+      if (primarySpace) {
+        dispatch(setActiveSpace(primarySpace));
+      } else {
+        // isPrimary가 true인 공간이 없으면 첫 번째 공간을 activeSpace로 설정
+        dispatch(setActiveSpace(spaces[0]));
+      }
+    }
+  }, [spaces, dispatch]);
 
   return (
     <LoginPageContainer>
