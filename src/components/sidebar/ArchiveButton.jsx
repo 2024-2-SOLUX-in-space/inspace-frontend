@@ -118,12 +118,14 @@ const handleDeleteConfirmed = async () => {
     await api.delete(`/api/spaces/${spaceToDelete.id}`);
 
     // Redux 상태에서 해당 공간 삭제
-    dispatch(setSpaces(spaces.filter(space => space.id !== spaceToDelete.id)));
+    const updatedSpaces = spaces.filter(space => space.id !== spaceToDelete.id);
+    dispatch(setSpaces(updatedSpaces));
 
-    // 선택된 공간이 삭제되었으면 초기화
+    // 선택된 공간이 삭제되었으면 다른 공간 선택
     if (selectedSpace?.id === spaceToDelete.id) {
-      dispatch(setSelectedSpace(null));
-      dispatch(setActiveSpace(null));
+      const nextSpace = updatedSpaces.length > 0 ? updatedSpaces[0] : null;
+      dispatch(setSelectedSpace(nextSpace));
+      dispatch(setActiveSpace(nextSpace));
     }
   } catch (error) {
     console.error('❌ 공간 삭제 중 오류 발생:', error);
