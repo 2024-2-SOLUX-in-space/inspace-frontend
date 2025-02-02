@@ -190,24 +190,61 @@ const TrashButton = styled.button`
     transform: scale(1.1);
     transition: transform 0.2s ease-in-out;
   }
+  &:focus {
+    outline: none;
+  }
+`;
+
+const PrimaryButtonStyled = styled.button`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 17px;
+  padding: 5px;
+  margin-right: 5px;
+
+  &:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s ease-in-out;
+  }
+  &:focus {
+    outline: none;
+  }
 `;
 
 export const PrimaryButton = ({ spaceId, isPrimary, onToggle }) => (
-  <button onClick={(e) => {
+  <PrimaryButtonStyled onClick={(e) => {
     e.stopPropagation();
     console.log("📌 핀 버튼 클릭됨! 공간 ID:", spaceId);
     onToggle(spaceId, 'isPrimary');
   }}>
     {isPrimary ? <BsPinAngleFill /> : <BsPinAngle />}
-  </button>
+  </PrimaryButtonStyled>
 );
 
+const PublicButtonStyled = styled.button`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 17px;
+  padding: 5px;
+  margin-right: 5px;
+
+  &:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s ease-in-out;
+  }
+  &:focus {
+    outline: none;
+  }
+`;
+
 export const PublicButton = ({ spaceId, isPublic, onToggle }) => (
-  <button onClick={(e) => {
+  <PublicButtonStyled onClick={(e) => {
     e.stopPropagation();
     console.log("📌 공개 버튼 클릭됨! 공간 ID:", spaceId);
     onToggle(spaceId, 'isPublic');
   }}>
     {isPublic ? <FiBookOpen /> : <FiBook />}
-  </button>
+  </PublicButtonStyled>
 );
