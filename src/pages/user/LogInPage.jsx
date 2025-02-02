@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useUser } from '../../context/UserContext';
@@ -93,12 +93,6 @@ function LogInPage() {
         // 공간 목록 업데이트
         await dispatch(fetchSpaces());
 
-        // isPrimary가 true인 공간을 activeSpace로 설정
-        const primarySpace = spaces.find(space => space.isPrimary);
-        if (primarySpace) {
-          dispatch(setActiveSpace(primarySpace));
-        }
-
         navigate('/home');
       } else {
         showAlert(response.data.message);
@@ -108,6 +102,19 @@ function LogInPage() {
       showAlert('로그인에 실패했습니다. 다시 시도해주세요.');
     }
   };
+
+  useEffect(() => {
+    if (spaces.length > 0) {
+      // isPrimary가 true인 공간을 activeSpace로 설정
+      const primarySpace = spaces.find(space => space.isPrimary);
+      if (primarySpace) {
+        dispatch(setActiveSpace(primarySpace));
+      } else {
+        // isPrimary가 true인 공간이 없으면 첫 번째 공간을 activeSpace로 설정
+        dispatch(setActiveSpace(spaces[0]));
+      }
+    }
+  }, [spaces, dispatch]);
 
   return (
     <LoginPageContainer>
