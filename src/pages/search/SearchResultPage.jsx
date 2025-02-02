@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FaImage, FaMusic, FaYoutube, FaTimes } from 'react-icons/fa';
 import Header from '../../components/Header';
+import AddItemModal from '../../components/search/AddItemModal';
+import AddItemSuccessModal from '../../components/search/AddItemSuccessModal';
 import {
   SearchResultContainer,
   HashtagContainer,
@@ -10,7 +12,6 @@ import {
   DetailView,
   CloseButton,
 } from '../../styles/search/SearchResultStyles';
-import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 const initialHashtags = [
@@ -20,84 +21,18 @@ const initialHashtags = [
 ];
 
 const SearchResult = () => {
-  const location = useLocation();
   const [hashtags, setHashtags] = useState(initialHashtags);
   const [selectedTags, setSelectedTags] = useState(
     initialHashtags.filter((tag) => tag.active).map((tag) => tag.label),
   );
-  const [results, setResults] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageData, setImageData] = useState({
     username: 'Space',
     title: 'TitleExample',
   });
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [accessToken, setAccessToken] = useState(null);
-
-  useEffect(() => {
-    // localStorage에서 accessToken 가져오기
-    const token = localStorage.getItem('access_token');
-    if (token) {
-      setAccessToken(token);
-      console.log('액세스 토큰 확인:', token); // 디버깅용
-    } else {
-      console.warn('로그인이 필요합니다. 액세스 토큰이 없습니다.');
-    }
-  }, []);
-
-  const transformResponseData = (data) => {
-    // 서버 응답 데이터를 배열 형태로 변환
-    const results = [];
-    if (data.images) results.push(...data.images);
-    if (data.music) results.push(...data.music);
-    if (data.videos) results.push(...data.videos);
-    return results;
-  };
-
-  const fetchSearchResults = async (query, filter) => {
-    if (!accessToken) {
-      console.warn('로그인이 필요합니다. 액세스 토큰이 없습니다.');
-      return;
-    }
-    try {
-      console.log('보내는 액세스 토큰:', accessToken); // 디버깅용
-      console.log('API 호출 시작:', query, filter);
-      const response = await axios.get(
-        'http://3.35.10.158:8080/api/search/results',
-        {
-          params: { query, filter: filter.join(',') },
-          headers: { Authorization: `Bearer ${accessToken}` },
-        },
-      );
-      console.log('API 응답:', response.data);
-      const results = transformResponseData(response.data);
-      if (results.length === 0) {
-        console.warn('검색 결과 없음');
-      }
-      setResults(results);
-    } catch (error) {
-      console.error('API 호출 중 오류:', error.response || error.message);
-      setResults([]);
-      if (error.response && error.response.status === 401) {
-        console.warn('토큰이 만료되었습니다. 다시 로그인하세요.');
-        localStorage.removeItem('accessToken');
-        setAccessToken(null);
-      }
-    }
-  };
-
-  // 초기 검색어와 필터 값으로 API 호출
-  useEffect(() => {
-    if (!accessToken) return; // 토큰이 없으면 실행하지 않음
-
-    const query = location.state?.query || '';
-    const filter = selectedTags;
-    if (query) {
-      fetchSearchResults(query, filter);
-    } else {
-      console.warn('검색어가 전달되지 않았습니다.');
-    }
-  }, [location.state, selectedTags, accessToken]);
+  const [showAddModal, setShowAddModal] = useState(false); // AddItemModal 상태
+  const [showSuccessModal, setShowSuccessModal] = useState(false); // SuccessModal 상태
 
   const handleHashtagClick = (id) => {
     setHashtags((prev) =>
@@ -129,8 +64,7 @@ const SearchResult = () => {
         response = await axios.get('/api/youtube-data');
       }
 
-      const { username = 'Space', title = 'TitleExample' } =
-        response?.data || {};
+      const { username = 'Space', title = 'BearImage' } = response?.data || {};
       setImageData({ username, title });
     } catch (error) {
       console.error('Failed to fetch data from backend:', error);
@@ -141,12 +75,25 @@ const SearchResult = () => {
 
   const closeDetailView = () => {
     setSelectedImage(null);
-    setImageData({ username: 'Space', title: 'TitleExample' });
+    setImageData({ username: 'Space', title: 'BearImage' });
     setIsFullscreen(false);
   };
 
   const toggleFullscreen = () => {
     setIsFullscreen((prev) => !prev);
+  };
+
+  const handleAddClick = () => {
+    setShowAddModal(true); // AddItemModal 열기
+  };
+
+  const handleAddSuccess = () => {
+    setShowAddModal(false); // AddItemModal 닫기
+    setShowSuccessModal(true); // AddItemSuccessModal 열기
+  };
+
+  const handleSuccessConfirm = () => {
+    setShowSuccessModal(false); // SuccessModal 닫기
   };
 
   const filteredImages = [];
@@ -193,6 +140,7 @@ const SearchResult = () => {
           ))}
         </HashtagContainer>
 
+        {/* 스크롤 가능 영역 */}
         <div
           style={{
             overflowY: 'auto',
@@ -201,19 +149,23 @@ const SearchResult = () => {
           }}
         >
           <MasonryGrid>
-            {Array.isArray(results) && results.length > 0 ? (
-              results.map(({ id, title, imageUrl }) => (
-                <GridItem key={id} onClick={() => setSelectedImage(imageUrl)}>
-                  <img
-                    src={imageUrl}
-                    alt={title}
-                    style={{ width: '100%', borderRadius: '10px' }}
-                  />
-                </GridItem>
-              ))
-            ) : (
-              <p>검색 결과가 없습니다. 검색어와 필터를 확인하세요.</p>
-            )}
+            {shuffledImages.map(({ id, category }) => (
+              <GridItem
+                key={id}
+                onClick={() =>
+                  handleImageClick(
+                    `/src/assets/img/Dummy/image_${id}.png`,
+                    category,
+                  )
+                }
+              >
+                <img
+                  src={`/src/assets/img/Dummy/image_${id}.png`}
+                  alt={`Image ${id}`}
+                  style={{ width: '100%', borderRadius: '10px' }}
+                />
+              </GridItem>
+            ))}
           </MasonryGrid>
         </div>
 
@@ -231,6 +183,7 @@ const SearchResult = () => {
               </div>
               <img src={selectedImage} alt="Detailed view" />
               <div className="title">{imageData.title}</div>
+
               <div className="button-row">
                 <img
                   className="maximize-button"
@@ -242,12 +195,36 @@ const SearchResult = () => {
                   alt={isFullscreen ? 'Minimize' : 'Maximize'}
                   onClick={toggleFullscreen}
                 />
-                <button className="add-button">+ add</button>
+                <button className="add-button" onClick={handleAddClick}>
+                  + add
+                </button>
               </div>
             </div>
           )}
         </DetailView>
       </SearchResultContainer>
+
+      {/* AddItemModal */}
+      {showAddModal && (
+        <AddItemModal
+          isOpen={showAddModal}
+          onClose={() => setShowAddModal(false)}
+          onSuccess={handleAddSuccess} // AddItemSuccessModal 열기
+          spaces={['Space 1', 'Space 2', 'Space 3']}
+        />
+      )}
+
+      {/* AddItemSuccessModal */}
+      {showSuccessModal && (
+        <AddItemSuccessModal
+          isOpen={showSuccessModal}
+          onClose={handleSuccessConfirm} // SuccessModal 닫기
+          onMove={() => {
+            handleSuccessConfirm(); // SuccessModal 닫기
+            console.log('내 공간으로 이동'); // 내 공간 이동 로직 추가 가능
+          }}
+        />
+      )}
     </>
   );
 };
