@@ -4,6 +4,7 @@ import {
   UPDATE_SPACE,
   SET_SELECTED_SPACE,
   SET_ACTIVE_SPACE,
+  RESET_SPACES,
 } from '../actions/spaceActions';
 
 const initialState = {
@@ -41,6 +42,8 @@ const spaceReducer = (state = initialState, action) => {
         ...state,
         activeSpace: action.payload,
       };
+    case RESET_SPACES:
+      return initialState;
     default:
       return state;
   }

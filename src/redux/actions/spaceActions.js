@@ -5,6 +5,7 @@ export const ADD_SPACE = 'ADD_SPACE';
 export const UPDATE_SPACE = 'UPDATE_SPACE';
 export const SET_SELECTED_SPACE = 'SET_SELECTED_SPACE';
 export const SET_ACTIVE_SPACE = 'SET_ACTIVE_SPACE';
+export const RESET_SPACES = 'RESET_SPACES';
 
 export const setSpaces = (spaces) => ({
   type: SET_SPACES,
@@ -29,6 +30,10 @@ export const setSelectedSpace = (space) => ({
 export const setActiveSpace = (space) => ({
   type: SET_ACTIVE_SPACE,
   payload: space,
+});
+
+export const resetSpaces = () => ({
+  type: RESET_SPACES,
 });
 
 // 공간 목록 불러오기 액션
