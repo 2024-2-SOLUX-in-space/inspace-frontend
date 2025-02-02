@@ -5,10 +5,12 @@ import PublicSelection from "./PublicSelection";
 import Alert from "../alert/AddTrashAlert";
 import api from '../../api/api.js';
 import { useDispatch } from 'react-redux';
-import { addSpace } from '../../redux/actions/spaceActions';
+import { addSpace, fetchSpaces } from '../../redux/actions/spaceActions';
+import { useNavigate } from 'react-router-dom';
 
-const AddButton = ({ isAddButtonOpen, toggleAddButton }) => {
+const AddButton = ({ isAddButtonOpen, toggleAddButton, navigateHome }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1); 
   const [sthumb, setSthumb] = useState(null); 
   const [sname, setSname] = useState(""); 
@@ -55,8 +57,11 @@ const AddButton = ({ isAddButtonOpen, toggleAddButton }) => {
       };
       dispatch(addSpace(newSpace));
       setCurrentStep(5);
-    } catch (error) {
 
+      await dispatch(fetchSpaces());
+
+      navigateHome();
+    } catch (error) {
       if (error.response) {
         alert(error.response.data.message || "공간 생성에 실패했습니다. 다시 시도해주세요.");
       } else {

@@ -56,34 +56,30 @@ const MenuSidebar = ({
     };
   
     const handleIconClick = (iconName) => {
-      if (activeIcon === iconName) {
-        setActiveIcon(null);
-      } else {
-        setActiveIcon(iconName); // 상태 업데이트를 먼저 수행
-        if (iconName === "home") {
-          const savedPrimarySpace = currentUserId
-            ? localStorage.getItem(`primarySpace_${currentUserId}`)
-            : null;
-          const primarySpace = savedPrimarySpace
-            ? JSON.parse(savedPrimarySpace)
-            : spaces.find((space) => space.isPrimary);
+      setActiveIcon(iconName);
+      if (iconName === "home") {
+        const savedPrimarySpace = currentUserId
+          ? localStorage.getItem(`primarySpace_${currentUserId}`)
+          : null;
+        const primarySpace = savedPrimarySpace
+          ? JSON.parse(savedPrimarySpace)
+          : spaces.find((space) => space.isPrimary);
 
-          if (primarySpace) {
-            dispatch(setActiveSpace(primarySpace));
-          } else {
-            console.warn("⚠ 공간 없음: activeSpace를 null로 설정");
-            dispatch(setActiveSpace(null));
-          }
+        if (primarySpace) {
+          dispatch(setActiveSpace(primarySpace));
+        } else {
+          console.warn("⚠ 공간 없음: activeSpace를 null로 설정");
+          dispatch(setActiveSpace(null));
         }
-        if (iconName === "archive") {
-          toggleArchive();
-        }
-        if (iconName === "filePlus") {
-          toggleAddButton();
-        }
-        if (iconName === "heart") {
-          toggleHeart();
-        }
+      }
+      if (iconName === "archive") {
+        toggleArchive();
+      }
+      if (iconName === "filePlus") {
+        toggleAddButton();
+      }
+      if (iconName === "heart") {
+        toggleHeart();
       }
     };
   
@@ -94,6 +90,10 @@ const MenuSidebar = ({
       { icon: <FiHeart />, id: "heart", tooltip: "팔로워/팔로잉" },
     ];
   
+    const navigateHome = () => {
+      handleIconClick("home");
+    };
+
     return (
         <>
           <ActiveButton isOpen={isOpen} onClick={toggleSidebar}>
@@ -135,8 +135,8 @@ const MenuSidebar = ({
 
                 { activeIcon === "filePlus" && (
                   <AddButton isAddButtonOpen={isAddButtonOpen} 
-                  toggleAddButton={toggleAddButton} />
-              )}
+                  toggleAddButton={toggleAddButton} navigateHome={navigateHome} />
+                )}
               
                 { activeIcon === "heart" && (
                   <HeartButton

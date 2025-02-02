@@ -17,23 +17,19 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
   const spaces = useSelector(state => state.space.spaces);
   const selectedSpace = useSelector(state => state.space.selectedSpace);
   const activeSpace = useSelector(state => state.space.activeSpace);
-
+  const sortedSpaces = [...spaces].sort((a, b) => b.isPrimary - a.isPrimary);
+  
   useEffect(() => {
     dispatch(fetchSpaces());
   }, [dispatch]);
 
-  // ✅ `spaces` 상태가 업데이트될 때 로그 확인
-  useEffect(() => {
+  useEffect(() => {}, [spaces, activeSpace, selectedSpace]);
 
-  }, [spaces, activeSpace, selectedSpace]);
-
-  // ✅ `sortedSpaces` 선언 후 로그 출력 (ReferenceError 방지)
-  const sortedSpaces = [...spaces].sort((a, b) => b.isPrimary - a.isPrimary);
-  
   useEffect(() => {
     setIsScrollable(spaces.length > 5);
   }, [spaces]);
 
+  //외부 클릭시 닫기
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (archiveRef.current && !archiveRef.current.contains(event.target)) {
@@ -115,16 +111,30 @@ const handleTrashClick = (space) => {
 const handleDeleteConfirmed = async () => {
   if (!spaceToDelete) return;
   try {
-    console.log("🗑 삭제 요청 실행:", spaceToDelete.id);
     await api.delete(`/api/spaces/${spaceToDelete.id}`);
 
     // Redux 상태에서 해당 공간 삭제
-    dispatch(setSpaces(spaces.filter(space => space.id !== spaceToDelete.id)));
+    const updatedSpaces = spaces.filter(space => space.id !== spaceToDelete.id);
+    dispatch(setSpaces(updatedSpaces));
 
-    // 선택된 공간이 삭제되었으면 초기화
+    // 선택된 공간이 삭제되었으면 다른 공간 선택
     if (selectedSpace?.id === spaceToDelete.id) {
-      dispatch(setSelectedSpace(null));
-      dispatch(setActiveSpace(null));
+      let nextSpace = null;
+
+      // 대표 공간이 삭제된 경우 가장 최신 공간을 대표 공간으로 설정
+      if (spaceToDelete.isPrimary && updatedSpaces.length > 0) {
+        updatedSpaces.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        nextSpace = updatedSpaces[0];
+        nextSpace.isPrimary = true; // 가장 최신 공간을 대표 공간으로 설정
+
+        // 서버에 업데이트 요청
+        await api.patch(`/api/spaces/${nextSpace.id}`, { isPrimary: true });
+      } else {
+        nextSpace = updatedSpaces.length > 0 ? updatedSpaces[0] : null;
+      }
+
+      dispatch(setSelectedSpace(nextSpace));
+      dispatch(setActiveSpace(nextSpace));
     }
   } catch (error) {
     console.error('❌ 공간 삭제 중 오류 발생:', error);

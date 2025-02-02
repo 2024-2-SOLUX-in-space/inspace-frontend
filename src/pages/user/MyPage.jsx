@@ -51,17 +51,10 @@ const MyPage = () => {
     getMyInfo();
   }, []);
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     showAlert('로그아웃 하시겠습니까?', async () => {
       try {
-        const token = localStorage.getItem('access_token');
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
-
-        const response = await api.post('/api/auth/logout', {}, config);
+        const response = await api.post('/api/auth/logout');
         if (response.data.success) {
           showAlert('성공적으로 로그아웃 되었습니다.');
           localStorage.clear();        

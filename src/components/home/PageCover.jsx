@@ -22,7 +22,9 @@ const PageCover = React.forwardRef((props, ref) => {
     }
   };
 
-  const imageUrl = getCoverImage(props.position, activeSpace.coverType);
+  // activeSpace가 null일 경우 기본값 사용
+  const coverType = activeSpace?.coverType || 1;
+  const imageUrl = getCoverImage(props.position, coverType);
   
   const getTitleStyle = (coverType) => {
     switch(coverType) {
@@ -66,7 +68,7 @@ const PageCover = React.forwardRef((props, ref) => {
     }
   };
 
-  const titleStyle = getTitleStyle(activeSpace.coverType);
+  const titleStyle = getTitleStyle(coverType);
 
   return (
     <div 
@@ -100,7 +102,7 @@ const PageCover = React.forwardRef((props, ref) => {
           fontWeight: 'bold',
           fontFamily: "'Bodoni MT', 'Times New Roman', serif"
         }}>
-          {activeSpace.title}
+          {activeSpace?.title || 'Untitled Space'}
         </h2>
       </div>
     </div>
