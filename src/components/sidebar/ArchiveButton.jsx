@@ -17,23 +17,19 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
   const spaces = useSelector(state => state.space.spaces);
   const selectedSpace = useSelector(state => state.space.selectedSpace);
   const activeSpace = useSelector(state => state.space.activeSpace);
-
+  const sortedSpaces = [...spaces].sort((a, b) => b.isPrimary - a.isPrimary);
+  
   useEffect(() => {
     dispatch(fetchSpaces());
   }, [dispatch]);
 
-  // ✅ `spaces` 상태가 업데이트될 때 로그 확인
-  useEffect(() => {
+  useEffect(() => {}, [spaces, activeSpace, selectedSpace]);
 
-  }, [spaces, activeSpace, selectedSpace]);
-
-  // ✅ `sortedSpaces` 선언 후 로그 출력 (ReferenceError 방지)
-  const sortedSpaces = [...spaces].sort((a, b) => b.isPrimary - a.isPrimary);
-  
   useEffect(() => {
     setIsScrollable(spaces.length > 5);
   }, [spaces]);
 
+  //외부 클릭시 닫기
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (archiveRef.current && !archiveRef.current.contains(event.target)) {
