@@ -155,7 +155,6 @@ const EditSidebar = ({
           color: item.color
         } : null,
       };
-      console.log(window.draggedImage);
     };
   };
 
@@ -167,7 +166,6 @@ const EditSidebar = ({
       id: createdItem.itemId, // response body에 있는 item-id를 id로 사용
       imageUrl: createdItem.fileUrl // response body에 있는 fileUrl을 imageUrl로 사용
     };
-    console.log(newItem);
     setCategoryData(prev => ({
       ...prev,
       file: [newItem, ...prev.file] // 새로운 아이템을 맨 앞에 추가

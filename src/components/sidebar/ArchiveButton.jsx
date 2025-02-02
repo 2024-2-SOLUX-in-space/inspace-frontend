@@ -24,17 +24,12 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
 
   // ✅ `spaces` 상태가 업데이트될 때 로그 확인
   useEffect(() => {
-    console.log("🔄 spaces 상태 업데이트:", spaces);
-  }, [spaces]);
 
-  useEffect(() => {
-    console.log("🟢 Active space 변경됨:", activeSpace);
-  }, [activeSpace]);
+  }, [spaces, activeSpace, selectedSpace]);
 
   // ✅ `sortedSpaces` 선언 후 로그 출력 (ReferenceError 방지)
   const sortedSpaces = [...spaces].sort((a, b) => b.isPrimary - a.isPrimary);
-  console.log("🔎 정렬된 공간 목록:", sortedSpaces);
-
+  
   useEffect(() => {
     setIsScrollable(spaces.length > 5);
   }, [spaces]);
@@ -53,24 +48,21 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
   }, [toggleArchive]);
 
   const handleListBoxClick = (spaceId, title, coverType) => {
-    console.log(`🟢 공간 클릭됨: ID=${spaceId}, 제목=${title}`);
     dispatch(setSelectedSpace({ id: spaceId, title, coverType }));
     dispatch(setActiveSpace({ id: spaceId, title, coverType }));
     toggleArchive();
   };
 
   const handleToggle = async (spaceId, field) => {
-    console.log(`🚀 handleToggle 실행! 공간 ID=${spaceId}, 필드=${field}`);
 
     const currentSpace = spaces.find(space => space.id === spaceId);
     if (!currentSpace) {
-      console.error('❌ Space not found:', spaceId);
       return;
     }
 
     const newValue = !currentSpace[field];
 
-    // ✅ 기존 배열 순서를 유지하면서 isPrimary만 업데이트
+    // 기존 배열 순서를 유지하면서 isPrimary만 업데이트
     let updatedSpaces = spaces.map(space =>
       space.id === spaceId
         ? { ...space, [field]: newValue }
@@ -81,13 +73,12 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
 
     dispatch(setSpaces(updatedSpaces)); // Redux 상태 즉시 업데이트
 
-    // ✅ primarySpace를 localStorage에 저장
+    // primarySpace를 localStorage에 저장
     if (field === "isPrimary" && newValue) {
       const primarySpace = updatedSpaces.find(space => space.isPrimary);
       if (primarySpace) {
         dispatch(setActiveSpace(primarySpace));
         localStorage.setItem('primarySpace', JSON.stringify(primarySpace));
-        console.log("🏠 대표 공간 변경됨 & 저장됨:", primarySpace);
       }
     }
 
@@ -95,9 +86,7 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
       const url = `/api/spaces/${spaceId}`;
       const data = { [field]: newValue };
 
-      console.log("📡 PATCH 요청 전송:", url, "보낼 데이터:", data);
       const response = await api.patch(url, data);
-      console.log("✅ PATCH 응답 받음:", response.data);
 
       if (response.status === 200) {
         dispatch(modifySpace(spaceId, response.data));
@@ -113,16 +102,16 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
   };
 
 
-// ✅ 삭제 상태 추가 (삭제할 공간 저장)
+// 삭제 상태 추가 (삭제할 공간 저장)
 const [spaceToDelete, setSpaceToDelete] = useState(null);
 
-// ✅ 삭제 확인 창 열기
+// 삭제 확인 창 열기
 const handleTrashClick = (space) => {
   setSpaceToDelete(space);
   setIsAlertOpen(true);
 };
 
-// ✅ 삭제 실행 함수
+// 삭제 실행 함수
 const handleDeleteConfirmed = async () => {
   if (!spaceToDelete) return;
   try {
@@ -131,7 +120,6 @@ const handleDeleteConfirmed = async () => {
 
     // Redux 상태에서 해당 공간 삭제
     dispatch(setSpaces(spaces.filter(space => space.id !== spaceToDelete.id)));
-    console.log("✅ 삭제 완료, 상태 업데이트됨");
 
     // 선택된 공간이 삭제되었으면 초기화
     if (selectedSpace?.id === spaceToDelete.id) {
@@ -162,7 +150,7 @@ return (
             <PublicButton spaceId={space.id} isPublic={space.isPublic} onToggle={handleToggle} />
             <TrashButton onClick={(e) => {
               e.stopPropagation();
-              handleTrashClick(space); // ✅ 삭제 확인 창 열기
+              handleTrashClick(space);
             }}>
               <FiTrash2 />
             </TrashButton>
@@ -228,7 +216,6 @@ const PrimaryButtonStyled = styled.button`
 export const PrimaryButton = ({ spaceId, isPrimary, onToggle }) => (
   <PrimaryButtonStyled onClick={(e) => {
     e.stopPropagation();
-    console.log("📌 핀 버튼 클릭됨! 공간 ID:", spaceId);
     onToggle(spaceId, 'isPrimary');
   }}>
     {isPrimary ? <BsPinAngleFill /> : <BsPinAngle />}
@@ -255,7 +242,6 @@ const PublicButtonStyled = styled.button`
 export const PublicButton = ({ spaceId, isPublic, onToggle }) => (
   <PublicButtonStyled onClick={(e) => {
     e.stopPropagation();
-    console.log("📌 공개 버튼 클릭됨! 공간 ID:", spaceId);
     onToggle(spaceId, 'isPublic');
   }}>
     {isPublic ? <FiBookOpen /> : <FiBook />}

@@ -46,7 +46,6 @@ const AddButton = ({ isAddButtonOpen, toggleAddButton }) => {
           },
         }
       );
-      console.log(response.data);
       const newSpace = {
         id: response.data.spaceId,
         title: response.data.sname,

@@ -40,7 +40,6 @@ const CoverSelection = ({ selectedCover, onClose, onSelectCover }) => {
   const handleConfirm = () => {
     const selectedCover = covers[currentIndex];
     onSelectCover(selectedCover.id); 
-    console.log("선택된 커버 ID:", selectedCover.id);
   };
 
   return (
