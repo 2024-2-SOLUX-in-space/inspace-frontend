@@ -182,7 +182,7 @@ const EditSidebar = ({
           <DraggableContainer isStickers={selectedIcon === 'sticker'}>
             {selectedIcon === 'sticker' ? (
               stickerData.stickers.map(sticker => (
-                <DraggableItem key={sticker.id}>
+                <DraggableItem key={sticker.id} isSticker={selectedIcon === 'sticker'}>
                   <StyledImage
                     src={sticker.src}
                     alt={sticker.alt}
