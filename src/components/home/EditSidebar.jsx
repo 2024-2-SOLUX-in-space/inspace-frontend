@@ -38,10 +38,13 @@ const EditSidebar = ({
   const [selectedFile, setSelectedFile] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false); // 데이터가 처음 불러와졌는지 여부
+
+  // ✅ 처음 한 번만 모든 카테고리 데이터 불러오기
 
   // ✅ 처음 한 번만 모든 카테고리 데이터 불러오기
   useEffect(() => {
-    if (!activeSpace || !activeSpace.id) return;
+    if (!activeSpace || !activeSpace.id || isInitialized) return;
 
     const fetchAllCategoryData = async () => {
       try {
@@ -70,11 +73,8 @@ const EditSidebar = ({
     };
 
     fetchAllCategoryData();
-  }, [activeSpace]);
+  }, [activeSpace, isInitialized]);
 
-
-
-  // 공간 선택 시 카테고리 데이터 초기화
   // ✅ 아이콘 변경 시 기존 데이터 유지 & 백그라운드 업데이트
   useEffect(() => {
     if (!activeSpace || !activeSpace.id || selectedIcon === 'sticker') return;
