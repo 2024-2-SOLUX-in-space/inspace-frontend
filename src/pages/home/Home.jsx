@@ -23,11 +23,19 @@ const Home = () => {
 
   const hasSpaces = spaces.length > 0;
 
+  // 공간 선택 시 로딩 상태 초기화
   useEffect(() => {
     if (activeSpace !== null) {
       setIsLoading(false);
     }
   }, [activeSpace]);
+
+  // 공간 선택 시 편집 모드 초기화
+  useEffect(() => {
+    if (selectedSpace) {
+      setIsEditOpen(false);
+    }
+  }, [selectedSpace]);
 
   const handleEdit = () => {
     setIsEditOpen(!isEditOpen);
