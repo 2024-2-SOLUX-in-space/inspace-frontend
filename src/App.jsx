@@ -9,7 +9,6 @@ import {
 import { AlertProvider } from "./context/AlertContext";
 import { UserProvider } from "./context/UserContext";
 import { SidebarProvider, useSidebar } from "./context/SidebarContext"; 
-import { SpaceProvider } from "./context/SpaceContext";
 import { ItemProvider } from "./context/ItemContext";
 import { Provider } from 'react-redux';
 import store from './redux/store';
@@ -31,7 +30,6 @@ function App() {
     <UserProvider>
       <AlertProvider>
         <SidebarProvider> 
-          <SpaceProvider>
             <ItemProvider>
             <Router>
               <GlobalStyle />
@@ -42,13 +40,13 @@ function App() {
                 <Route path="/login" element={<LogInPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/home" element={<Home />} />
+                <Route path="/menusidebar" element={<MenuSidebar />} />
                 <Route path="/search" element={<SearchResult />} />
                 <Route path="/mypage" element={<MyPage />} />
                 <Route path="/mypage-edit" element={<EditMyPage />} />
               </Routes>
             </Router>
             </ItemProvider>
-          </SpaceProvider>
         </SidebarProvider>
       </AlertProvider>
     </UserProvider>
