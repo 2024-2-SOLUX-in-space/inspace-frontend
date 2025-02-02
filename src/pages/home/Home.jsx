@@ -34,14 +34,17 @@ const Home = () => {
   useEffect(() => {
     if (selectedSpace) {
       setIsEditOpen(false);
+      setSelectedIcon('image');
     }
   }, [selectedSpace]);
 
   const handleEdit = () => {
     setIsEditOpen(!isEditOpen);
   };
+  
   const handleCloseSidebar = () => {
     setIsEditOpen(false);
+    setSelectedIcon('image');
   };
 
   const handleImageDrop = async (pageNum, x, y) => {
