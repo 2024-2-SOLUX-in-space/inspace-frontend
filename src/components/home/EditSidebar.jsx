@@ -39,56 +39,67 @@ const EditSidebar = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // 공간 선택 시 카테고리 데이터 초기화
+  // ✅ 처음 한 번만 모든 카테고리 데이터 불러오기
   useEffect(() => {
-    if (!activeSpace || !activeSpace.id || selectedIcon === 'sticker') {
-      resetCategoryData();
-      return;
-    }
+    if (!activeSpace || !activeSpace.id) return;
+
+    const fetchAllCategoryData = async () => {
+      try {
+        const categories = ["image", "youtube", "music", "file"];
+        const responses = await Promise.all(
+          categories.map(category =>
+            api.get(`/api/category/space/${activeSpace.id}?category=${category.toUpperCase()}`)
+          )
+        );
+
+        const newCategoryData = responses.reduce((acc, response, idx) => {
+          acc[categories[idx]] = (response.data || []).map(item => ({
+            ...item,
+            id: item.itemId || `temp-id-${Date.now()}`
+          }));
+          return acc;
+        }, {});
+
+        setCategoryData(prev => ({
+          ...prev,
+          ...newCategoryData
+        }));
+      } catch (error) {
+        console.error("Error fetching all category data:", error);
+      }
+    };
+
+    fetchAllCategoryData();
+  }, [activeSpace]);
+
+
+
+  // 공간 선택 시 카테고리 데이터 초기화
+  // ✅ 아이콘 변경 시 기존 데이터 유지 & 백그라운드 업데이트
+  useEffect(() => {
+    if (!activeSpace || !activeSpace.id || selectedIcon === 'sticker') return;
+
+    const fetchCategoryData = async () => {
+      try {
+        const category = selectedIcon === 'file' ? 'USERIMAGE' : selectedIcon.toUpperCase();
+        const response = await api.get(`/api/category/space/${activeSpace.id}?category=${category}`);
+
+        const dataWithId = (response.data || []).map(item => ({
+          ...item,
+          id: item.itemId || `temp-id-${Date.now()}`
+        }));
+
+        setCategoryData(prev => ({
+          ...prev,
+          [selectedIcon]: dataWithId
+        }));
+      } catch (error) {
+        console.error(`Error fetching ${selectedIcon} data:`, error);
+      }
+    };
+
     fetchCategoryData();
-  }, [selectedIcon, activeSpace]);
-
-  // 카테고리 데이터 가져오기
-  const fetchCategoryData = async () => {
-    setIsLoading(true);
-    try {
-      const category = (selectedIcon === 'file')
-        ? 'USERIMAGE'
-        : selectedIcon.toUpperCase();
-
-      const response = await api.get(
-        `/api/category/space/${activeSpace.id}?category=${category}`
-      );
-
-      const dataWithId = (response.data || []).map(item => ({
-        ...item,
-        id: item.itemId || `temp-id-${Date.now()}`
-      }));
-
-      setCategoryData(prev => ({
-        ...prev,
-        [selectedIcon]: dataWithId
-      }));
-    } catch (error) {
-      console.error('Error fetching category data:', error);
-      setCategoryData(prev => ({
-        ...prev,
-        [selectedIcon]: []
-      }));
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const resetCategoryData = () => {
-    setCategoryData({
-      image: [],
-      youtube: [],
-      music: [],
-      sticker: stickerData.stickers,
-      file: []
-    });
-  };
+  }, [selectedIcon]);
 
   const handleOpenModal = () => {
     fileInputRef.current?.click();
