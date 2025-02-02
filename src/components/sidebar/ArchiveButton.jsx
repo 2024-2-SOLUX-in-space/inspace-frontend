@@ -39,6 +39,19 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
     setIsScrollable(spaces.length > 5);
   }, [spaces]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (archiveRef.current && !archiveRef.current.contains(event.target)) {
+        toggleArchive();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [toggleArchive]);
+
   const handleListBoxClick = (spaceId, title, coverType) => {
     console.log(`🟢 공간 클릭됨: ID=${spaceId}, 제목=${title}`);
     dispatch(setSelectedSpace({ id: spaceId, title, coverType }));
