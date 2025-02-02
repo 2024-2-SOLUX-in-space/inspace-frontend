@@ -11,7 +11,8 @@ import HomeButton from '../components/sidebar/HomeButton';
 import AddButton from "../components/sidebar/AddButton";
 import HeartButton from '../components/sidebar/HeartButton';
 import { SpaceContext } from '../context/SpaceContext';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setActiveSpace } from '../redux/actions/spaceActions';
 
 const MenuSidebar = ({
   isArchiveOpen, toggleArchive, 
@@ -21,7 +22,7 @@ const MenuSidebar = ({
     const [isOpen, setIsOpen] = useState(true);
     const [activeIcon, setActiveIcon] = useState("home");
     const { spaces, resetToPrimarySpace } = useContext(SpaceContext);
-    const activeSpace = useSelector(state => state.space.activeSpace);
+    const dispatch = useDispatch();
 
     const toggleSidebar = () => {
       setIsOpen(!isOpen); 
@@ -32,7 +33,10 @@ const MenuSidebar = ({
         setActiveIcon(null);
       } else {
         if (iconName === "home") {
-          resetToPrimarySpace();
+          const primarySpace = spaces.find(space => space.isPrimary);
+          if (primarySpace) {
+            dispatch(setActiveSpace(primarySpace));
+          }
         }
         if (iconName === "archive") {
           toggleArchive();
