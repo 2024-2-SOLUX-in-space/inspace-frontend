@@ -27,8 +27,9 @@ export const DraggableContainer = styled.div`
   grid-template-columns: ${(props) =>
     props.isStickers ? 'repeat(2, 1fr)' : 'none'};
   flex-direction: ${(props) => (props.isStickers ? 'unset' : 'column')};
-  gap: 10px;
-  padding: 10px;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
   flex: 1;
   overflow-y: auto;
   min-height: 0;
