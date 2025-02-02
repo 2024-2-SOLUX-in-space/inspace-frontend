@@ -123,7 +123,20 @@ const handleDeleteConfirmed = async () => {
 
     // 선택된 공간이 삭제되었으면 다른 공간 선택
     if (selectedSpace?.id === spaceToDelete.id) {
-      const nextSpace = updatedSpaces.length > 0 ? updatedSpaces[0] : null;
+      let nextSpace = null;
+
+      // 대표 공간이 삭제된 경우 가장 최신 공간을 대표 공간으로 설정
+      if (spaceToDelete.isPrimary && updatedSpaces.length > 0) {
+        updatedSpaces.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        nextSpace = updatedSpaces[0];
+        nextSpace.isPrimary = true; // 가장 최신 공간을 대표 공간으로 설정
+
+        // 서버에 업데이트 요청
+        await api.patch(`/api/spaces/${nextSpace.id}`, { isPrimary: true });
+      } else {
+        nextSpace = updatedSpaces.length > 0 ? updatedSpaces[0] : null;
+      }
+
       dispatch(setSelectedSpace(nextSpace));
       dispatch(setActiveSpace(nextSpace));
     }
