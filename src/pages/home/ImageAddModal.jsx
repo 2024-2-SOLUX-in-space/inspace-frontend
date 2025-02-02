@@ -1,12 +1,11 @@
-import React, { useState, useRef, useCallback, useContext } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import ReactCrop from 'react-image-crop';
 import Modal from 'react-modal';
 import 'react-image-crop/dist/ReactCrop.css';
 import api from '../../api/api';
-import { SpaceContext } from '../../context/SpaceContext';
-
+import { useSelector } from 'react-redux';
 
 const ModalStyles = {
   overlay: {
@@ -122,14 +121,13 @@ const SaveButton = styled.button`
 `;
 
 const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
-  if (typeof onSave !== 'function') {
-    console.error('onSave is not a function');
-  }
 
   const maxLength = 20;
   const imgRef = useRef(null);
   const canvasRef = useRef(null);
+
   
+  const activeSpace = useSelector(state => state.space.activeSpace);
   const [title, setTitle] = useState('');
   const [crop, setCrop] = useState({
     unit: 'px',
@@ -139,7 +137,6 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
     height: 75
   });
   const [completedCrop, setCompletedCrop] = useState(null);
-  const { activeSpace } = useContext(SpaceContext);
 
   const onLoad = useCallback((img) => {
     imgRef.current = img;
@@ -205,7 +202,7 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
           return;
         }
 
-        const formData = new FormData();
+      const formData = new FormData();
         formData.append('file', blob, 'cropped-image.png');
 
         try {
@@ -216,13 +213,14 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
           );
 
           if (onSave) {
-            onSave(response.data); 
-          }
+        onSave(response.data);
+        onClose();
+      }
 
           handleClose();
-        } catch (error) {
-          console.error('Error uploading image:', error);
-        }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    }
       },
       'image/png',
       1
@@ -275,12 +273,12 @@ const ImageAddModal = ({ isOpen, onClose, imageFile, onSave }) => {
         
         <InputContainer>
           <Input
-            type="text"
-            value={title}
+          type="text"
+          value={title}
             onChange={handleTitleChange}
             placeholder="제목을 입력하세요 (최대 20자)"
             maxLength={maxLength}
-          />
+        />
           <SaveButton onClick={handleSave}>저장</SaveButton>
         </InputContainer>
 

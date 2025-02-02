@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import Moveable from 'react-moveable';
 import { FiX } from 'react-icons/fi';
 import { debounce } from "lodash";
 import { DeleteButton } from '../../styles/home/EditSidebarStyle';
 import { DraggableImage } from '../../styles/home/HomeDiaryStyle';
 import api from '../../api/api';
-import { SpaceContext } from '../../context/SpaceContext';
 import { useItemContext } from '../../context/ItemContext';
 
 const PageItem = ({
@@ -16,7 +16,7 @@ const PageItem = ({
   isEditMode,
   onItemSelectChange,
 }) => {
-  const { activeSpace } = useContext(SpaceContext);
+  const activeSpace = useSelector(state => state.space.activeSpace);
   const { selectedItem, setSelectedItem } = useItemContext();
   const imageRef = useRef(null);
   const moveableRef = useRef(null);

@@ -13,7 +13,6 @@ import { fetchSpaces, modifySpace, setSelectedSpace, setActiveSpace } from '../.
 const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
   const [isScrollable, setIsScrollable] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
-  //const { setSpaces, setSelectedSpace, setActiveSpace, selectedSpace } = useContext(SpaceContext);
   const archiveRef = useRef(null);
   const dispatch = useDispatch();
   const spaces = useSelector(state => state.space.spaces);

@@ -11,6 +11,8 @@ import HomeButton from '../components/sidebar/HomeButton';
 import AddButton from "../components/sidebar/AddButton";
 import HeartButton from '../components/sidebar/HeartButton';
 import { SpaceContext } from '../context/SpaceContext';
+import { useSelector } from 'react-redux';
+import styled from 'styled-components';
 
 const MenuSidebar = ({
   isArchiveOpen, toggleArchive, 
@@ -21,6 +23,7 @@ const MenuSidebar = ({
     const [isOpen, setIsOpen] = useState(true);
     const [activeIcon, setActiveIcon] = useState("home");
     const { spaces, resetToPrimarySpace } = useContext(SpaceContext);
+    const activeSpace = useSelector(state => state.space.activeSpace);
 
     const toggleSidebar = () => {
       setIsOpen(!isOpen); 
@@ -111,3 +114,10 @@ const MenuSidebar = ({
 }
 
 export default MenuSidebar; 
+
+const SidebarContainer = styled.div`
+  width: 250px;
+  background-color: #f4f4f4;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+`; 
