@@ -41,8 +41,6 @@ const EditSidebar = ({
   const [isInitialized, setIsInitialized] = useState(false); // 데이터가 처음 불러와졌는지 여부
 
   // ✅ 처음 한 번만 모든 카테고리 데이터 불러오기
-
-  // ✅ 처음 한 번만 모든 카테고리 데이터 불러오기
   useEffect(() => {
     if (!activeSpace || !activeSpace.id || isInitialized) return;
 
