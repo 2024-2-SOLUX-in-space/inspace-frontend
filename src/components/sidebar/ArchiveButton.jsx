@@ -115,7 +115,6 @@ const handleTrashClick = (space) => {
 const handleDeleteConfirmed = async () => {
   if (!spaceToDelete) return;
   try {
-    console.log("🗑 삭제 요청 실행:", spaceToDelete.id);
     await api.delete(`/api/spaces/${spaceToDelete.id}`);
 
     // Redux 상태에서 해당 공간 삭제
