@@ -44,7 +44,6 @@ const MenuSidebar = ({
 
         if (primarySpace) {
           dispatch(setActiveSpace(primarySpace));
-          console.log("🏠 홈 공간 설정됨:", primarySpace);
         } else {
           console.warn("⚠ 공간 없음: activeSpace를 null로 설정");
           dispatch(setActiveSpace(null));
@@ -71,7 +70,6 @@ const MenuSidebar = ({
 
           if (primarySpace) {
             dispatch(setActiveSpace(primarySpace));
-            console.log("🏠 홈 공간 설정됨:", primarySpace);
           } else {
             console.warn("⚠ 공간 없음: activeSpace를 null로 설정");
             dispatch(setActiveSpace(null));
