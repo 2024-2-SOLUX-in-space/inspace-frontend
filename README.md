@@ -44,6 +44,7 @@ inspace
 - **react-icons**(5.4.0)
 - **react-router-dom**(7.0.2)
 - **styled-components**(6.1.14)
+- **redux** (5.0.1)
 - **axios**(1.7.9)
 - **react-image-crop**(11.0.7)
 - **react-modal**(3.16.3)
