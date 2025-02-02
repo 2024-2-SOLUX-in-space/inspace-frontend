@@ -28,6 +28,7 @@ const SearchResult = () => {
     initialHashtags.filter((tag) => tag.active).map((tag) => tag.label),
   );
   const [results, setResults] = useState([]);
+  const [spaces, setSpaces] = useState([]); // 공간 목록 상태
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageData, setImageData] = useState({
     username: 'Space',
@@ -43,6 +44,7 @@ const SearchResult = () => {
     const token = localStorage.getItem('access_token');
     if (token) {
       setAccessToken(token);
+      fetchSpaces(token); // 공간 목록 조회
     }
   }, []);
 
@@ -74,6 +76,23 @@ const SearchResult = () => {
       setResults(transformResponseData(response.data));
     } catch (error) {
       console.error('검색 오류:', error.response?.status, error.response?.data);
+    }
+  };
+
+  const fetchSpaces = async (token) => {
+    try {
+      const response = await axios.get('http://3.35.10.158:8080/api/spaces', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log('공간 목록:', response.data); // 공간 목록을 콘솔에 출력
+      setSpaces(
+        response.data.map((space) => ({
+          spaceId: space.spaceId,
+          sname: space.sname,
+        })),
+      );
+    } catch (error) {
+      console.error('공간 목록 조회 오류:', error);
     }
   };
 
@@ -136,24 +155,26 @@ const SearchResult = () => {
           ))}
         </HashtagContainer>
 
-        <MasonryGrid>
-          {results
-            .filter((item) => selectedTags.includes(item.ctype))
-            .map(({ itemId, imageUrl, title, username }) => (
-              <GridItem key={itemId}>
-                <img
-                  src={imageUrl}
-                  alt={title}
-                  style={{ width: '100%', borderRadius: '10px' }}
-                  onClick={() => {
-                    console.log('클릭한 itemId:', itemId); // 클릭한 itemId를 콘솔에 출력
-                    setSelectedImage(imageUrl);
-                    setImageData({ title, username, itemId });
-                  }}
-                />
-              </GridItem>
-            ))}
-        </MasonryGrid>
+        <div style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 50px)' }}>
+          <MasonryGrid>
+            {results
+              .filter((item) => selectedTags.includes(item.ctype))
+              .map(({ itemId, imageUrl, title, username }) => (
+                <GridItem key={itemId}>
+                  <img
+                    src={imageUrl}
+                    alt={title}
+                    style={{ width: '100%', borderRadius: '10px' }}
+                    onClick={() => {
+                      console.log('클릭한 itemId:', itemId); // 클릭한 itemId를 콘솔에 출력
+                      setSelectedImage(imageUrl);
+                      setImageData({ title, username, itemId });
+                    }}
+                  />
+                </GridItem>
+              ))}
+          </MasonryGrid>
+        </div>
       </SearchResultContainer>
 
       <DetailView visible={!!selectedImage} fullscreen={isFullscreen}>
@@ -196,7 +217,7 @@ const SearchResult = () => {
           onSuccess={() => {
             setShowSuccessModal(true);
           }}
-          spaces={['Space 1', 'Space 2', 'Space 3']}
+          spaces={spaces} // 공간 목록 전달
           itemId={imageData.itemId} // AddItemModal에 itemId 전달
         />
       )}

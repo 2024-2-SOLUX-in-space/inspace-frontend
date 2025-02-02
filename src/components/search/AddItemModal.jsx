@@ -12,24 +12,11 @@ const AddItemModal = ({ isOpen, spaces, onClose, onSuccess }) => {
       return;
     }
 
-    // 현재 모달 닫기 후 Success Modal 열기
+    console.log('선택한 spaceId:', selectedSpace); // 선택한 spaceId를 콘솔에 출력
     onClose();
     setTimeout(() => {
       onSuccess();
     }, 300); // 부드럽게 전환
-
-    // API 연동 코드 주석 처리
-    /*
-    const payload = { spaceId: selectedSpace };
-    try {
-      const response = await axios.post('API_URL_HERE', payload, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-    */
   };
 
   return (
@@ -42,25 +29,22 @@ const AddItemModal = ({ isOpen, spaces, onClose, onSuccess }) => {
           </button>
         </div>
         <div style={contentStyle}>
-          {spaces.map((space, index) => (
+          {spaces.map((space) => (
             <div
-              key={index}
+              key={space.spaceId}
               style={{
                 ...spaceItemStyle,
-                backgroundColor: selectedSpace === space ? '#f5f5f5' : 'white',
+                backgroundColor:
+                  selectedSpace === space.spaceId ? '#f5f5f5' : 'white',
               }}
-              onClick={() => setSelectedSpace(space)}
+              onClick={() => setSelectedSpace(space.spaceId)}
             >
               <img
-                src={
-                  index % 2 === 0
-                    ? '/src/assets/img/button/Bookopen.png'
-                    : '/src/assets/img/button/Bookclose.png'
-                }
+                src="/src/assets/img/button/Bookopen.png"
                 alt="Icon"
                 style={iconStyle}
               />
-              <span>{space}</span>
+              <span>{space.sname}</span>
             </div>
           ))}
         </div>
@@ -72,7 +56,7 @@ const AddItemModal = ({ isOpen, spaces, onClose, onSuccess }) => {
   );
 };
 
-// CSS 스타일 정의
+// 스타일 수정
 const overlayStyle = {
   position: 'fixed',
   top: 0,
@@ -90,10 +74,11 @@ const modalStyle = {
   background: 'white',
   borderRadius: '10px',
   width: '450px',
-  height: '300px',
+  maxHeight: '500px', // 모달의 최대 높이를 설정
   boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
   position: 'relative',
   padding: '20px',
+  overflow: 'hidden', // 모달 내용이 넘치지 않도록 설정
 };
 
 const headerStyle = {
@@ -120,9 +105,9 @@ const contentStyle = {
   display: 'flex',
   flexDirection: 'column',
   gap: '10px',
+  maxHeight: '300px', // 모달 내부에서 스크롤이 가능하도록 설정
+  overflowY: 'auto', // 세로 스크롤 활성화
   marginBottom: '30px',
-  overflowY: 'auto',
-  maxHeight: '300px',
 };
 
 const spaceItemStyle = {
