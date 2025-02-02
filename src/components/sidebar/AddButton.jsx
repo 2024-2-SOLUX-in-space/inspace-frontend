@@ -4,8 +4,11 @@ import CoverSelection from "./CoverSelection";
 import PublicSelection from "./PublicSelection";
 import Alert from "../alert/AddTrashAlert";
 import api from '../../api/api.js';
+import { useDispatch } from 'react-redux';
+import { addSpace } from '../../redux/actions/spaceActions';
 
 const AddButton = ({ isAddButtonOpen, toggleAddButton }) => {
+  const dispatch = useDispatch();
   const [currentStep, setCurrentStep] = useState(1); 
   const [sthumb, setSthumb] = useState(null); 
   const [sname, setSname] = useState(""); 
@@ -43,6 +46,15 @@ const AddButton = ({ isAddButtonOpen, toggleAddButton }) => {
           },
         }
       );
+      console.log(response.data);
+      const newSpace = {
+        id: response.data.spaceId,
+        title: response.data.sname,
+        coverType: response.data.sthumb,
+        isPrimary: response.data.isPrimary,
+        isPublic: response.data.isPublic,
+      };
+      dispatch(addSpace(newSpace));
       setCurrentStep(5);
     } catch (error) {
 

@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { FiFolderPlus, FiImage, FiYoutube, FiMusic, FiPlus, FiX } from "react-icons/fi";
 import { BiSticker } from "react-icons/bi";
 import { 
@@ -16,14 +17,13 @@ import ImageAddModal from '../../pages/home/ImageAddModal';
 import stickerData from '../../data/stickers.json';
 import api from '../../api/api';
 import { useItemContext } from '../../context/ItemContext';
-import { SpaceContext } from '../../context/SpaceContext';
 
 const EditSidebar = ({
   isOpen,
   selectedIcon,
   setSelectedIcon
 }) => {
-  const { activeSpace } = useContext(SpaceContext);
+  const activeSpace = useSelector(state => state.space.activeSpace);
   const { setSelectedItem } = useItemContext();
   const fileInputRef = useRef(null);
 

@@ -1,12 +1,12 @@
-import React, { forwardRef, useContext } from 'react';
+import React, { forwardRef } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import PageItem from './PageItem';
 import { PageContent, PageNumber, DiaryContent } from '../../styles/home/HomeDiaryStyle';
 import api from '../../api/api';
-import { SpaceContext } from '../../context/SpaceContext';
 
 const Page = forwardRef((props, ref) => {
-  const { activeSpace } = useContext(SpaceContext);
+  const activeSpace = useSelector(state => state.space.activeSpace);
 
   const handleDragOver = (e) => {
     e.preventDefault();

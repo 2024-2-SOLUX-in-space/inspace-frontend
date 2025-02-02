@@ -93,6 +93,10 @@ export const SpaceProvider = ({ children }) => {
     }
   };
 
+  const addSpace = (newSpace) => {
+    setSpaces((prevSpaces) => [...prevSpaces, newSpace]);
+  };
+
   return (
     <SpaceContext.Provider
       value={{
@@ -104,7 +108,8 @@ export const SpaceProvider = ({ children }) => {
         setSelectedSpace,
         activeSpace,
         setActiveSpace,
-        resetToPrimarySpace, // 추가된 함수
+        resetToPrimarySpace,
+        addSpace,
         loading,
         error,
       }}

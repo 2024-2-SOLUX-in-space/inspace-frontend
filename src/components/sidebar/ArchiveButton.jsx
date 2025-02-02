@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import PropTypes from 'prop-types';
 import { FiBookOpen, FiBook, FiTrash2 } from "react-icons/fi";
 import { BsPinAngle, BsPinAngleFill } from "react-icons/bs";
@@ -6,14 +6,26 @@ import styled from "styled-components";
 import Alert from "../alert/AddTrashAlert";
 import { ArchiveList, ListBox, TitleContainer } from "../../styles/sidebar/ArchiveButtonStyle";
 import api from '../../api/api';
-import { SpaceContext } from '../../context/SpaceContext';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchSpaces, modifySpace, setSelectedSpace, setActiveSpace } from '../../redux/actions/spaceActions';
 
 
 const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
   const [isScrollable, setIsScrollable] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
-  const { spaces, setSpaces, setSelectedSpace, setActiveSpace, selectedSpace } = useContext(SpaceContext);
+  //const { setSpaces, setSelectedSpace, setActiveSpace, selectedSpace } = useContext(SpaceContext);
   const archiveRef = useRef(null);
+  const dispatch = useDispatch();
+  const spaces = useSelector(state => state.space.spaces);
+  const selectedSpace = useSelector(state => state.space.selectedSpace);
+  
+  useEffect(() => {
+    dispatch(fetchSpaces()); // 공간 목록 불러오기
+  }, [dispatch]);
+
+  useEffect(() => {
+    console.log("Spaces updated:", spaces);
+  }, [spaces]);
 
   // 백엔드 응답을 프론트엔드 필드명으로 매핑하는 함수
   const mapBackendToFrontend = (backendSpace) => ({
@@ -51,8 +63,8 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
   // 클릭 시 공간 이동 
   const handleListBoxClick = (spaceId, title, coverType) => {
     const selectedSpaceData = { id: spaceId, title, coverType };
-    setSelectedSpace(selectedSpaceData);
-    setActiveSpace(selectedSpaceData);
+    dispatch(setSelectedSpace(selectedSpaceData));
+    dispatch(setActiveSpace(selectedSpaceData));
     toggleArchive();
   };
 
@@ -68,9 +80,7 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
       const newIsPrimary = !currentSpace.isPrimary;
 
       // 공간 편집 api 호출 전 공간 상태 업데이트
-      setSpaces(prevSpaces => prevSpaces.map(space => 
-        space.id === spaceId ? { ...space, isPrimary: newIsPrimary } : { ...space, isPrimary: false }
-      ));
+      dispatch(modifySpace(spaceId, { [field]: newIsPrimary }));
 
       try {
         const url = `/api/spaces/${spaceId}`;
@@ -84,7 +94,7 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
           const updatedSpaces = spaces.map(space => 
             space.id === spaceId ? updatedSpace : { ...space, isPrimary: false }
           );
-          setSpaces(updatedSpaces);
+          dispatch(modifySpace(spaceId, updatedSpace));
 
           // isPrimary가 true인 경우 activeSpace 업데이트
           if (updatedSpace.isPrimary) {
@@ -93,22 +103,18 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
               title: updatedSpace.title,
               coverType: updatedSpace.coverType,
             };
-            setSelectedSpace(primarySpaceData);
-            setActiveSpace(primarySpaceData);
+            dispatch(setSelectedSpace(primarySpaceData));
+            dispatch(setActiveSpace(primarySpaceData));
           }
         }
       } catch (error) {
         console.error(`Error toggling ${field} for space:`, error);
         // 실패 시 원래 상태로 롤백
-        setSpaces(prevSpaces => prevSpaces.map(space => 
-          space.id === spaceId ? { ...space, isPrimary: currentSpace.isPrimary } : space
-        ));
+        dispatch(modifySpace(spaceId, { [field]: currentSpace[field] }));
       }
 
     } else {
-      setSpaces(prevSpaces => prevSpaces.map(space => 
-        space.id === spaceId ? { ...space, [field]: !space[field] } : space
-      ));
+      dispatch(modifySpace(spaceId, { [field]: !currentSpace[field] }));
 
       try {
         const url = `/api/spaces/${spaceId}`;
@@ -117,16 +123,12 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
         const response = await api.patch(url, data);
         if (response.status === 200) {
           const updatedSpace = mapBackendToFrontend(response.data);
-          setSpaces(prevSpaces => prevSpaces.map(space => 
-            space.id === spaceId ? updatedSpace : space
-          ));
+          dispatch(modifySpace(spaceId, updatedSpace));
         }
       } catch (error) {
         console.error(`Error toggling ${field} for space:`, error);
         // 실패 시 원래 상태로 롤백
-        setSpaces(prevSpaces => prevSpaces.map(space => 
-          space.id === spaceId ? { ...space, [field]: currentSpace[field] } : space
-        ));
+        dispatch(modifySpace(spaceId, { [field]: currentSpace[field] }));
       }
     }
   };
@@ -141,13 +143,13 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
   const handleDeleteSpace = async (spaceId) => {
     try {
       await api.delete(`/api/spaces/${spaceId}`);
-      setSpaces(prevSpaces => prevSpaces.filter(space => space.id !== spaceId));
+      dispatch(fetchSpaces());
       console.log('Spaces after deletion:', spaces);
 
       // 선택된 공간이 삭제되었을 경우 activeSpace 업데이트
       if (selectedSpace && selectedSpace.id === spaceId) {
-        setSelectedSpace(null);
-        setActiveSpace(null);
+        dispatch(setSelectedSpace(null));
+        dispatch(setActiveSpace(null));
       }
     } catch (error) {
       console.error('Error deleting space:', error);
@@ -157,7 +159,7 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
   const handleTrashClick = (spaceId) => {
     const selectedSpaceData = spaces.find(space => space.id === spaceId);
     if (selectedSpaceData) {
-      setSelectedSpace(selectedSpaceData);
+      dispatch(setSelectedSpace(selectedSpaceData));
       setIsAlertOpen(true);
     }
   };
@@ -165,15 +167,15 @@ const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
   // 모달 닫기 함수 수정: isAlertOpen과 selectedSpace 모두 초기화
   const handleCloseAlert = () => {
     setIsAlertOpen(false);
-    setSelectedSpace(null);
+    dispatch(setSelectedSpace(null));
   };
 
   const handleConfirmDelete = async () => {
     if (selectedSpace) {
       await handleDeleteSpace(selectedSpace.id);
       setIsAlertOpen(false);
-      setSelectedSpace(null);
-      setActiveSpace(null);
+      dispatch(setSelectedSpace(null));
+      dispatch(setActiveSpace(null));
     }
   };
 
