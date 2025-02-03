@@ -1,5 +1,5 @@
 // EditMyPage.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAlert } from '../../context/AlertContext';
 import { useUser } from '../../context/UserContext';
@@ -22,12 +22,42 @@ const EditMyPage = () => {
   const { showAlert } = useAlert();
   const { user, setUser } = useUser();
 
-  const [name, setName] = useState(user.name);
-  const [email] = useState(user.email); // 읽기 전용
+  // UserContext에서 가져온 초기값
+  const [name, setName] = useState(user.name || '');
+  const [email, setEmail] = useState(user.email || '');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
 
   const passwordRegex = /^[A-Za-z0-9!@#$%^&*]*$/;
+
+  // 새로고침 시 사용자 정보 가져오기
+  useEffect(() => {
+    if (!user.name || !user.email) {
+      getMyInfo();
+    }
+  }, []);
+
+  const getMyInfo = async () => {
+    try {
+      const res = await api.get('/api/user-info');
+      if (res.data.success) {
+        const { name: newName, email: newEmail } = res.data.data;
+
+        setUser((prev) => ({
+          ...prev,
+          name: newName,
+          email: newEmail,
+        }));
+        setName(newName);
+        setEmail(newEmail);
+      } else {
+        showAlert('회원 정보 조회에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('error: ', error);
+      showAlert('회원 정보 조회에 실패했습니다.');
+    }
+  };
 
   const handleNameChange = (e) => {
     const value = e.target.value;
@@ -68,7 +98,7 @@ const EditMyPage = () => {
       return;
     }
     if (!passwordConfirmation.trim()) {
-      showAlert('비밀번호를 확인해주세요.');
+      showAlert('비밀번호 확인란을 입력해주세요.');
       return;
     }
     if (password !== passwordConfirmation) {
@@ -77,25 +107,21 @@ const EditMyPage = () => {
     }
 
     try {
-      const token = localStorage.getItem('access_token');
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
       const data = {
-        name: name,
-        email: email,
-        password: password,
-        passwordConfirmation: passwordConfirmation,
+        name,
+        email,
+        password,
+        passwordConfirmation,
       };
 
-      const response = await api.patch('/api/user-info', data, config);
+      const response = await api.patch('/api/user-info', data);
+
       if (response.data.success) {
-        setUser({
-          ...user,
+        setUser((prev) => ({
+          ...prev,
           name,
-        });
+        }));
+
         showAlert(
           '프로필 수정이 완료되었습니다!',
           () => navigate('/mypage'),
@@ -105,7 +131,7 @@ const EditMyPage = () => {
         showAlert('프로필 수정에 실패하였습니다.');
       }
     } catch (error) {
-      console.log('error: ', error);
+      console.error('error: ', error);
       showAlert('프로필 수정에 실패하였습니다.');
     }
   };
@@ -115,7 +141,7 @@ const EditMyPage = () => {
 
   return (
     <MyPageEditContainer>
-      {/* 상단 검색바 영역 */}
+      {/* 상단 헤더 영역 */}
       <div
         style={{
           position: 'fixed',
@@ -139,7 +165,7 @@ const EditMyPage = () => {
 
       {/* 오른쪽 영역: 입력 폼 */}
       <MyPageEditRight>
-        {/* 닉네임 (수정 가능) */}
+        {/* 닉네임 */}
         <TextField
           label="Nickname"
           value={name}
@@ -148,36 +174,29 @@ const EditMyPage = () => {
           maxLength={10}
         />
 
-        {/* 이메일 수정 불가 */}
+        {/* 이메일 (읽기 전용) */}
         <DisabledTextField>
-          <TextField
-            label="Email"
-            value={email}
-            placeholder="inspace@gmail.com"
-            maxLength={50}
-            disabled
-          />
+          <TextField label="Email" value={email} disabled />
         </DisabledTextField>
 
-        {/* 비밀번호 (수정 가능) */}
+        {/* 비밀번호 */}
         <TextField
           label="Password"
           type="password"
           value={password}
           onChange={handlePasswordChange}
-          placeholder="8~20자 사이의 비밀번호를 입력해주세요."
+          placeholder="8~20자 사이의 비밀번호"
           maxLength={20}
         />
 
-        {/* 비밀번호 확인 (수정 가능) */}
+        {/* 비밀번호 확인 */}
         <TextField
           label="Confirm Password"
           type="password"
           value={passwordConfirmation}
           onChange={handlePasswordConfirmationChange}
-          placeholder="다시 한 번 입력해주세요."
+          placeholder="비밀번호 확인"
           maxLength={20}
-          visibilityButtonClass="my-textfield-icon"
         />
 
         {/* 취소, 저장 버튼 */}

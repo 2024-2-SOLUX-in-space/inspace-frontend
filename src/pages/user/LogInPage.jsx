@@ -1,3 +1,4 @@
+// LogInPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -24,7 +25,7 @@ function LogInPage() {
   const { showAlert } = useAlert();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const spaces = useSelector(state => state.space.spaces);
+  const spaces = useSelector((state) => state.space.spaces);
 
   const goToSignUp = () => {
     navigate('/signup');
@@ -35,7 +36,7 @@ function LogInPage() {
   };
 
   const emailRegex = /^[A-Za-z0-9@._-]+$/;
-  const passwordRegex = /^[A-Za-z0-9]+$/;
+  const passwordRegex = /^[A-Za-z0-9!@#$%^&*]*$/;
 
   const handleEmailChange = (e) => {
     const value = e.target.value;

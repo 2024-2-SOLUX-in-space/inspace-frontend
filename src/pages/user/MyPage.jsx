@@ -32,13 +32,13 @@ const MyPage = () => {
 
         if (res.data.success) {
           const { email, name } = res.data.data;
-          user.name = name;
-          user.email = email;
+          // user.name = name;
+          // user.email = email;
 
           setUser((prev) => ({
-            name: name,
-            email: email,
             ...prev,
+            name,
+            email,
           }));
         } else {
           showAlert('회원 정보 조회에 실패하였습니다.');
@@ -57,7 +57,7 @@ const MyPage = () => {
         const response = await api.post('/api/auth/logout');
         if (response.data.success) {
           showAlert('성공적으로 로그아웃 되었습니다.');
-          localStorage.clear();        
+          localStorage.clear();
           dispatch(resetSpaces());
           setUser({ name: '', email: '' });
           navigate('/login');
