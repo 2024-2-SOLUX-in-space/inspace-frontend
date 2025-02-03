@@ -12,6 +12,7 @@ import {
   DetailView,
   CloseButton,
 } from '../../styles/search/SearchResultStyles';
+import api from '../../api/api';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 
@@ -107,8 +108,16 @@ const SearchResult = () => {
           headers: { Authorization: `Bearer ${accessToken}` },
         },
       );
-      console.log('공간 세부 정보:', response.data); // 공간 세부 정보를 콘솔에 출력
-      setSpaceDetails(response.data);
+
+      const data = response.data;
+    setImageData({
+      itemId: data.itemId,
+      title: data.title,
+      username: data.userName,
+      contentUrl: data.contentsUrl,
+    });
+      console.log('공간 세부 정보:', data); // 아이템 세부 정보를 콘솔에 출력
+      setSpaceDetails(setImageData);
     } catch (error) {
       console.error(
         '공간 세부 정보 조회 오류:',
@@ -169,6 +178,36 @@ const SearchResult = () => {
     fetchSpaceDetails(spaceId);
   };
 
+  const handleImageClick = (itemId, imageUrl, title, username, contentUrl) => {
+    console.log('클릭한 itemId:', itemId); // 클릭한 itemId를 콘솔에 출력
+    setSelectedImage(imageUrl);
+    setImageData({ title, username, itemId, contentUrl });
+  };
+
+  const registerItemToSpace = async (itemId, spaceId, query) => {
+    if (!accessToken) return;
+    try {
+      const response = await axios.post(
+        `http://3.35.10.158:8080/api/item/register`,
+        {
+          itemId: itemId, // 아이템의 고유 ID
+          spaceId: spaceId, // 공간 ID
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+            Accept: '*/*',
+          },
+          params: { query }, // 요청 파라미터로 query 추가
+        }
+      );
+      console.log('아이템 등록 성공:', response.data); // 등록 성공 메시지 출력
+    } catch (error) {
+      console.error('아이템 등록 오류:', error.response?.status || 'N/A', error.response?.data || 'N/A');
+    }
+  };
+
   return (
     <>
       <Header iconInside />
@@ -222,11 +261,7 @@ const SearchResult = () => {
                         src={imageUrl}
                         alt={title}
                         style={{ width: '100%', borderRadius: '10px' }}
-                        onClick={() => {
-                          console.log('클릭한 itemId:', itemId); // 클릭한 itemId를 콘솔에 출력
-                          setSelectedImage(imageUrl);
-                          setImageData({ title, username, itemId, contentUrl });
-                        }}
+                        onClick={() => handleImageClick(itemId, imageUrl, title, username, contentUrl)}
                       />
                     )}
                   </GridItem>
@@ -297,7 +332,7 @@ const SearchResult = () => {
           isOpen={showAddModal}
           onClose={() => setShowAddModal(false)}
           onSuccess={(spaceId) => {
-            registerItemToSpace(imageData.itemId, spaceId); // 아이템 등록 호출
+            registerItemToSpace(imageData.itemId, spaceId, location.state?.query || ''); // 아이템 등록 호출
             setShowSuccessModal(true);
           }}
           spaces={spaces} // 공간 목록 전달
