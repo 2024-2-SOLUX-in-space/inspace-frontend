@@ -36,21 +36,15 @@ export const HeartList = styled.div`
   }
 `;
 
-export const ClickedHeart = styled.div`
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  justify-content: center;
-  width: 45px;
-  height: 45px;
-  border-radius: 5px;
-  background-color: ${({ isActive }) =>
-    isActive ? "#ECECEC" : "transparent"};
-  transition: background-color 0.2s ease-in-out;
-  position: absolute;
-  top: 335px;
-  left: 15px;
-  z-index: -1000;
+export const HeartButtonBackground = styled.div`
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  top: 0;
+  left: 75px;
+  right: 0;
+  bottom: 0;
+  z-index: 899;
 `;
 
 export const ListBox = styled.div`
@@ -112,12 +106,14 @@ export const TabContainer = styled.div`
   display: flex;
   justify-content: space-between; 
   margin-bottom: 10px; 
+  padding: 5px 0 10px 0; 
+  border-bottom: 1px solid #eaeaea;
 `;
 
 export const TabButton = styled.button`
   flex: 1; 
   margin: 0 5px; 
-  padding: 8px 12px; 
+  padding: 15px 12px; 
   border: none;
   border-radius: 5px;
   background-color: ${({ isActive }) => (isActive ? "#f0f0f0" : "#ffffff")};

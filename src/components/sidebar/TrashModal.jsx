@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { FiTrash2 } from "react-icons/fi"; 
 import Alert from "../alert/AddTrashAlert";
+import api from '../../api/api';
 
 const TrashButton = styled.button`
   background: transparent;
@@ -35,10 +36,14 @@ const TrashModal = ({ spaceId, onDelete }) => {
     setIsAlertOpen(false);
   };
 
-  const handleConfirmDelete = () => {
-    onDelete(spaceId); 
-    // **추후 연동 필요 ** 삭제 API 요청, 서버와 동기화
-    handleCloseAlert(); 
+  const handleConfirmDelete = async () => {
+    try {
+      await api.delete(`/api/spaces/${spaceId}`);
+      onDelete(spaceId);
+    } catch (error) {
+      console.error('Error deleting space:', error);
+    }
+    handleCloseAlert();
   };
 
   return (
@@ -48,6 +53,7 @@ const TrashModal = ({ spaceId, onDelete }) => {
       </TrashButton>
 
       <Alert
+        spaceId={spaceId}
         isOpen={isAlertOpen}
         message="정말로 삭제하시겠습니까?"
         onClose={handleCloseAlert}

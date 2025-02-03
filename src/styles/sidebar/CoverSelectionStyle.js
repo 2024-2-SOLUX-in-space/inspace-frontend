@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 /* 공통 알림창 오버레이 */
 export const CoverSelectionOverlay = styled.div`
@@ -44,7 +44,6 @@ export const CoverSelectionHeader = styled.div`
   align-items: center;
   width: 100%;
   margin-bottom: 1rem;
-  
 `;
 
 /* 알림창 제목 */
@@ -73,7 +72,6 @@ export const CloseButton = styled.button`
   border: none;
   top: 0.75rem;
   right: 0.75rem;
-  color: black;
   font-size: 1.25rem;
   cursor: pointer;
   &:hover {
@@ -117,7 +115,7 @@ export const ArrowButton = styled.button`
   font-size: 1.5rem;
   z-index: 100;
   outline: none;
-  &:focus{
+  &:focus {
     outline: none;
   }
 

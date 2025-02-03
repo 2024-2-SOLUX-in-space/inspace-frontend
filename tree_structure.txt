@@ -6,91 +6,17 @@
 ├── package-lock.json
 ├── package.json
 ├── public
-│   ├── Logo.png
-│   ├── background
-│   │   ├── ForgotPasswordPage.png
-│   │   ├── LogInPage.png
-│   │   ├── background.png
-│   │   ├── home_background.png
-│   │   └── startpage.png
-│   ├── home
-│   ├── stickers
-│   └── vite.svg
 ├── scripts
-│   └── generateStickerData.js
 ├── src
 │   ├── App.css
 │   ├── App.jsx
 │   ├── assets
-│   │   ├── fonts
-│   │   ├── img
-│   │   │   ├── Dummy
-│   │   │   ├── ProfileImage.png
-│   │   │   ├── SearchResultImage.png
-│   │   │   ├── button
-│   │   │   ├── dummyImage.png
-│   │   │   └── logo
-│   │   └── react.svg
 │   ├── components
-│   │   ├── Header.jsx
-│   │   ├── alert
-│   │   │   ├── Alert.jsx
-│   │   │   ├── Notification.jsx
-│   │   │   └── TrashAlert.jsx
-│   │   ├── home
-│   │   │   ├── EditSidebar.jsx
-│   │   │   └── PageItem.jsx
-│   │   ├── sidebar
-│   │   │   ├── ArchiveButton.jsx
-│   │   │   ├── FixModal.jsx
-│   │   │   ├── SwitchModal.jsx
-│   │   │   └── TrashModal.jsx
-│   │   └── user
-│   │       ├── LogInTextField.jsx
-│   │       └── TextField.jsx
 │   ├── context
-│   │   ├── AlertContext.jsx
-│   │   └── UserContext.jsx
 │   ├── data
-│   │   └── stickers.json
 │   ├── hooks
 │   ├── index.css
 │   ├── main.jsx
 │   ├── pages
-│   │   ├── MenuSidebar.jsx
-│   │   ├── SearchResultPage.jsx
-│   │   ├── StartPage.jsx
-│   │   ├── home
-│   │   │   ├── HomeDiary.jsx
-│   │   │   ├── HomePage.jsx
-│   │   │   └── ImageAddModal.jsx
-│   │   └── user
-│   │       ├── EditMyPage.jsx
-│   │       ├── ForgotPasswordPage.jsx
-│   │       ├── LogInPage.jsx
-│   │       ├── MyPage.jsx
-│   │       └── SignUpPage.jsx
 │   └── styles
-│       ├── GlobalStyle.js
-│       ├── SearchResultStyles.js
-│       ├── StartPageStyle.js
-│       ├── home
-│       │   ├── EditSidebarStyle.js
-│       │   ├── HomeDiaryStyle.js
-│       │   └── HomeStyle.js
-│       ├── sidebar
-│       │   ├── ArchiveButtonStyle.js
-│       │   ├── FixModalStyle.js
-│       │   ├── MenuSidebarStyle.js
-│       │   ├── SwitchModalStyle.js
-│       │   └── TrashModalStyle.js
-│       └── user
-│           ├── ForgotPasswordPageStyle.js
-│           ├── LogInPageStyle.js
-│           ├── LogInTextFieldStyle.js
-│           ├── MyPageEditStyle.js
-│           ├── MyPageStyle.js
-│           ├── SignUpPageStyle.js
-│           └── TextFieldStyle.js
-├── tree_structure.txt
 └── vite.config.js

@@ -1,95 +1,259 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import PropTypes from 'prop-types';
+import { FiBookOpen, FiBook, FiTrash2 } from "react-icons/fi";
+import { BsPinAngle, BsPinAngleFill } from "react-icons/bs";
+import styled from "styled-components";
+import Alert from "../alert/AddTrashAlert";
 import { ArchiveList, ListBox, TitleContainer } from "../../styles/sidebar/ArchiveButtonStyle";
-import FixModal from "../sidebar/FixModal";
-import TrashModal from "../sidebar/TrashModal";
-import SwitchModal from "../sidebar/SwitchModal";
+import api from '../../api/api';
+import { useSelector, useDispatch } from 'react-redux';
+import { setSpaces, fetchSpaces, modifySpace, setSelectedSpace, setActiveSpace } from '../../redux/actions/spaceActions';
 
 const ArchiveButton = ({ isArchiveOpen, toggleArchive }) => {
-  const [spaces, setSpaces] = useState([
-    { id: 1, title: "해리포터와 마법사의 돌", isPinned: true, isPublic: false }, 
-    { id: 2, title: "더 퍼스트 슬램덩크", isPinned: false, isPublic: true }, 
-    { id: 3, title: "에브리씽 에브리웨어 올 앳 원스", isPinned: false, isPublic: false }, 
-    { id: 4, title: "대도시의 사랑법", isPinned: false, isPublic: true }, 
-    { id: 5, title: "위키드", isPinned: false, isPublic: false },
-    { id: 6, title: "지킬앤하이드", isPinned: false, isPublic: true }, 
-    { id: 7, title: "시라노", isPinned: false, isPublic: false }, 
-    { id: 8, title: "명성황후", isPinned: false, isPublic: false }, 
-  ]); 
-
   const [isScrollable, setIsScrollable] = useState(false);
-  useEffect( () => {
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const archiveRef = useRef(null);
+  const dispatch = useDispatch();
+  const spaces = useSelector(state => state.space.spaces);
+  const selectedSpace = useSelector(state => state.space.selectedSpace);
+  const activeSpace = useSelector(state => state.space.activeSpace);
+  const sortedSpaces = [...spaces].sort((a, b) => b.isPrimary - a.isPrimary);
+  
+  useEffect(() => {
+    dispatch(fetchSpaces());
+  }, [dispatch]);
+
+  useEffect(() => {}, [spaces, activeSpace, selectedSpace]);
+
+  useEffect(() => {
     setIsScrollable(spaces.length > 5);
   }, [spaces]);
 
+  //외부 클릭시 닫기
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (archiveRef.current && !archiveRef.current.contains(event.target)) {
+        toggleArchive();
+      }
+    };
 
-  // 선택된 공간 (회색 배경)
-  const [ selectedBox, setSelectedBox ] = useState(null); 
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [toggleArchive]);
 
-  // 클릭 시 공간 이동 
-    const handleListBoxClick = (id) => {
-      setSelectedBox(id); 
-      // **추후 연동 필요** 개별 공간 목록 클릭 시 공간 이동 
+  const handleListBoxClick = (spaceId, title, coverType) => {
+    dispatch(setSelectedSpace({ id: spaceId, title, coverType }));
+    dispatch(setActiveSpace({ id: spaceId, title, coverType }));
+    toggleArchive();
+  };
+
+  const handleToggle = async (spaceId, field) => {
+
+    const currentSpace = spaces.find(space => space.id === spaceId);
+    if (!currentSpace) {
+      return;
     }
 
-    // 핀버튼 클릭 시 >> 검정색으로, 상단으로 
-    const handlePinToggle = (id) => {
-      setSpaces((prevSpaces) => {
+    const newValue = !currentSpace[field];
 
-        const updatedSpaces = prevSpaces.map((space) =>
-          space.id === id
-            ? { ...space, isPinned: true }
-            : { ...space, isPinned: false }
-        );
-        const pinnedSpace = updatedSpaces.find((space) => space.id === id);
-        const otherSpaces = updatedSpaces.filter((space) => space.id !== id);
-        return [pinnedSpace, ...otherSpaces];
-      });
-    };    
+    // 기존 배열 순서를 유지하면서 isPrimary만 업데이트
+    let updatedSpaces = spaces.map(space =>
+      space.id === spaceId
+        ? { ...space, [field]: newValue }
+        : field === "isPrimary"
+          ? { ...space, isPrimary: false } // 다른 공간들의 isPrimary를 false로 변경
+          : space
+    );
 
-    // trash 삭제 기능 
-    const handleDeleteSpace = (id) => {
-      setSpaces( (prevSpaces) => prevSpaces.filter( (space) =>
-        space.id !== id));
-    };
+    dispatch(setSpaces(updatedSpaces)); // Redux 상태 즉시 업데이트
 
-    // 공개/비공개 전환 기능
-    const handleSwitchToggle = (id) => {
-      setSpaces( (prevSpaces) => prevSpaces.map( (space) => 
-        space.id === id ? { ...space, isPublic: !space.isPublic } : space 
-        )
-      );
-    };
+    // primarySpace를 localStorage에 저장
+    if (field === "isPrimary" && newValue) {
+      const primarySpace = updatedSpaces.find(space => space.isPrimary);
+      if (primarySpace) {
+        dispatch(setActiveSpace(primarySpace));
+        localStorage.setItem('primarySpace', JSON.stringify(primarySpace));
+      }
+    }
 
-  return (
-    <>
-      {isArchiveOpen && (
-        <ArchiveList isScrollable = {isScrollable}>
-            {spaces.map( (space) => (
-              <ListBox 
-                key = {space.id}
-                isSelected = {selectedBox === space.id}
-                onClick = { () => handleListBoxClick (space.id) }
-              >
-                
-                  <FixModal
-                    id = {space.id}
-                    isPinned = {space.isPinned}
-                    onPinToggle={handlePinToggle}
-                  />
-                  <TitleContainer> {space.title} </TitleContainer>
-                  <SwitchModal
-                    spaceId={space.id}
-                    isPublic={space.isPublic}
-                    onSwitchToggle={handleSwitchToggle}
-                  />
-                  <TrashModal spaceId={space.id} onDelete={handleDeleteSpace} />
+    try {
+      const url = `/api/spaces/${spaceId}`;
+      const data = { [field]: newValue };
 
-              </ListBox>
-            ))}
-        </ArchiveList>
-      )}
-    </>
-  );
+      const response = await api.patch(url, data);
+
+      if (response.status === 200) {
+        dispatch(modifySpace(spaceId, response.data));
+      } else {
+        console.error("⚠ 서버 응답 실패. fetchSpaces() 실행.");
+        dispatch(fetchSpaces());
+      }
+    } catch (error) {
+      console.error(`❌ PATCH 요청 실패:`, error);
+      alert("⚠ 변경 실패! 다시 시도해주세요.");
+      dispatch(fetchSpaces());
+    }
+  };
+
+
+// 삭제 상태 추가 (삭제할 공간 저장)
+const [spaceToDelete, setSpaceToDelete] = useState(null);
+
+// 삭제 확인 창 열기
+const handleTrashClick = (space) => {
+  setSpaceToDelete(space);
+  setIsAlertOpen(true);
+};
+
+// 삭제 실행 함수
+const handleDeleteConfirmed = async () => {
+  if (!spaceToDelete) return;
+  try {
+    await api.delete(`/api/spaces/${spaceToDelete.id}`);
+
+    // Redux 상태에서 해당 공간 삭제
+    const updatedSpaces = spaces.filter(space => space.id !== spaceToDelete.id);
+    dispatch(setSpaces(updatedSpaces));
+
+    // 선택된 공간이 삭제되었으면 다른 공간 선택
+    if (selectedSpace?.id === spaceToDelete.id) {
+      let nextSpace = null;
+
+      // 대표 공간이 삭제된 경우 가장 최신 공간을 대표 공간으로 설정
+      if (spaceToDelete.isPrimary && updatedSpaces.length > 0) {
+        updatedSpaces.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        nextSpace = updatedSpaces[0];
+        nextSpace.isPrimary = true; // 가장 최신 공간을 대표 공간으로 설정
+
+        // 서버에 업데이트 요청
+        await api.patch(`/api/spaces/${nextSpace.id}`, { isPrimary: true });
+      } else {
+        nextSpace = updatedSpaces.length > 0 ? updatedSpaces[0] : null;
+      }
+
+      dispatch(setSelectedSpace(nextSpace));
+      dispatch(setActiveSpace(nextSpace));
+    }
+  } catch (error) {
+    console.error('❌ 공간 삭제 중 오류 발생:', error);
+    alert("⚠ 삭제 실패! 다시 시도해주세요.");
+  } finally {
+    setIsAlertOpen(false); // 알림창 닫기
+    setSpaceToDelete(null);
+  }
+};
+
+return (
+  <>
+    {isArchiveOpen && (
+      <ArchiveList ref={archiveRef} isScrollable={isScrollable}>
+        {sortedSpaces.map((space) => (
+          <ListBox 
+            key={space.id}
+            isSelected={space.id === selectedSpace?.id}
+            onClick={() => handleListBoxClick(space.id, space.title, space.coverType)}
+          >
+            <PrimaryButton spaceId={space.id} isPrimary={space.isPrimary} onToggle={handleToggle} />
+            <TitleContainer> {space.title} </TitleContainer>
+            <PublicButton spaceId={space.id} isPublic={space.isPublic} onToggle={handleToggle} />
+            <TrashButton onClick={(e) => {
+              e.stopPropagation();
+              handleTrashClick(space);
+            }}>
+              <FiTrash2 />
+            </TrashButton>
+          </ListBox>
+        ))}
+      </ArchiveList>
+    )}
+
+    {/* ✅ 삭제 확인 `Alert` 추가 */}
+    {isAlertOpen && spaceToDelete && (
+      <Alert
+        isOpen={isAlertOpen}
+        spaceId={spaceToDelete.id}
+        message={`정말로 "${spaceToDelete.title}"을(를) 삭제하시겠습니까?`}
+        onClose={() => setIsAlertOpen(false)}
+        onConfirm={handleDeleteConfirmed}
+        confirmText="삭제"
+      />
+    )}
+  </>
+);
+
+
 };
 
 export default ArchiveButton;
+
+const TrashButton = styled.button`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: red;
+  font-size: 17px;
+  padding: 5px;
+  margin-right: 5px;
+
+  &:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s ease-in-out;
+  }
+  &:focus {
+    outline: none;
+  }
+`;
+
+const PrimaryButtonStyled = styled.button`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 17px;
+  padding: 5px;
+  margin-right: 5px;
+
+  &:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s ease-in-out;
+  }
+  &:focus {
+    outline: none;
+  }
+`;
+
+export const PrimaryButton = ({ spaceId, isPrimary, onToggle }) => (
+  <PrimaryButtonStyled onClick={(e) => {
+    e.stopPropagation();
+    onToggle(spaceId, 'isPrimary');
+  }}>
+    {isPrimary ? <BsPinAngleFill /> : <BsPinAngle />}
+  </PrimaryButtonStyled>
+);
+
+const PublicButtonStyled = styled.button`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 17px;
+  padding: 5px;
+  margin-right: 5px;
+
+  &:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s ease-in-out;
+  }
+  &:focus {
+    outline: none;
+  }
+`;
+
+export const PublicButton = ({ spaceId, isPublic, onToggle }) => (
+  <PublicButtonStyled onClick={(e) => {
+    e.stopPropagation();
+    onToggle(spaceId, 'isPublic');
+  }}>
+    {isPublic ? <FiBookOpen /> : <FiBook />}
+  </PublicButtonStyled>
+);

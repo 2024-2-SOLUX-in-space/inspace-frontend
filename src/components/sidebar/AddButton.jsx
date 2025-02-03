@@ -1,49 +1,75 @@
 import React, { useState } from "react";
-import styled from "styled-components";
-import CoverSelection from "./CoverSelection";
 import NameInput from "./NameInput";
+import CoverSelection from "./CoverSelection";
 import PublicSelection from "./PublicSelection";
 import Alert from "../alert/AddTrashAlert";
+import api from '../../api/api.js';
+import { useDispatch } from 'react-redux';
+import { addSpace, fetchSpaces } from '../../redux/actions/spaceActions';
+import { useNavigate } from 'react-router-dom';
 
-const ClickedAdd = styled.div`
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  justify-content: center;
-  width: 45px;
-  height: 45px;
-  border-radius: 5px;
-
-  background-color: ${({ isActive }) => 
-    isActive ? "#ECECEC" : "transparent"};
-  transition: background-color 0.2s ease-in-out;
-
-  position: absolute;
-  top: 205px; 
-  left: 15px; 
-  z-index: -1000; 
-`;
-
-const AddButton = ({ isAddButtonOpen, toggleAddButton }) => {
+const AddButton = ({ isAddButtonOpen, toggleAddButton, navigateHome }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1); 
-  const [selectedCover, setSelectedCover] = useState(null); 
-  const [spaceName, setSpaceName] = useState(""); 
-  const [isMainSpace, setIsMainSpace] = useState(false); 
-  const [visibility, setVisibility] = useState(null); 
+  const [sthumb, setSthumb] = useState(null); 
+  const [sname, setSname] = useState(""); 
+  const [isPrimary, setIsPrimary] = useState(false); 
+  const [isPublic, setIsPublic] = useState(null); 
+  const [isLoading, setIsLoading] = useState(false); 
   
   const handleNextStep = (step) => {
     setCurrentStep(step);
   };
 
-  const handleCreateSpace = () => {
+  const handleCreateSpace = async () => { 
     const requestData = {
-      cover: selectedCover,
-      name: spaceName,
-      isMain: isMainSpace,
-      visibility,
+      spaceId: 0,
+      sname,
+      sthumb,
+      isPrimary,
+      isPublic,
+      createdAt: new Date().toISOString(), 
     };
-    // **백엔드 연동** 공간 생성 요청
-    setCurrentStep(5); 
+
+    if (!sname || sthumb === null || typeof sthumb !== "number") {
+      alert("유효한 썸네일 ID와 공간 이름을 입력해주세요!");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await api.post(
+        "/api/spaces",
+        requestData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const newSpace = {
+        id: response.data.spaceId,
+        title: response.data.sname,
+        coverType: response.data.sthumb,
+        isPrimary: response.data.isPrimary,
+        isPublic: response.data.isPublic,
+      };
+      dispatch(addSpace(newSpace));
+      setCurrentStep(5);
+
+      await dispatch(fetchSpaces());
+
+      navigateHome();
+    } catch (error) {
+      if (error.response) {
+        alert(error.response.data.message || "공간 생성에 실패했습니다. 다시 시도해주세요.");
+      } else {
+        alert("공간 생성에 실패했어요. 다시 시도해주세요.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -52,53 +78,55 @@ const AddButton = ({ isAddButtonOpen, toggleAddButton }) => {
         <div>
           {currentStep === 1 && (
             <CoverSelection
-              selectedCover={selectedCover}
+              selectedCover={sthumb}
               onSelectCover={(cover) => {
-                if (cover) {
-                  setSelectedCover(cover);
-                  handleNextStep(2);
+                if (typeof cover === "number" && cover >= 0) {
+                  setSthumb(cover); 
+                  handleNextStep(2); 
+                } else {
+                  alert("유효한 썸네일을 선택해주세요!"); 
                 }
-              }}
+              }}          
               onClose={toggleAddButton}
             />
           )}
           {currentStep === 2 && (
             <NameInput
-              spaceName={spaceName}
-              isMainSpace={isMainSpace}
-              setSpaceName={setSpaceName}
-              setIsMainSpace={setIsMainSpace} 
+              spaceName={sname}
+              isMainSpace={isPrimary}
+              setSpaceName={setSname}
+              setIsMainSpace={setIsPrimary} 
               onProceed={({ spaceName, isMainSpace }) => {
-                setSpaceName(spaceName);
-                setIsMainSpace(isMainSpace);
+                setSname(spaceName);
+                setIsPrimary(isMainSpace);
                 handleNextStep(3);
               }}
               onBack={() => setCurrentStep(1)}
               onCancel={() => {
                 setCurrentStep(1);
-                setSelectedCover(null);
-                setSpaceName("");
-                setIsMainSpace(false);
-                setVisibility(null);
+                setSthumb(null);
+                setSname("");
+                setIsPrimary(false);
+                setIsPublic(null);
                 toggleAddButton();
               }}
             />
           )}
           {currentStep === 3 && (
             <PublicSelection
-              visibility={visibility}
-              setVisibility = {setVisibility}
+              visibility={isPublic}
+              setVisibility = {setIsPublic}
               onConfirm={(isPublic) => {
-                setVisibility(isPublic);
-                handleCreateSpace();
+                setIsPublic(isPublic);
+                handleCreateSpace(); 
               }}
               onBack={() => setCurrentStep(2)}
               onCancel={() => {
                 setCurrentStep(1);
-                setSelectedCover(null);
-                setSpaceName("");
-                setIsMainSpace(false);
-                setVisibility(null);
+                setSthumb(null);
+                setSname("");
+                setIsPrimary(false);
+                setIsPublic(null);
                 toggleAddButton();
               }}
             />
@@ -109,10 +137,10 @@ const AddButton = ({ isAddButtonOpen, toggleAddButton }) => {
               message="공간이 추가되었습니다!"
               onClose={() => {
                 setCurrentStep(1);
-                setSelectedCover(null);
-                setSpaceName("");
-                setIsMainSpace(false);
-                setVisibility(null);
+                setSthumb(null);
+                setSname("");
+                setIsPrimary(false);
+                setIsPublic(null);
                 toggleAddButton();
               }}
               onConfirm={() => console.log("공간 편집 페이지로 이동")} 

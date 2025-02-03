@@ -7,6 +7,8 @@ import Header from '../../components/Header';
 import TextField from '../../components/user/TextField';
 import ProfileLogo from '../../assets/img/logo/ProfileLogo.png';
 import api from '../../api/api.js';
+import { useDispatch } from 'react-redux';
+import { resetSpaces } from '../../redux/actions/spaceActions';
 import {
   MyPageContainer,
   LogoutButton,
@@ -20,6 +22,7 @@ const MyPage = () => {
   const navigate = useNavigate();
   const { showAlert } = useAlert();
   const { user, setUser } = useUser();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     console.log('user: ', user);
@@ -51,22 +54,13 @@ const MyPage = () => {
   const handleLogout = () => {
     showAlert('로그아웃 하시겠습니까?', async () => {
       try {
-        const token = localStorage.getItem('access_token');
-        const config = {
-          headers: {
-            Authorization: token,
-          },
-        };
-
-        const response = await api.post('/api/auth/logout', {}, config);
+        const response = await api.post('/api/auth/logout');
         if (response.data.success) {
           showAlert('성공적으로 로그아웃 되었습니다.');
+          localStorage.clear();        
+          dispatch(resetSpaces());
+          setUser({ name: '', email: '' });
           navigate('/login');
-          localStorage.clear();
-          setUser({
-            name: '',
-            email: '',
-          });
         }
       } catch (error) {
         showAlert('로그아웃에 실패했습니다. 다시 시도해주세요.', () =>

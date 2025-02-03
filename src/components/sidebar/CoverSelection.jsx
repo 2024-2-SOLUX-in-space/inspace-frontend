@@ -15,9 +15,16 @@ import {
 } from "../../styles/sidebar/CoverSelectionStyle";
 
 const CoverSelection = ({ selectedCover, onClose, onSelectCover }) => {
-  const covers = ["/sidebar/cover1.png", "/sidebar/cover2.png", "/sidebar/cover3.png"];
+  const covers = [
+  { id: 1, path: "/sidebar/cover1.png" },
+  { id: 2, path: "/sidebar/cover2.png" },
+  { id: 3, path: "/sidebar/cover3.png" },
+];
+
   const [currentIndex, setCurrentIndex] = useState(
-    selectedCover ? covers.indexOf(selectedCover) : 0
+    selectedCover
+      ? covers.findIndex((cover) => cover.id === selectedCover)
+      : 0
   );
 
   // 좌우 화살표 클릭 핸들러
@@ -31,7 +38,8 @@ const CoverSelection = ({ selectedCover, onClose, onSelectCover }) => {
 
   // "선택" 버튼 클릭 핸들러
   const handleConfirm = () => {
-      onSelectCover(covers[currentIndex]); 
+    const selectedCover = covers[currentIndex];
+    onSelectCover(selectedCover.id); 
   };
 
   return (
@@ -42,7 +50,7 @@ const CoverSelection = ({ selectedCover, onClose, onSelectCover }) => {
         <CoverSelectionHeader>
           <CoverSelectionTitle>공간의 표지를 선택해 주세요!</CoverSelectionTitle>
           <CoverSelectionSubTitle>공간 표지는 선택하면 수정할 수 없으니, 신중히 골라주세요!</CoverSelectionSubTitle>
-          <CloseButton onClick={onClose}>X</CloseButton>
+          <CloseButton onClick={onClose}>✕</CloseButton>
         </CoverSelectionHeader>
 
         <ArrowButton className="prev" onClick={handlePrev} aria-label="이전 표지">
@@ -50,7 +58,7 @@ const CoverSelection = ({ selectedCover, onClose, onSelectCover }) => {
         </ArrowButton>
 
         <CoverImageWrapper>
-          <CoverImage src={covers[currentIndex]} alt={`Cover ${currentIndex + 1}`} />
+          <CoverImage src={covers[currentIndex].path} alt={`Cover ${currentIndex + 1}`} />
         </CoverImageWrapper>
 
         <ArrowButton className="next" onClick={handleNext} aria-label="다음 표지">

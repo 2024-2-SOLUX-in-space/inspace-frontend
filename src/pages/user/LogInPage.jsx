@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { useUser } from '../../context/UserContext';
 import { useAlert } from '../../context/AlertContext';
 import api from '../../api/api.js';
@@ -13,6 +14,7 @@ import {
   ForgotPasswordButton,
   LoginButton,
 } from '../../styles/user/LogInPageStyle';
+import { fetchSpaces, setActiveSpace } from '../../redux/actions/spaceActions';
 
 function LogInPage() {
   const [email, setEmail] = useState('');
@@ -21,6 +23,8 @@ function LogInPage() {
   const { setUser } = useUser(); // 전역 user 상태를 업데이트할 수 있는 setUser
   const { showAlert } = useAlert();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const spaces = useSelector(state => state.space.spaces);
 
   const goToSignUp = () => {
     navigate('/signup');
@@ -85,6 +89,9 @@ function LogInPage() {
           email: email,
           ...prev,
         }));
+
+        // 공간 목록 업데이트
+        await dispatch(fetchSpaces());
 
         navigate('/home');
       } else {
