@@ -29,11 +29,13 @@ const SearchResult = () => {
   );
   const [results, setResults] = useState([]);
   const [spaces, setSpaces] = useState([]); // 공간 목록 상태
+  const [spaceDetails, setSpaceDetails] = useState(null); // 공간 세부 정보
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageData, setImageData] = useState({
     username: 'Space',
     title: 'TitleExample',
     itemId: null,
+    contentUrl: '',
   });
   const [accessToken, setAccessToken] = useState(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -96,30 +98,53 @@ const SearchResult = () => {
     }
   };
 
+  const fetchSpaceDetails = async (spaceId) => {
+    if (!accessToken) return;
+    try {
+      const response = await axios.get(
+        `http://3.35.10.158:8080/api/items/space/${spaceId}`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        },
+      );
+      console.log('공간 세부 정보:', response.data); // 공간 세부 정보를 콘솔에 출력
+      setSpaceDetails(response.data);
+    } catch (error) {
+      console.error(
+        '공간 세부 정보 조회 오류:',
+        error.response?.status,
+        error.response?.data,
+      );
+    }
+  };
+
   const transformResponseData = (data) => {
     return [
       ...(data.images || []).map((item) => ({
         ...item,
         imageUrl: item.imageUrl || item.contentUrl, // 이미지 항목에 imageUrl 설정
         ctype: 'image',
+        contentUrl: item.contentUrl,
       })),
       ...(data.music || []).map((item) => ({
         ...item,
         imageUrl: item.thumbnail || item.contentUrl, // 음악 항목에 썸네일 설정
         ctype: 'music',
+        contentUrl: item.contentUrl,
       })),
       ...(data.videos || []).map((item) => ({
         ...item,
         imageUrl: item.imageUrl || item.contentUrl, // 유튜브 항목에 imageUrl 설정
         ctype: 'youtube',
+        contentUrl: item.contentUrl,
       })),
-    ].map((item) => ({
-      itemId: item.itemId,
-      imageUrl: item.imageUrl,
-      title: item.title,
-      username: item.username || 'Unknown User',
-      ctype: item.ctype,
-    }));
+      ...spaces.map((space) => ({
+        itemId: `space-${space.spaceId}`,
+        title: space.sname,
+        ctype: 'space',
+        spaceId: space.spaceId,
+      })),
+    ];
   };
 
   const handleHashtagClick = (id) => {
@@ -139,6 +164,11 @@ const SearchResult = () => {
     }
   };
 
+  const handleSpaceClick = (spaceId) => {
+    console.log('클릭한 spaceId:', spaceId); // 클릭한 공간 ID 출력
+    fetchSpaceDetails(spaceId);
+  };
+
   return (
     <>
       <Header iconInside />
@@ -155,24 +185,53 @@ const SearchResult = () => {
           ))}
         </HashtagContainer>
 
-        <div style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 50px)' }}>
+        <div style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 150px)' }}>
           <MasonryGrid>
             {results
               .filter((item) => selectedTags.includes(item.ctype))
-              .map(({ itemId, imageUrl, title, username }) => (
-                <GridItem key={itemId}>
-                  <img
-                    src={imageUrl}
-                    alt={title}
-                    style={{ width: '100%', borderRadius: '10px' }}
-                    onClick={() => {
-                      console.log('클릭한 itemId:', itemId); // 클릭한 itemId를 콘솔에 출력
-                      setSelectedImage(imageUrl);
-                      setImageData({ title, username, itemId });
-                    }}
-                  />
-                </GridItem>
-              ))}
+              .map(
+                ({
+                  itemId,
+                  imageUrl,
+                  title,
+                  username,
+                  ctype,
+                  spaceId,
+                  contentUrl,
+                }) => (
+                  <GridItem key={itemId}>
+                    {ctype === 'space' ? (
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => handleSpaceClick(spaceId)}
+                      >
+                        <img
+                          src="/src/assets/img/button/Bookopen.png"
+                          alt="Space Icon"
+                          style={{ width: '50px', height: '50px' }}
+                        />
+                        <span>{title}</span>
+                      </div>
+                    ) : (
+                      <img
+                        src={imageUrl}
+                        alt={title}
+                        style={{ width: '100%', borderRadius: '10px' }}
+                        onClick={() => {
+                          console.log('클릭한 itemId:', itemId); // 클릭한 itemId를 콘솔에 출력
+                          setSelectedImage(imageUrl);
+                          setImageData({ title, username, itemId, contentUrl });
+                        }}
+                      />
+                    )}
+                  </GridItem>
+                ),
+              )}
           </MasonryGrid>
         </div>
       </SearchResultContainer>
@@ -181,16 +240,39 @@ const SearchResult = () => {
         <CloseButton size={30} onClick={() => setSelectedImage(null)} />
         {selectedImage && (
           <>
-            <div className="user-info">
+            <div
+              className="user-info"
+              style={{ display: 'flex', alignItems: 'center', gap: '20px' }}
+            >
               <img
                 className="profile-image"
                 src="/src/assets/img/ProfileImage.png"
                 alt="Profile"
+                style={{ width: '100px', height: '100px', borderRadius: '50%' }}
               />
-              {imageData.username}
+              <div
+                style={{
+                  textAlign: 'left',
+                  wordBreak: 'break-all',
+                  maxWidth: '60%',
+                }}
+              >
+                <p style={{ fontSize: '14px', margin: 0 }}>
+                  {imageData.username}
+                </p>
+                <p style={{ fontSize: '12px', margin: '5px 0', color: '#555' }}>
+                  {imageData.contentUrl}
+                </p>
+              </div>
             </div>
-            <img src={selectedImage} alt="Detailed view" />
-            <div className="title">{imageData.title}</div>
+            <img
+              src={selectedImage}
+              alt="Detailed view"
+              style={{ marginTop: '20px' }}
+            />
+            <div className="title" style={{ marginTop: '10px' }}>
+              {imageData.title}
+            </div>
             <div className="button-row">
               <img
                 className="maximize-button"
@@ -214,7 +296,8 @@ const SearchResult = () => {
         <AddItemModal
           isOpen={showAddModal}
           onClose={() => setShowAddModal(false)}
-          onSuccess={() => {
+          onSuccess={(spaceId) => {
+            registerItemToSpace(imageData.itemId, spaceId); // 아이템 등록 호출
             setShowSuccessModal(true);
           }}
           spaces={spaces} // 공간 목록 전달

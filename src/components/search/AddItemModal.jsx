@@ -12,11 +12,14 @@ const AddItemModal = ({ isOpen, spaces, onClose, onSuccess }) => {
       return;
     }
 
-    console.log('선택한 spaceId:', selectedSpace); // 선택한 spaceId를 콘솔에 출력
-    onClose();
-    setTimeout(() => {
-      onSuccess();
-    }, 300); // 부드럽게 전환
+    console.log('선택된 spaceId:', selectedSpace); // 선택된 공간 ID 출력
+
+    try {
+      onSuccess(selectedSpace); // onSuccess로 spaceId 전달
+      onClose();
+    } catch (error) {
+      console.error('onSuccess 호출 중 오류:', error);
+    }
   };
 
   return (
