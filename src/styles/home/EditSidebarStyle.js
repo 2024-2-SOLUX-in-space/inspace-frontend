@@ -27,16 +27,17 @@ export const DraggableContainer = styled.div`
   grid-template-columns: ${(props) =>
     props.isStickers ? 'repeat(2, 1fr)' : 'none'};
   flex-direction: ${(props) => (props.isStickers ? 'unset' : 'column')};
-  gap: 10px;
-  padding: 10px;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
   flex: 1;
   overflow-y: auto;
   min-height: 0;
 `;
 
 export const DraggableItem = styled.div`
-  width: 80%;
-  height: auto;
+  width: ${(props) => (props.isSticker ? '100px' : '80%')};
+  height: ${(props) => (props.isSticker ? '100px' : 'auto')};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -45,8 +46,8 @@ export const DraggableItem = styled.div`
 `;
 
 export const StyledImage = styled.img`
-  width: ${(props) => props.width || '150px'};
-  height: ${(props) => props.height || '150px'};
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   max-width: 100%;
   cursor: pointer;
