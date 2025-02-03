@@ -35,7 +35,7 @@ function generateStickerData() {
         return color;
       }
     }
-    return 'other'; // 색상이 없는 경우
+    return 'other';
   };
 
   // 색상 순서대로 정렬
@@ -58,8 +58,6 @@ function generateStickerData() {
     join(dataDir, 'stickers.json'),
     JSON.stringify({ stickers }, null, 2),
   );
-
-  console.log('스티커 데이터가 성공적으로 생성되었습니다!');
 }
 
 generateStickerData();
