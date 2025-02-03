@@ -55,6 +55,19 @@ const PageItem = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [setSelectedItem, onItemSelectChange, image]);
 
+  useEffect(() => {
+    if (imageRef.current) {
+      const parentDiv = imageRef.current.closest(".page-item");
+      
+      // 초기 회전 상태 설정
+      parentDiv.style.transform = `rotate(${image.turnover || 0}deg)`;
+      parentDiv.style.transformOrigin = "center center";
+
+      // 초기 회전 각도를 로컬 상태에 저장
+      setLocalTurnover(image.turnover || 0);
+    }
+  }, [image.turnover, imageRef]);
+
   const handleSelect = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -107,13 +120,23 @@ const PageItem = ({
   };
 
   // 아이템 회전
-  const handleRotate = ({ target, rotate }) => {
+  const handleRotateStart = () => {
+    // 회전을 시작할 때 turnover 값을 prevRotateRef에 저장
+    prevRotateRef.current = localTurnover;
+  };
+
+  const handleRotate = ({ target, clientX, clientY }) => {
     const parentDiv = target.closest(".page-item");
+    const rect = parentDiv.getBoundingClientRect();
 
-    // 기존 turnover 값 유지 + 새로운 회전값과의 차이 계산
-    const rotateDelta = rotate - prevRotateRef.current;
-    const newTurnover = (localTurnover + rotateDelta) % 360;
+    // 이미지 중심 좌표 계산
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
 
+    // 마우스의 현재 위치에서 중심까지의 각도 계산
+     const angle = Math.atan2(clientY - centerY, clientX - centerX) * (180 / Math.PI);
+      const newTurnover = (prevRotateRef.current + angle) % 360;  // 기존 값에 새로운 각도 추가
+    setLocalTurnover(newTurnover);
     // 음수 회전 방지 (예: -10도 → 350도로 변환)
     const normalizedTurnover = newTurnover < 0 ? newTurnover + 360 : newTurnover;
 
@@ -129,17 +152,6 @@ const PageItem = ({
       turnover: normalizedTurnover
     });
   };
-
-  // 서버에서 turnover 값이 바뀌면 로컬 상태 반영
-  useEffect(() => {
-    if (image.turnover !== localTurnover) {
-      setTimeout(() => {
-        setLocalTurnover(image.turnover || 0);
-        prevRotateRef.current = image.turnover || 0;
-      }, 100);
-    }
-  }, [image.turnover]);
-
 
   // 아이템 사이즈 변경
   const handleResize = ({ target, width, height }) => {
@@ -210,11 +222,12 @@ const PageItem = ({
           keepRatio={false}
           bounds="parent"
           throttleDrag={0}
-          throttleRotate={5}
+          throttleRotate={0}
           throttleResize={0}
           renderDirections={["nw", "sw", "se"]}
           onDrag={({ target, delta }) => handleDrag({ target, delta })}
-          onRotate={({ target, rotate }) => handleRotate({ target, rotate })}
+          onRotateStart={handleRotateStart}
+          onRotate={({ target, clientX, clientY }) => handleRotate({ target, clientX, clientY })}
           onResize={({ target, width, height }) => handleResize({ target, width, height })}
         />
       )}

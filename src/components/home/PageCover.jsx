@@ -93,17 +93,19 @@ const PageCover = React.forwardRef((props, ref) => {
         }}
       />
       <div className="page-content">
-        <h2 style={{
-          position: 'absolute',
-          ...titleStyle,
-          transform: 'translate(-50%, -50%)',
-          zIndex: 1,
-          fontSize: '2em',
-          fontWeight: 'bold',
-          fontFamily: "'Bodoni MT', 'Times New Roman', serif"
-        }}>
-          {activeSpace?.title || 'Untitled Space'}
-        </h2>
+        {props.position === 'top' && (
+          <h2 style={{
+            position: 'absolute',
+            ...titleStyle,
+            transform: 'translate(-50%, -50%)',
+            zIndex: 1,
+            fontSize: '2em',
+            fontWeight: 'bold',
+            fontFamily: "'Bodoni MT', 'Times New Roman', serif"
+          }}>
+            {activeSpace?.title || 'Untitled Space'}
+          </h2>
+        )}
       </div>
     </div>
   );
