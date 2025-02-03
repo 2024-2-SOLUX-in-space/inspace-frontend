@@ -191,13 +191,15 @@ const Header = () => {
 
   // 검색 기능 
   const handleSearch = () => {
+    setIsSearchFilled(!isSearchFilled);
     if (searchText.trim()) {
-      navigate('/search', { state: { query: searchText.trim() } }); // 검색어 전달
+      navigate('/search');
     }
   };
 
   // 마이페이지 이동 로직
   const handleUserClick = () => {
+    //etIsUserFilled(!isUserFilled);
     navigate('/mypage');
   };
 
@@ -313,7 +315,7 @@ const Header = () => {
           placeholder="검색어를 입력하세요..."
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && handleSearch()} // Enter로 검색
+          onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
         />
       </SearchInputWrapper>
       <IconContainer>
