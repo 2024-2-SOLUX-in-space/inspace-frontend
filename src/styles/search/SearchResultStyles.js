@@ -9,15 +9,16 @@ export const HashtagContainer = styled.div`
   position: fixed;
   top: 0;
   width: 100%;
-  height: 3vh;
+  height: 6vh;
   display: flex;
   flex-wrap: wrap;
   background: white;
-  margin-top: 8vh;
+  margin-top: 7.5vh;
   gap: 10px;
   padding: 10px 20px;
   padding-left: 6.5vw;
-  padding-top: 1vh;
+  padding-top: 1.2vh;
+  padding-bottom: 1.2vh;
 `;
 
 export const Hashtag = styled.div`
