@@ -65,6 +65,8 @@ const EditSidebar = ({
           ...prev,
           ...newCategoryData
         }));
+
+        setIsInitialized(true);  // 데이터가 성공적으로 로드되면 초기화 상태를 true로 설정
       } catch (error) {
         console.error("Error fetching all category data:", error);
       }
@@ -75,29 +77,29 @@ const EditSidebar = ({
 
   // ✅ 아이콘 변경 시 기존 데이터 유지 & 백그라운드 업데이트
   useEffect(() => {
-    if (!activeSpace || !activeSpace.id || selectedIcon === 'sticker') return;
+  if (!activeSpace || !activeSpace.id || selectedIcon === 'sticker') return;
 
-    const fetchCategoryData = async () => {
-      try {
-        const category = selectedIcon === 'file' ? 'USERIMAGE' : selectedIcon.toUpperCase();
-        const response = await api.get(`/api/category/space/${activeSpace.id}?category=${category}`);
+  const fetchCategoryData = async () => {
+    try {
+      const category = selectedIcon === 'file' ? 'USERIMAGE' : selectedIcon.toUpperCase();
+      const response = await api.get(`/api/category/space/${activeSpace.id}?category=${category}`);
 
-        const dataWithId = (response.data || []).map(item => ({
-          ...item,
-          id: item.itemId || `temp-id-${Date.now()}`
-        }));
+      const dataWithId = (response.data || []).map(item => ({
+        ...item,
+        id: item.itemId || `temp-id-${Date.now()}`
+      }));
 
-        setCategoryData(prev => ({
-          ...prev,
-          [selectedIcon]: dataWithId
-        }));
-      } catch (error) {
-        console.error(`Error fetching ${selectedIcon} data:`, error);
-      }
-    };
+      setCategoryData(prev => ({
+        ...prev,
+        [selectedIcon]: dataWithId
+      }));
+    } catch (error) {
+      console.error(`Error fetching ${selectedIcon} data:`, error);
+    }
+  };
 
-    fetchCategoryData();
-  }, [selectedIcon]);
+  fetchCategoryData();
+}, [selectedIcon, activeSpace]);
 
   const handleOpenModal = () => {
     fileInputRef.current?.click();
